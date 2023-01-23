@@ -7,10 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -67,7 +64,7 @@ fun Counter(modifier: Modifier = Modifier, count: Int) {
         verticalAlignment = Alignment.Bottom,
         horizontalArrangement = Arrangement.End
     ) {
-        Surface(shape = CircleShape, color = Color.Black, contentColor = Color.White) {
+        Surface(shape = CircleShape, color = MaterialTheme.colors.primary, contentColor = MaterialTheme.colors.onPrimary) {
             val countString = if (count < 10) count.toString() else "+9"
             Text(text = " $countString ")
         }

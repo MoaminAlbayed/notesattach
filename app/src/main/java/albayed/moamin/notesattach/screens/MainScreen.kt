@@ -2,7 +2,11 @@ package albayed.moamin.notesattach.screens
 
 import albayed.moamin.notesattach.R
 import albayed.moamin.notesattach.components.AttachmentIcon
+import albayed.moamin.notesattach.components.FloatingButton
+import albayed.moamin.notesattach.components.TopBar
+import albayed.moamin.notesattach.navigation.Screens
 import android.annotation.SuppressLint
+import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -11,7 +15,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -22,15 +25,27 @@ import androidx.compose.ui.unit.sp
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun MainScreen() {
-    Scaffold() {
+    Scaffold(
+        topBar = { TopBar(screen = Screens.MainScreen) },
+        floatingActionButton = { FloatingButton(screen = Screens.MainScreen) }
+    ) {
         NoteCard()
     }
 
 }
 
-@Preview()
+@Preview(showBackground = true)
+@Preview(
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+    name = "NoteCard Dark Theme"
+)
 @Composable
-fun NoteCard(title: String = "Title", content: String = "Content") {
+fun NoteCard(
+    title: String = "Title",
+    dateTate: String = "01-01-2023 12:05",
+    content: String = "Content"
+) {
     Card(
         modifier = Modifier
             .padding(5.dp)
@@ -38,9 +53,10 @@ fun NoteCard(title: String = "Title", content: String = "Content") {
             .wrapContentHeight()
             .fillMaxWidth(),
         shape = RoundedCornerShape(5.dp),
-        border = BorderStroke(1.dp, color = Color.Gray),
+        border = BorderStroke(2.dp, color = MaterialTheme.colors.primary),
+        elevation = 5.dp
 
-        ) {
+    ) {
         Row() {
             Column(
                 // modifier = Modifier.wrapContentWidth(),
@@ -66,30 +82,39 @@ fun NoteCard(title: String = "Title", content: String = "Content") {
 
             Divider(
                 modifier = Modifier
-                    .width(1.dp)
-                    .fillMaxHeight()
-                    .align(Alignment.CenterVertically)
+                    .width(2.dp)
+                    .fillMaxHeight(0.9f)
+                    .align(Alignment.CenterVertically),
+                color = MaterialTheme.colors.primary
+
             )
 
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    modifier = Modifier.padding(5.dp),
+                    modifier = Modifier.padding(start = 5.dp, top = 5.dp),
                     text = title,
                     style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 20.sp)
+                )
+                Text(
+                    modifier = Modifier.padding(start = 5.dp, bottom = 2.dp),
+                    text = "Created: $dateTate",
+                    style = TextStyle(fontWeight = FontWeight.Thin, fontSize = 13.sp)
                 )
                 Divider(
                     modifier = Modifier
                         .fillMaxWidth(0.95f)
-                        .align(Alignment.CenterHorizontally)
+                        .align(Alignment.CenterHorizontally),
+                    color = MaterialTheme.colors.primary
                 )
                 Text(modifier = Modifier.padding(5.dp), text = content, fontSize = 17.sp)
             }
 
             Divider(
                 modifier = Modifier
-                    .width(1.dp)
-                    .fillMaxHeight()
-                    .align(Alignment.CenterVertically)
+                    .width(2.dp)
+                    .fillMaxHeight(0.9f)
+                    .align(Alignment.CenterVertically),
+                color = MaterialTheme.colors.primary
             )
 
             Column(
@@ -118,3 +143,4 @@ fun NoteCard(title: String = "Title", content: String = "Content") {
         }
     }
 }
+
