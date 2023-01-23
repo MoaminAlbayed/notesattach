@@ -20,14 +20,21 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun MainScreen() {
+fun MainScreen(navController: NavController) {
     Scaffold(
-        topBar = { TopBar(screen = Screens.MainScreen) },
-        floatingActionButton = { FloatingButton(screen = Screens.MainScreen) }
+        topBar = { TopBar(screen = Screens.MainScreen, navController = navController) },
+        floatingActionButton = {
+            FloatingButton(
+                screen = Screens.MainScreen,
+                navController = navController
+            )
+        }
     ) {
         NoteCard()
     }

@@ -8,19 +8,23 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
+import androidx.navigation.NavController
 
 @Composable
-fun FloatingButton(screen: Screens) {
+fun FloatingButton(screen: Screens, navController: NavController) {
     when (screen){
         Screens.MainScreen -> {
             FloatingActionButton(
-                onClick = { /*TODO*/ },
+                onClick = { navController.navigate(Screens.NewNote.name) },
                 backgroundColor = MaterialTheme.colors.primary,
                 contentColor = MaterialTheme.colors.onPrimary,
                 shape = CircleShape
             ) {
                 Icon(imageVector = Icons.Default.Add, contentDescription = "Create New Note")
             }
+        }
+        Screens.NewNote -> {
+            //TODO
         }
     }
 }
