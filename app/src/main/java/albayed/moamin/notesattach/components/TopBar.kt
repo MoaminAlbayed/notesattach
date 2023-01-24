@@ -12,7 +12,7 @@ import androidx.navigation.NavController
 
 
 @Composable
-fun TopBar(screen: Screens, navController: NavController) {
+fun TopBar(screen: Screens, navController: NavController, onClick: () -> Unit = {}) {
     when (screen) {
         Screens.MainScreen -> {
             TopAppBar(title = {
@@ -34,7 +34,7 @@ fun TopBar(screen: Screens, navController: NavController) {
                 Text(text = "Note Editor")
             },
                 navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
+                    IconButton(onClick = { onClick.invoke()}) {
                         Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back Button")
                     }
                 }
