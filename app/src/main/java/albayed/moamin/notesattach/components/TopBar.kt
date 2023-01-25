@@ -29,7 +29,7 @@ fun TopBar(screen: Screens, navController: NavController, onClick: () -> Unit = 
                 }
             )
         }
-        Screens.NewNote ->{
+        Screens.NoteEditor ->{
             TopAppBar(title ={
                 Text(text = "Note Editor")
             },

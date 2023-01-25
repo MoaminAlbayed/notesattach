@@ -15,7 +15,7 @@ fun FloatingButton(screen: Screens, navController: NavController) {
     when (screen){
         Screens.MainScreen -> {
             FloatingActionButton(
-                onClick = { navController.navigate(Screens.NewNote.name) },
+                onClick = { navController.navigate(Screens.NoteEditor.name+"/${true}/${null}") },
                 backgroundColor = MaterialTheme.colors.primary,
                 contentColor = MaterialTheme.colors.onPrimary,
                 shape = CircleShape
@@ -23,7 +23,7 @@ fun FloatingButton(screen: Screens, navController: NavController) {
                 Icon(imageVector = Icons.Default.Add, contentDescription = "Create New Note")
             }
         }
-        Screens.NewNote -> {
+        Screens.NoteEditor -> {
             //TODO
         }
     }

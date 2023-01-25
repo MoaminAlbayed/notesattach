@@ -11,6 +11,7 @@ import albayed.moamin.notesattach.utils.dateFormatter
 import android.annotation.SuppressLint
 import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -52,7 +53,9 @@ fun MainScreen(navController: NavController, viewModel: MainScreenViewModel = hi
     ) {
         LazyColumn(modifier = Modifier.fillMaxSize()) {
             items(notesList.asReversed()) {
-                NoteCard(it)
+                NoteCard(it){
+                    navController.navigate(Screens.NoteEditor.name+"/${false}/${it.id}")
+                }
             }
         }
     }
@@ -70,14 +73,16 @@ fun NoteCard(
 //    dateTate: String = "01-01-2023 12:05",
 //    content: String = "Content",
     note: Note,
-    viewModel: MainScreenViewModel = hiltViewModel()
+    viewModel: MainScreenViewModel = hiltViewModel(),
+    onClick: ()-> Unit
 ) {
     Card(
         modifier = Modifier
             .padding(5.dp)
             .height(180.dp)
             .wrapContentHeight()
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .clickable { onClick.invoke() },
         shape = RoundedCornerShape(5.dp),
         border = BorderStroke(2.dp, color = MaterialTheme.colors.primary),
         elevation = 5.dp

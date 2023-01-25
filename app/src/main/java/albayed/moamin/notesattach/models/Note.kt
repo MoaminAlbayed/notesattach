@@ -10,7 +10,7 @@ import java.util.*
 data class Note(
     @PrimaryKey
     val id: UUID = UUID.randomUUID(),
-    val title: String,
+    var title: String,
     val date: Date = Date.from(Instant.now()),
-    val content: String
+    var content: String
 )
