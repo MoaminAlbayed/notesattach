@@ -91,6 +91,7 @@ dependencies {
     // ViewModel utilities for Compose
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycle_version"
 
+
     //extended icons
     //implementation "androidx.compose.material:material-icons-extended:$compose_ui_version"
 

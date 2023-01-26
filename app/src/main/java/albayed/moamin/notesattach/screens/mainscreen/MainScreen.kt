@@ -19,6 +19,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.produceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -69,9 +70,6 @@ fun MainScreen(navController: NavController, viewModel: MainScreenViewModel = hi
 //)
 @Composable
 fun NoteCard(
-//    title: String = "Title",
-//    dateTate: String = "01-01-2023 12:05",
-//    content: String = "Content",
     note: Note,
     viewModel: MainScreenViewModel = hiltViewModel(),
     onClick: ()-> Unit
