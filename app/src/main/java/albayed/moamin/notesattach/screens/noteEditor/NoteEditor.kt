@@ -37,8 +37,8 @@ fun NoteEditor(
     noteId: String?,
     viewModel: NoteEditorViewModel = hiltViewModel()
 ) {
-    val titleFontSize = 21.sp
-    val contentFontSize = 19.sp
+    val titleFontSize = 18.sp
+    val contentFontSize = 16.sp
 
     val keyboardController = LocalSoftwareKeyboardController.current
 
@@ -59,7 +59,7 @@ fun NoteEditor(
     }
 
 
-    fun BackToMainScreen(){
+    fun BackToMainScreen() {
         if (isNewNote) {
             if (title.isEmpty() && content.isEmpty()) {
                 navController.popBackStack()
@@ -82,7 +82,7 @@ fun NoteEditor(
     Scaffold(
         topBar = {
             TopBar(screen = Screens.NoteEditor, navController = navController) {
-               BackToMainScreen()
+                BackToMainScreen()
             }
         }
     ) {
@@ -111,7 +111,13 @@ fun NoteEditor(
                         //disabledIndicatorColor = Color.Transparent
                     )
                 )
-                Divider(modifier = Modifier.fillMaxWidth().align(Alignment.CenterHorizontally), thickness = 1.dp, color = Color.Black)
+                Divider(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.CenterHorizontally),
+                    thickness = 1.dp,
+                    color = Color.Black
+                )
 
                 TextField(
                     modifier = Modifier.fillMaxSize(),

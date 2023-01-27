@@ -122,14 +122,15 @@ fun NoteCard(
                 Text(
                     modifier = Modifier.padding(start = 5.dp, top = 5.dp),
                     text = note.title,
-                    style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 20.sp),
-                    overflow = TextOverflow.Ellipsis
+                    style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 18.sp),
+                    overflow = TextOverflow.Ellipsis,
+                    maxLines = 1
                 )
                 Text(
                     modifier = Modifier.padding(start = 5.dp, bottom = 2.dp),
                     //text = "Created: ${dateFormatter(Date.from(Instant.now()).time)}",
                     text = "Created: ${dateFormatter(note.date.time)}",
-                    style = TextStyle(fontWeight = FontWeight.Thin, fontSize = 13.sp)
+                    style = TextStyle(fontWeight = FontWeight.Thin, fontSize = 14.sp)
                 )
                 Divider(
                     modifier = Modifier
@@ -140,7 +141,7 @@ fun NoteCard(
                 Text(
                     modifier = Modifier.padding(5.dp),
                     text = note.content,
-                    fontSize = 17.sp,
+                    fontSize = 16.sp,
                     overflow = TextOverflow.Ellipsis
                 )
             }
