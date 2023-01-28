@@ -67,7 +67,7 @@ fun FloatingButton(screen: Screens, navController: NavController) = when (screen
         }
 
   //  }
-    Screens.NoteEditor -> {
+    else -> {
         //TODO
     }
 }

@@ -9,7 +9,6 @@ import albayed.moamin.notesattach.navigation.Screens
 import albayed.moamin.notesattach.screens.mainscreen.MainScreenViewModel
 import albayed.moamin.notesattach.utils.dateFormatter
 import android.annotation.SuppressLint
-import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -19,23 +18,16 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.produceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.navigation.NavHostController
-import dagger.hilt.android.lifecycle.HiltViewModel
-import java.time.Instant
 import java.util.*
 
 
@@ -53,9 +45,9 @@ fun MainScreen(navController: NavController, viewModel: MainScreenViewModel = hi
         }
     ) {
         LazyColumn(modifier = Modifier.fillMaxSize()) {
-            items(notesList.asReversed()) {
-                NoteCard(it){
-                    navController.navigate(Screens.NoteEditor.name+"/${false}/${it.id}")
+            items(notesList.asReversed()) {note ->
+                NoteCard(note, navController = navController){
+                    navController.navigate(Screens.NoteEditor.name+"/${false}/${note.id}")
                 }
             }
         }
@@ -72,6 +64,7 @@ fun MainScreen(navController: NavController, viewModel: MainScreenViewModel = hi
 fun NoteCard(
     note: Note,
     viewModel: MainScreenViewModel = hiltViewModel(),
+    navController: NavController,
     onClick: ()-> Unit
 ) {
     Card(
@@ -96,7 +89,7 @@ fun NoteCard(
                     icon = R.drawable.photo,
                     contentDescription = "Photo Button",
                     tint = MaterialTheme.colors.primary
-                )
+                ){navController.navigate(Screens.ImagesScreen.name + "/${note.id}")}
                 AttachmentIcon(
                     icon = R.drawable.video,
                     contentDescription = "Video Button",

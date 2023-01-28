@@ -8,11 +8,19 @@ import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavController
+import albayed.moamin.notesattach.R
 
 
 @Composable
-fun TopBar(screen: Screens, navController: NavController, onClick: () -> Unit = {}) {
+fun TopBar(
+    screen: Screens,
+    navController: NavController,
+    firstAction: () -> Unit = {},
+    secondAction: () -> Unit = {},
+    onClick: () -> Unit = {}
+) {
     when (screen) {
         Screens.MainScreen -> {
             TopAppBar(title = {
@@ -21,26 +29,63 @@ fun TopBar(screen: Screens, navController: NavController, onClick: () -> Unit = 
                 backgroundColor = Color.Black,
                 actions = {
                     IconButton(onClick = { /*TODO*/ }) {
-                        Icon(imageVector = Icons.Default.Search, contentDescription = "Search Button")
+                        Icon(
+                            imageVector = Icons.Default.Search,
+                            contentDescription = "Search Button"
+                        )
                     }
                     IconButton(onClick = { /*TODO*/ }) {
-                        Icon(imageVector = Icons.Default.MoreVert, contentDescription = "More Options")
+                        Icon(
+                            imageVector = Icons.Default.MoreVert,
+                            contentDescription = "More Options"
+                        )
                     }
                 }
             )
         }
-        Screens.NoteEditor ->{
-            TopAppBar(title ={
+        Screens.NoteEditor -> {
+            TopAppBar(title = {
                 Text(text = "Note Editor")
             },
                 navigationIcon = {
-                    IconButton(onClick = { onClick.invoke()}) {
-                        Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back Button")
+                    IconButton(onClick = { onClick.invoke() }) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = "Back Button"
+                        )
                     }
                 }
             )
         }
-        //else -> {}
+        Screens.ImagesScreen -> {
+            TopAppBar(title = {
+                Text(text = "Image Viewer")
+            },
+                navigationIcon = {
+                    IconButton(onClick = { onClick.invoke() }) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = "Back Button"
+                        )
+                    }
+                },
+                actions = {
+                    IconButton(onClick = { firstAction.invoke() }) {
+                        Icon(
+                            painterResource(id = R.drawable.gallery),
+                            contentDescription = "Open Gallery Button"
+                        )
+                    }
+                    IconButton(onClick = { secondAction.invoke() }) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.camera),
+                            contentDescription = "Open Camera Button"
+                        )
+                    }
+                }
+            )
+        }
+        else -> {}
     }
 
 }

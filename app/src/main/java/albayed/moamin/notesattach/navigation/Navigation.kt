@@ -1,6 +1,7 @@
 package albayed.moamin.notesattach.navigation
 
 import albayed.moamin.notesattach.screens.MainScreen
+import albayed.moamin.notesattach.screens.images.ImagesScreen
 import albayed.moamin.notesattach.screens.noteEditor.NoteEditor
 import android.icu.text.MessagePattern.ArgType
 import android.util.Log
@@ -40,6 +41,16 @@ fun Navigation() {
                 NoteEditor(navController = navController, isNewNote = isNewNote, noteId = noteId)
             }
 
+        }
+        composable(route = Screens.ImagesScreen.name + "/{noteId}",
+            arguments = listOf(
+                navArgument(name = "noteId") {
+                    type = NavType.StringType
+                }
+            )
+        ) { navBackStack ->
+            val noteId = navBackStack.arguments?.getString("noteId")
+            ImagesScreen(navController = navController, noteId = noteId.toString())
         }
     }
 }
