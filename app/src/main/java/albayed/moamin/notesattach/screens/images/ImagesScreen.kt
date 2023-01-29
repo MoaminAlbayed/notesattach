@@ -112,7 +112,7 @@ fun ImagesScreen(
     var imageUri by remember {
         mutableStateOf<Uri?>(null)
     }
-    val uri = ImagesFileProvider.getImageUri(context)
+    var uri: Uri? = null
     val imagePicker = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent(),
         onResult = { uri ->
@@ -127,13 +127,16 @@ fun ImagesScreen(
             imageUri = uri
         }
     )
-    Log.d("imageUri", "ImagesScreen: $imageUri")
+    //Log.d("imageUri", "ImagesScreen: $imageUri")
     Scaffold(topBar = {
         TopBar(
             screen = Screens.ImagesScreen,
             navController = navController,
-            firstAction = {imagePicker.launch("image/*")},
-            secondAction = {cameraLauncher.launch(uri)}
+            firstAction = { imagePicker.launch("image/*") },
+            secondAction = {
+                uri = ImagesFileProvider.getImageUri(context)
+                cameraLauncher.launch(uri)
+            }
         ) { navController.popBackStack() } /*TODO check if this updates images counter in the note card on main screen*/
     }) {
 
