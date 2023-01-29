@@ -14,7 +14,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class ImagesScreenViewModel  @Inject constructor(private val noteRepository: NoteRepository, private val state: SavedStateHandle): ViewModel() {
+class ImagesScreenViewModel  @Inject constructor(private val noteRepository: NoteRepository, private val state: SavedStateHandle): ViewModel() {//SavedStateHandle allows reading navigation arguments
     private val _images = MutableStateFlow<List<Image>>(emptyList())
     val images = _images.asStateFlow()
 

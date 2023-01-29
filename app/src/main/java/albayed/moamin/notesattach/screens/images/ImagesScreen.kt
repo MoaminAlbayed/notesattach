@@ -3,30 +3,30 @@ package albayed.moamin.notesattach.screens.images
 import albayed.moamin.notesattach.components.TopBar
 import albayed.moamin.notesattach.models.Image
 import albayed.moamin.notesattach.navigation.Screens
+import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.util.Log
-import android.util.Size
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Button
 import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.core.app.ActivityCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
-import coil.compose.rememberAsyncImagePainter
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
+import com.bumptech.glide.integration.compose.GlideImage
 import java.util.*
 
 
+@OptIn(ExperimentalGlideComposeApi::class)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun ImagesScreen(
@@ -34,9 +34,8 @@ fun ImagesScreen(
     noteId: String,
     viewModel: ImagesScreenViewModel = hiltViewModel()
 ) {
-
-    val imagesList = viewModel.images.collectAsState().value
     val context = LocalContext.current
+    val imagesList = viewModel.images.collectAsState().value
     var hasImage by remember {
         mutableStateOf(false)
     }
@@ -50,7 +49,9 @@ fun ImagesScreen(
         onResult = { uri ->
             hasImage = uri != null
             imageUri = uri
-            viewModel.createImage(Image(noteId = UUID.fromString(noteId), uri = imageUri!!))
+            if (imageUri != null) {
+                viewModel.createImage(Image(noteId = UUID.fromString(noteId), uri = imageUri!!))
+            }
             navController.navigate(Screens.ImagesScreen.name + "/${noteId}")
         }
     )
@@ -60,7 +61,9 @@ fun ImagesScreen(
         onResult = { success ->
             hasImage = success
             imageUri = uri
-            viewModel.createImage(Image(noteId = UUID.fromString(noteId), uri = imageUri!!))
+            if (imageUri != null) {
+                viewModel.createImage(Image(noteId = UUID.fromString(noteId), uri = imageUri!!))
+            }
             navController.navigate(Screens.ImagesScreen.name + "/${noteId}")
         }
     )
@@ -83,18 +86,23 @@ fun ImagesScreen(
             //  if (hasImage && imageUri != null) {
             if (imagesList.isNotEmpty()) {
                 imagesList.forEach {
-                    AsyncImage(
-                        //model = imageUri,
+                    Log.d("uri", "ImagesScreen: ${it.uri}")
+                    GlideImage(
                         model = it.uri,
                         modifier = Modifier.size(100.dp),
-                        contentDescription = "Selected image",
+                        contentDescription = null
                     )
+//                    AsyncImage(//Coil is having trouble opening Uris of images from gallery
+//                        //model = imageUri,
+//                        model = it.uri,
+//                        modifier = Modifier.size(100.dp),
+//                        contentDescription = "Selected image",
+//                    )
                 }
 
 
             }
         }
-
 
 
     }
@@ -112,7 +120,6 @@ fun ImagesScreen(
 //                contentDescription = "Selected image",
 //            )
 //        }
-
 
 
 //    val context = LocalContext.current
