@@ -27,6 +27,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.NavController
 import java.util.*
 
@@ -89,7 +90,10 @@ fun NoteCard(
                     icon = R.drawable.photo,
                     contentDescription = "Photo Button",
                     tint = MaterialTheme.colors.primary
-                ){navController.navigate(Screens.ImagesScreen.name + "/${note.id}")}
+                ){
+                   // SavedStateHandle.
+                    navController.navigate(Screens.ImagesScreen.name + "/${note.id}")
+                }
                 AttachmentIcon(
                     icon = R.drawable.video,
                     contentDescription = "Video Button",

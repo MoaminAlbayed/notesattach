@@ -17,7 +17,7 @@ class NoteRepository @Inject constructor(private val noteDatabaseDao: NoteDataba
     suspend fun updateNote(note: Note) = noteDatabaseDao.updateNote(note)
     suspend fun deleteNote(note: Note) = noteDatabaseDao.deleteNote(note)
 
-    fun getAllImages() : Flow<List<Image>> = noteDatabaseDao.getAllImages().flowOn(Dispatchers.IO).conflate()
+    fun getAllImagesByNoteId(noteId: String) : Flow<List<Image>> = noteDatabaseDao.getAllImagesByNoteId(noteId).flowOn(Dispatchers.IO).conflate()
     suspend fun createImage(image: Image) = noteDatabaseDao.createImage(image)
     suspend fun deleteImage(image: Image) = noteDatabaseDao.deleteImage(image)
 

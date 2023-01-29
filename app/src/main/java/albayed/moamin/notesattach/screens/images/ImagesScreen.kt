@@ -24,6 +24,7 @@ import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import java.util.*
 
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
@@ -33,7 +34,87 @@ fun ImagesScreen(
     noteId: String,
     viewModel: ImagesScreenViewModel = hiltViewModel()
 ) {
+
     val imagesList = viewModel.images.collectAsState().value
+    val context = LocalContext.current
+    var hasImage by remember {
+        mutableStateOf(false)
+    }
+    var imageUri by remember {
+        mutableStateOf<Uri?>(null)
+    }
+    var uri: Uri? = null
+
+    val imagePicker = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent(),
+        onResult = { uri ->
+            hasImage = uri != null
+            imageUri = uri
+            viewModel.createImage(Image(noteId = UUID.fromString(noteId), uri = imageUri!!))
+            navController.navigate(Screens.ImagesScreen.name + "/${noteId}")
+        }
+    )
+
+    val cameraLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.TakePicture(),
+        onResult = { success ->
+            hasImage = success
+            imageUri = uri
+            viewModel.createImage(Image(noteId = UUID.fromString(noteId), uri = imageUri!!))
+            navController.navigate(Screens.ImagesScreen.name + "/${noteId}")
+        }
+    )
+
+    Scaffold(topBar = {
+        TopBar(
+            screen = Screens.ImagesScreen,
+            navController = navController,
+            firstAction = {
+                imagePicker.launch("image/*")
+            },
+            secondAction = {
+                uri = ImagesFileProvider.getImageUri(context)
+                cameraLauncher.launch(uri)
+            }
+        ) { navController.navigate(Screens.MainScreen.name) } /*TODO check if this updates images counter in the note card on main screen*/
+    }) {
+
+        Column() {
+            //  if (hasImage && imageUri != null) {
+            if (imagesList.isNotEmpty()) {
+                imagesList.forEach {
+                    AsyncImage(
+                        //model = imageUri,
+                        model = it.uri,
+                        modifier = Modifier.size(100.dp),
+                        contentDescription = "Selected image",
+                    )
+                }
+
+
+            }
+        }
+
+
+
+    }
+}
+
+
+//        imagePicker.launch("image/*")
+
+
+//
+//        if (hasImage.value && imageUri.value != null) {
+//            AsyncImage(
+//                model = imageUri.value,
+//                modifier = Modifier.fillMaxWidth(),
+//                contentDescription = "Selected image",
+//            )
+//        }
+
+
+
 //    val context = LocalContext.current
 //
 //        var hasImage by remember {
@@ -104,69 +185,3 @@ fun ImagesScreen(
 //        }
 //    }
 //
-
-
-    val context = LocalContext.current
-    var hasImage by remember {
-        mutableStateOf(false)
-    }
-    var imageUri by remember {
-        mutableStateOf<Uri?>(null)
-    }
-    var uri: Uri? = null
-    val imagePicker = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetContent(),
-        onResult = { uri ->
-            hasImage = uri != null
-            imageUri = uri
-            viewModel.createImage(Image(noteId = noteId, uri = imageUri))
-        }
-    )
-    val cameraLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.TakePicture(),
-        onResult = { success ->
-            hasImage = success
-            imageUri = uri
-        }
-    )
-    //Log.d("imageUri", "ImagesScreen: $imageUri")
-    Scaffold(topBar = {
-        TopBar(
-            screen = Screens.ImagesScreen,
-            navController = navController,
-            firstAction = {
-                imagePicker.launch("image/*")
-                          },
-            secondAction = {
-                uri = ImagesFileProvider.getImageUri(context)
-                cameraLauncher.launch(uri)
-            }
-        ) { navController.popBackStack() } /*TODO check if this updates images counter in the note card on main screen*/
-    }) {
-
-        Column() {
-            if (hasImage && imageUri != null) {
-                AsyncImage(
-                    //model = imageUri,
-                    model = imagesList[0].uri,
-                    modifier = Modifier.size(100.dp),
-                    contentDescription = "Selected image",
-                )
-            }
-        }
-
-
-//        imagePicker.launch("image/*")
-
-
-//
-//        if (hasImage.value && imageUri.value != null) {
-//            AsyncImage(
-//                model = imageUri.value,
-//                modifier = Modifier.fillMaxWidth(),
-//                contentDescription = "Selected image",
-//            )
-//        }
-
-    }
-}

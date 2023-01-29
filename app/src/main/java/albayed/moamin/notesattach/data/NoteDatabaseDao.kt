@@ -23,8 +23,8 @@ interface NoteDatabaseDao {
     @Delete
     suspend fun deleteNote(note: Note)
 
-    @Query ("SELECT * from images_table")
-    fun getAllImages(): Flow<List<Image>>
+    @Query ("SELECT * from images_table where noteId=:noteId")
+    fun getAllImagesByNoteId(noteId: String): Flow<List<Image>>
 
     @Insert
     suspend fun createImage(image: Image)

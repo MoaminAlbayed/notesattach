@@ -29,5 +29,5 @@ class MainScreenViewModel @Inject constructor(private val noteRepository: NoteRe
     }
 
 
-    fun deleteNote(note: Note) = viewModelScope.launch { noteRepository.deleteNote(note) }
+    fun deleteNote(note: Note) = viewModelScope.launch { noteRepository.deleteNote(note) }//TODO loop through all attachments to delete
 }
