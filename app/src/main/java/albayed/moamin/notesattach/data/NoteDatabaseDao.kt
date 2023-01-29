@@ -1,5 +1,6 @@
 package albayed.moamin.notesattach.data
 
+import albayed.moamin.notesattach.models.Image
 import albayed.moamin.notesattach.models.Note
 import androidx.compose.runtime.MutableState
 import androidx.room.*
@@ -21,4 +22,13 @@ interface NoteDatabaseDao {
 
     @Delete
     suspend fun deleteNote(note: Note)
+
+    @Query ("SELECT * from images_table")
+    fun getAllImages(): Flow<List<Image>>
+
+    @Insert
+    suspend fun createImage(image: Image)
+
+    @Delete
+    suspend fun deleteImage(image: Image)
 }

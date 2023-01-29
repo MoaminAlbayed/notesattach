@@ -1,6 +1,7 @@
 package albayed.moamin.notesattach.screens.images
 
 import albayed.moamin.notesattach.components.TopBar
+import albayed.moamin.notesattach.models.Image
 import albayed.moamin.notesattach.navigation.Screens
 import android.annotation.SuppressLint
 import android.net.Uri
@@ -8,7 +9,6 @@ import android.util.Log
 import android.util.Size
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
 import androidx.compose.material.Scaffold
@@ -33,6 +33,7 @@ fun ImagesScreen(
     noteId: String,
     viewModel: ImagesScreenViewModel = hiltViewModel()
 ) {
+    val imagesList = viewModel.images.collectAsState().value
 //    val context = LocalContext.current
 //
 //        var hasImage by remember {
@@ -118,6 +119,7 @@ fun ImagesScreen(
         onResult = { uri ->
             hasImage = uri != null
             imageUri = uri
+            viewModel.createImage(Image(noteId = noteId, uri = imageUri))
         }
     )
     val cameraLauncher = rememberLauncherForActivityResult(
@@ -132,7 +134,9 @@ fun ImagesScreen(
         TopBar(
             screen = Screens.ImagesScreen,
             navController = navController,
-            firstAction = { imagePicker.launch("image/*") },
+            firstAction = {
+                imagePicker.launch("image/*")
+                          },
             secondAction = {
                 uri = ImagesFileProvider.getImageUri(context)
                 cameraLauncher.launch(uri)
@@ -143,7 +147,8 @@ fun ImagesScreen(
         Column() {
             if (hasImage && imageUri != null) {
                 AsyncImage(
-                    model = imageUri,
+                    //model = imageUri,
+                    model = imagesList[0].uri,
                     modifier = Modifier.size(100.dp),
                     contentDescription = "Selected image",
                 )
