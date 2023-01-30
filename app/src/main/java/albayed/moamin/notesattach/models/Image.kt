@@ -12,21 +12,22 @@ data class Image(
     val imageId:UUID =UUID.randomUUID(),
     val noteId: UUID,
     val uri: Uri,
-    @ColumnInfo(typeAffinity = ColumnInfo.BLOB)
-    val thumbnail: ByteArray
-) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as Image
-
-        if (!thumbnail.contentEquals(other.thumbnail)) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        return thumbnail.contentHashCode()
-    }
-}
+//    @ColumnInfo(typeAffinity = ColumnInfo.BLOB)
+//    val thumbnail: ByteArray
+)
+//{
+//    override fun equals(other: Any?): Boolean {
+//        if (this === other) return true
+//        if (javaClass != other?.javaClass) return false
+//
+//        other as Image
+//
+//        if (!thumbnail.contentEquals(other.thumbnail)) return false
+//
+//        return true
+//    }
+//
+//    override fun hashCode(): Int {
+//        return thumbnail.contentHashCode()
+//    }
+//}

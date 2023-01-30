@@ -24,14 +24,14 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    private val requestPermissionLauncher =
-        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
-            if (!isGranted) {
-                Log.d("permission", "onCreate: permission denied")
-            } else {
-                Log.d("permission", "onCreate: permission granted")
-            }
-        }
+//    private val requestPermissionLauncher =
+//        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
+//            if (!isGranted) {
+//                Log.d("permission", "onCreate: permission denied")
+//            } else {
+//                Log.d("permission", "onCreate: permission granted")
+//            }
+//        }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -47,18 +47,18 @@ class MainActivity : ComponentActivity() {
                     //requestPermissions(LocalContext.current, this)
                     val context = LocalContext.current
 
-
-                    if (ContextCompat.checkSelfPermission(
-                            context,
-                            Manifest.permission.READ_EXTERNAL_STORAGE
-                        )
-                        == PackageManager.PERMISSION_GRANTED
-                    ) {
-                        Log.d("permission", "onCreate: permission available")
-                    } else {
-                        Log.d("permission", "onCreate: requesting")
-                        requestPermissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
-                    }
+//
+//                    if (ContextCompat.checkSelfPermission(
+//                            context,
+//                            Manifest.permission.READ_EXTERNAL_STORAGE
+//                        )
+//                        == PackageManager.PERMISSION_GRANTED
+//                    ) {
+//                        Log.d("permission", "onCreate: permission available")
+//                    } else {
+//                        Log.d("permission", "onCreate: requesting")
+//                        requestPermissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
+//                    }
                     Navigation()
                 }
             }
