@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-<!--    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>-->
+
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+<!--        android:maxSdkVersion="32"/>-->
 
     <application
         android:name=".NotesAttachApplication"
@@ -25,13 +28,13 @@
             </intent-filter>
         </activity>
         <provider
-            android:authorities="albayed.moamin.fileprovider"
             android:name=".screens.images.ImagesFileProvider"
+            android:authorities="albayed.moamin.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/paths"/>
+                android:resource="@xml/paths" />
         </provider>
 
     </application>

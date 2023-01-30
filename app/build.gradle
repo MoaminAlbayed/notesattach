@@ -11,7 +11,7 @@ android {
 
     defaultConfig {
         applicationId "albayed.moamin.notesattach"
-        minSdk 26
+        minSdk 30
         targetSdk 33
         versionCode 9
         versionName "2.0"

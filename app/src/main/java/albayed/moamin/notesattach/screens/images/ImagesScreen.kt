@@ -3,26 +3,30 @@ package albayed.moamin.notesattach.screens.images
 import albayed.moamin.notesattach.components.TopBar
 import albayed.moamin.notesattach.models.Image
 import albayed.moamin.notesattach.navigation.Screens
-import android.Manifest
 import android.annotation.SuppressLint
-import android.app.Activity
-import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.media.ThumbnailUtils
 import android.net.Uri
-import android.util.Log
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.core.app.ActivityCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
-import com.bumptech.glide.integration.compose.GlideImage
+import java.io.ByteArrayOutputStream
 import java.util.*
 
 
@@ -44,17 +48,33 @@ fun ImagesScreen(
     }
     var uri: Uri? = null
 
-    val imagePicker = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetContent(),
-        onResult = { uri ->
-            hasImage = uri != null
+//    val imagePicker = rememberLauncherForActivityResult(
+//        contract = ActivityResultContracts.GetContent(),
+//        onResult = { uri ->
+//            hasImage = uri != null
+//            imageUri = uri
+//            if (imageUri != null) {
+//                viewModel.createImage(Image(noteId = UUID.fromString(noteId), uri = imageUri!!))
+//            }
+//            navController.navigate(Screens.ImagesScreen.name + "/${noteId}")
+//        }
+//    )
+    val pickImage = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia()
+    ) { uri ->
+        if (uri != null) {
             imageUri = uri
-            if (imageUri != null) {
-                viewModel.createImage(Image(noteId = UUID.fromString(noteId), uri = imageUri!!))
-            }
-            navController.navigate(Screens.ImagesScreen.name + "/${noteId}")
+            val thumbImage = ThumbnailUtils.extractThumbnail(
+                BitmapFactory.decodeFile(imageUri.toString()),
+                128,
+                128
+            )
+            val thumbnailByteArray = BitmapToByteArray(thumbImage)
+            viewModel.createImage(Image(noteId = UUID.fromString(noteId), uri = imageUri!!, thumbnail = thumbnailByteArray))
+        } else {
+            Toast.makeText(context, " No Image Was Selected", Toast.LENGTH_LONG).show()
         }
-    )
+    }
 
     val cameraLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.TakePicture(),
@@ -62,7 +82,14 @@ fun ImagesScreen(
             hasImage = success
             imageUri = uri
             if (imageUri != null) {
-                viewModel.createImage(Image(noteId = UUID.fromString(noteId), uri = imageUri!!))
+                val thumbImage = ThumbnailUtils.extractThumbnail(
+                    BitmapFactory.decodeFile(imageUri!!.path),
+                    128,
+                    128
+                )
+                val thumbnailByteArray = BitmapToByteArray(thumbImage)
+                viewModel.createImage(Image(noteId = UUID.fromString(noteId), uri = imageUri!!, thumbnail = thumbnailByteArray))
+
             }
             navController.navigate(Screens.ImagesScreen.name + "/${noteId}")
         }
@@ -73,7 +100,7 @@ fun ImagesScreen(
             screen = Screens.ImagesScreen,
             navController = navController,
             firstAction = {
-                imagePicker.launch("image/*")
+                pickImage.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
             },
             secondAction = {
                 uri = ImagesFileProvider.getImageUri(context)
@@ -82,113 +109,39 @@ fun ImagesScreen(
         ) { navController.navigate(Screens.MainScreen.name) } /*TODO check if this updates images counter in the note card on main screen*/
     }) {
 
-        Column() {
-            //  if (hasImage && imageUri != null) {
-            if (imagesList.isNotEmpty()) {
-                imagesList.forEach {
-                    Log.d("uri", "ImagesScreen: ${it.uri}")
-                    GlideImage(
-                        model = it.uri,
-                        modifier = Modifier.size(100.dp),
+
+        LazyVerticalGrid(columns = GridCells.Adaptive(minSize = 128.dp)) {
+            items(imagesList) { image ->
+                Box(
+                    modifier = Modifier
+                        .aspectRatio(1f)
+                        .padding(3.dp)
+                ) {
+                    //GlideImage(
+                    AsyncImage(
+                        model = ByteArrayToBitmap(image.thumbnail),
+                        //model = image.uri,
+                        //modifier = Modifier.size(100.dp),
+                        contentScale = ContentScale.Crop,
                         contentDescription = null
                     )
-//                    AsyncImage(//Coil is having trouble opening Uris of images from gallery
-//                        //model = imageUri,
-//                        model = it.uri,
-//                        modifier = Modifier.size(100.dp),
-//                        contentDescription = "Selected image",
-//                    )
                 }
-
 
             }
         }
 
-
     }
 }
 
+fun BitmapToByteArray( image: Bitmap): ByteArray{
 
-//        imagePicker.launch("image/*")
+    val stream = ByteArrayOutputStream()
+    image.compress(Bitmap.CompressFormat.PNG, 90, stream)
+    return stream.toByteArray()
+}
 
-
-//
-//        if (hasImage.value && imageUri.value != null) {
-//            AsyncImage(
-//                model = imageUri.value,
-//                modifier = Modifier.fillMaxWidth(),
-//                contentDescription = "Selected image",
-//            )
-//        }
+fun ByteArrayToBitmap(data: ByteArray): Bitmap {
+    return BitmapFactory.decodeByteArray(data, 0, data.size)
+}
 
 
-//    val context = LocalContext.current
-//
-//        var hasImage by remember {
-//            mutableStateOf(false)
-//        }
-//        var imageUri by remember {
-//            mutableStateOf<Uri?>(null)
-//        }
-//    val uri = ImagesFileProvider.getImageUri(context)
-//
-//    Log.d("imageUri", "ImagesScreen: $imageUri")
-//
-//        val imagePicker = rememberLauncherForActivityResult(
-//            contract = ActivityResultContracts.GetContent(),
-//            onResult = { uri ->
-//                hasImage = uri != null
-//                imageUri = uri
-//            }
-//        )
-//
-//        val cameraLauncher = rememberLauncherForActivityResult(
-//            contract = ActivityResultContracts.TakePicture(),
-//            onResult = { success ->
-//                hasImage = success
-//                imageUri = uri
-//            }
-//        )
-//
-//
-//        Box(
-//
-//        ) {
-//            if (hasImage && imageUri != null) {
-//                AsyncImage(
-//                    model = imageUri,
-//                    modifier = Modifier.fillMaxWidth(),
-//                    contentDescription = "Selected image",
-//                )
-//            }
-//            Column(
-//                modifier = Modifier
-//                    .align(Alignment.BottomCenter)
-//                    .padding(bottom = 32.dp),
-//                horizontalAlignment = Alignment.CenterHorizontally,
-//            ) {
-//                Button(
-//                    onClick = {
-//                        imagePicker.launch("image/*")
-//                    },
-//                ) {
-//                    Text(
-//                        text = "Select Image"
-//                    )
-//                }
-//                Button(
-//                    modifier = Modifier.padding(top = 16.dp),
-//                    onClick = {
-//
-//                        cameraLauncher.launch(uri)
-//
-//                    },
-//                ) {
-//                    Text(
-//                        text = "Take photo"
-//                    )
-//                }
-//            }
-//        }
-//    }
-//
