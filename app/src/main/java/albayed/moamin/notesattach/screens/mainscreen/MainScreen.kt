@@ -35,7 +35,7 @@ import java.util.*
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun MainScreen(navController: NavController, viewModel: MainScreenViewModel = hiltViewModel()) {
-    var notesList = viewModel.notesList.collectAsState().value
+    val notesList = viewModel.notesList.collectAsState().value
     Scaffold(
         topBar = { TopBar(screen = Screens.MainScreen, navController = navController) },
         floatingActionButton = {

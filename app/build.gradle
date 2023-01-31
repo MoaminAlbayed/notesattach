@@ -11,7 +11,7 @@ android {
 
     defaultConfig {
         applicationId "albayed.moamin.notesattach"
-        minSdk 30
+        minSdk 26
         targetSdk 33
         versionCode 9
         versionName "2.0"
@@ -104,6 +104,9 @@ dependencies {
 
     //Glide
     implementation "com.github.bumptech.glide:compose:1.0.0-alpha.1"
+
+    //Accompanist for permissions
+    implementation "com.google.accompanist:accompanist-permissions:0.29.1-alpha"
 }
 
 kapt {
