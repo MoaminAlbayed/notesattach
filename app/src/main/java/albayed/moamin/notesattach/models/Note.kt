@@ -12,6 +12,12 @@ data class Note(
     val id: UUID = UUID.randomUUID(),
     var title: String,
     val date: Date = Date.from(Instant.now()),
-    var content: String
+    var content: String,
     //todo add counters for attachments
+    var imagesCount: Int = 0,
+    var videosCount: Int = 0,
+    var voiceClipsCount: Int = 0,
+    var locationsCount: Int = 0,
+    var alarmsCount: Int = 0,
+
 )

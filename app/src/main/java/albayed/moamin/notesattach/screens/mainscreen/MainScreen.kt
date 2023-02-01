@@ -9,6 +9,7 @@ import albayed.moamin.notesattach.navigation.Screens
 import albayed.moamin.notesattach.screens.mainscreen.MainScreenViewModel
 import albayed.moamin.notesattach.utils.dateFormatter
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -89,20 +90,22 @@ fun NoteCard(
                 AttachmentIcon(
                     icon = R.drawable.photo,
                     contentDescription = "Photo Button",
-                    tint = MaterialTheme.colors.primary
+                    tint = MaterialTheme.colors.primary,
+                    count = note.imagesCount
                 ){
-                   // SavedStateHandle.
                     navController.navigate(Screens.ImagesScreen.name + "/${note.id}")
                 }
                 AttachmentIcon(
                     icon = R.drawable.video,
                     contentDescription = "Video Button",
-                    tint = MaterialTheme.colors.primary
+                    tint = MaterialTheme.colors.primary,
+                    count = note.videosCount
                 )
                 AttachmentIcon(
                     icon = R.drawable.mic,
                     contentDescription = "Microphone Button",
-                    tint = MaterialTheme.colors.primary
+                    tint = MaterialTheme.colors.primary,
+                    count = note.voiceClipsCount
                 )
             }
 
@@ -159,12 +162,14 @@ fun NoteCard(
                 AttachmentIcon(
                     icon = R.drawable.location,
                     contentDescription = "Locations Button",
-                    tint = MaterialTheme.colors.primary
+                    tint = MaterialTheme.colors.primary,
+                    count = note.locationsCount
                 )
                 AttachmentIcon(
                     icon = R.drawable.alarm,
                     contentDescription = "Alarms Button",
-                    tint = MaterialTheme.colors.primary
+                    tint = MaterialTheme.colors.primary,
+                    count = note.alarmsCount
                 )
                 AttachmentIcon(
                     icon = R.drawable.delete,

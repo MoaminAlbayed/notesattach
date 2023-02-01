@@ -18,14 +18,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 
-@Preview
+
 @Composable
 fun AttachmentIcon(
     modifier: Modifier = Modifier,
     @DrawableRes icon: Int = R.drawable.photo,
     contentDescription: String = "",
     tint: Color = Color.Unspecified,
-    count: Int = 1,
+    count: Int = 0,
     isDelete: Boolean = false,
     onClick: () -> Unit = {}
 ) {

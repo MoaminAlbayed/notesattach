@@ -11,6 +11,9 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.util.Log
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.OnBackPressedDispatcher
+import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -50,6 +53,7 @@ fun ImagesScreen(//right now using GlideImage with old GetContent() for getting 
 ) {
     val context = LocalContext.current
     val imagesList = viewModel.images.collectAsState().value
+    val imagesCount = viewModel.imagesCount.collectAsState().value
     var hasImage by remember {
         mutableStateOf(false)
     }
@@ -83,6 +87,7 @@ fun ImagesScreen(//right now using GlideImage with old GetContent() for getting 
         if (uri != null) {
             imageUri = uri
             viewModel.createImage(Image(noteId = UUID.fromString(noteId), uri = imageUri!!))
+            viewModel.updateImagesCount(imagesCount = imagesCount + 1, noteId = noteId)
         } else {
             Toast.makeText(context, " No Image Was Selected", Toast.LENGTH_LONG).show()
         }
@@ -94,6 +99,7 @@ fun ImagesScreen(//right now using GlideImage with old GetContent() for getting 
             hasImage = uri != null
             imageUri = uri
             viewModel.createImage(Image(noteId = UUID.fromString(noteId), uri = imageUri!!))
+            viewModel.updateImagesCount(imagesCount = imagesCount + 1, noteId = noteId)
         }
     )
 
@@ -104,6 +110,7 @@ fun ImagesScreen(//right now using GlideImage with old GetContent() for getting 
             imageUri = uri
             if (imageUri != null) {
                 viewModel.createImage(Image(noteId = UUID.fromString(noteId), uri = imageUri!!))
+                viewModel.updateImagesCount(imagesCount = imagesCount + 1, noteId = noteId)
 
             }
         }
@@ -129,7 +136,7 @@ fun ImagesScreen(//right now using GlideImage with old GetContent() for getting 
             thirdAction = {
                 if (!isDeleteMode.value) {
                     isDeleteMode.value = true
-                } else if (isDeleteMode.value) {
+                } else {
                     if (imagesToDelete.isNotEmpty()) {
                         isOpenDeleteDialog.value = true
                     } else {
@@ -148,7 +155,6 @@ fun ImagesScreen(//right now using GlideImage with old GetContent() for getting 
             }
         } /*TODO check if this updates images counter in the note card on main screen*/
     }) {
-
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             LazyVerticalGrid(
                 modifier = Modifier.fillMaxSize(),
@@ -168,7 +174,6 @@ fun ImagesScreen(//right now using GlideImage with old GetContent() for getting 
                         } else {
                             checkedDelete.value = !checkedDelete.value
                             imagesToDelete.add(image)
-                            Log.d("images", "ImagesScreen: ${imagesToDelete.size}")
                         }
                     }
                 }
@@ -182,9 +187,14 @@ fun ImagesScreen(//right now using GlideImage with old GetContent() for getting 
         AlertDialog(onDismissRequest = { isOpenDeleteDialog.value = false },
             buttons = {
                 TextButton(onClick = {
-                    imagesToDelete.forEach { image -> viewModel.deleteImage(image) }
+                    imagesToDelete.forEach { image ->
+                        viewModel.deleteImage(image)
+                    }
+                    viewModel.updateImagesCount(
+                        imagesCount = imagesCount - imagesToDelete.size,
+                        noteId = noteId
+                    )
                     imagesToDelete.clear()
-                    Log.d("size", "ImagesScreen: ${imagesToDelete.size}")
                     isOpenDeleteDialog.value = false
                     isDeleteMode.value = false
                 }) {

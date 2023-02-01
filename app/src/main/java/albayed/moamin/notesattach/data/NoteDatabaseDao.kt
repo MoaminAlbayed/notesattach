@@ -5,6 +5,7 @@ import albayed.moamin.notesattach.models.Note
 import androidx.compose.runtime.MutableState
 import androidx.room.*
 import kotlinx.coroutines.flow.Flow
+import org.intellij.lang.annotations.Language
 
 @Dao
 interface NoteDatabaseDao {
@@ -31,4 +32,36 @@ interface NoteDatabaseDao {
 
     @Delete
     suspend fun deleteImage(image: Image)
+
+    @Query("UPDATE notes_table SET imagesCount=:imagesCount WHERE id=:noteId")
+    suspend fun updateImagesCount (imagesCount: Int, noteId: String)
+
+    @Query("UPDATE notes_table SET videosCount=:videosCount WHERE id=:noteId")
+    suspend fun updateVideosCount (videosCount: Int, noteId: String)
+
+    @Query("UPDATE notes_table SET voiceClipsCount=:voiceClipsCount WHERE id=:noteId")
+    suspend fun updateVoiceClipsCount (voiceClipsCount: Int, noteId: String)
+
+    @Query("UPDATE notes_table SET locationsCount=:locationsCount WHERE id=:noteId")
+    suspend fun updateLocationsCount (locationsCount: Int, noteId: String)
+
+    @Query("UPDATE notes_table SET alarmsCount=:alarmsCount WHERE id=:noteId")
+    suspend fun updateAlarmsCount (alarmsCount: Int, noteId: String)
+
+    @Query ("SELECT imagesCount from notes_table where id=:noteId")
+    fun getImagesCount (noteId: String): Flow<Int>
+
+    @Query ("SELECT videosCount from notes_table where id=:noteId")
+    fun getVideosCount (noteId: String): Flow<Int>
+
+    @Query ("SELECT voiceClipsCount from notes_table where id=:noteId")
+    fun getVoiceClipsCount (noteId: String): Flow<Int>
+
+    @Query ("SELECT locationsCount from notes_table where id=:noteId")
+    fun getLocationsCount(noteId: String): Flow<Int>
+
+    @Query ("SELECT alarmsCount from notes_table where id=:noteId")
+    fun getAlarmsCount(noteId: String): Flow<Int>
+
+
 }

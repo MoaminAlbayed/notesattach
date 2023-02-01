@@ -21,4 +21,23 @@ class NoteRepository @Inject constructor(private val noteDatabaseDao: NoteDataba
     suspend fun createImage(image: Image) = noteDatabaseDao.createImage(image)
     suspend fun deleteImage(image: Image) = noteDatabaseDao.deleteImage(image)
 
+
+    suspend fun updateImagesCount(imagesCount: Int, noteId: String) =
+        noteDatabaseDao.updateImagesCount(imagesCount, noteId)
+    suspend fun updateVideosCount(videosCount: Int, noteId: String) =
+        noteDatabaseDao.updateVideosCount(videosCount, noteId)
+    suspend fun updateVoiceClipsCount(voiceClipsCount: Int, noteId: String) =
+        noteDatabaseDao.updateVoiceClipsCount(voiceClipsCount, noteId)
+    suspend fun updateLocationsCount(locationsCount: Int, noteId: String) =
+        noteDatabaseDao.updateLocationsCount(locationsCount, noteId)
+    suspend fun updateAlarmsCount(alarmsCount: Int, noteId: String) =
+        noteDatabaseDao.updateAlarmsCount(alarmsCount, noteId)
+
+    suspend fun getImagesCount (noteId: String) = noteDatabaseDao.getImagesCount(noteId)
+    suspend fun getVideosCount (noteId: String) = noteDatabaseDao.getVideosCount(noteId)
+    suspend fun getVoiceClipsCount (noteId: String) = noteDatabaseDao.getVoiceClipsCount(noteId)
+    suspend fun getLocationsCount (noteId: String) = noteDatabaseDao.getLocationsCount(noteId)
+    suspend fun getAlarmsCount (noteId: String) = noteDatabaseDao.getAlarmsCount(noteId)
+
+
 }
