@@ -19,6 +19,7 @@ fun TopBar(
     navController: NavController,
     firstAction: () -> Unit = {},
     secondAction: () -> Unit = {},
+    thirdAction: ()-> Unit ={},
     onClick: () -> Unit = {}
 ) {
     when (screen) {
@@ -80,6 +81,12 @@ fun TopBar(
                         Icon(
                             painter = painterResource(id = R.drawable.camera),
                             contentDescription = "Open Camera Button"
+                        )
+                    }
+                    IconButton(onClick = { thirdAction.invoke() }) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.trash),
+                            contentDescription = "Delete Button"
                         )
                     }
                 }

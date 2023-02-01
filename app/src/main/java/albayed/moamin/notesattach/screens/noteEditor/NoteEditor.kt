@@ -66,13 +66,15 @@ fun NoteEditor(
                 note.title = title
                 note.content = content
                 viewModel.createNote(note)
-                navController.navigate(Screens.MainScreen.name)
+                //navController.navigate(Screens.MainScreen.name)
+                navController.popBackStack()
             }
         } else {
             note.title = title
             note.content = content
             viewModel.updateNote(note)
-            navController.navigate(Screens.MainScreen.name)
+            //navController.navigate(Screens.MainScreen.name)
+            navController.popBackStack()
         }
     }
     BackPressHandler() {

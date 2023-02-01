@@ -35,7 +35,6 @@ fun AttachmentIcon(
         IconButton(modifier = modifier
             .scale(2f),
 //            .constrainAs(iconButton) {
-//
 //            },
             onClick = { onClick.invoke() }
         ) {
@@ -72,41 +71,3 @@ fun Counter(modifier: Modifier = Modifier, count: Int) {
     }
 }
 
-//@Preview
-//@Composable
-//fun AttachmentIcon(
-//    modifier: Modifier = Modifier,
-//    @DrawableRes icon: Int = R.drawable.photo,
-//    contentDescription: String = "",
-//    tint: Color = Color.Unspecified,
-//    count: Int = 0,
-//    isDelete: Boolean = false,
-//    onClick: () -> Unit = {}
-//) {
-//    Surface(modifier = Modifier.padding(5.dp)) {
-//        IconButton(modifier = modifier
-//            .scale(2f),
-//            onClick = { onClick.invoke() }
-//        ) {
-//            Icon(
-//                painter = painterResource(id = icon),
-//                tint = tint,
-//                contentDescription = contentDescription
-//            )
-//        }
-//        if (!isDelete) {
-//                Counter(count = count)
-//        }
-//    }
-//}
-//
-//@Composable
-//fun Counter(count: Int) {
-//    Row(verticalAlignment = Alignment.Bottom, horizontalArrangement = Arrangement.End) {
-//        Surface(shape = CircleShape, color = Color.Black, contentColor = Color.White) {
-//            val countString = if (count < 10) count.toString() else "+9"
-//            Text(text = " $countString ")
-//        }
-//
-//    }
-//}

@@ -13,4 +13,5 @@ data class Note(
     var title: String,
     val date: Date = Date.from(Instant.now()),
     var content: String
+    //todo add counters for attachments
 )

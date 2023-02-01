@@ -1,5 +1,7 @@
 package albayed.moamin.notesattach.screens.images
 
+import albayed.moamin.notesattach.components.ImageElement
+import albayed.moamin.notesattach.components.ImageViewer
 import albayed.moamin.notesattach.components.TopBar
 import albayed.moamin.notesattach.models.Image
 import albayed.moamin.notesattach.navigation.Screens
@@ -19,9 +21,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Surface
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -49,23 +49,6 @@ fun ImagesScreen(//right now using GlideImage with old GetContent() for getting 
     viewModel: ImagesScreenViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
-
-
-//    val requestPermissionLauncher =
-//        rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
-//            if (!isGranted) {
-//                Log.d("permission", "ImageScreen perm: permission denied")
-//            } else {
-//                Log.d("permission", "ImageScreen perm: permission granted")
-//                //viewModel.createImage(Image(noteId = UUID.fromString(noteId), uri = imageUri!!))
-//            }
-//        }
-
-
-
-
-
-
     val imagesList = viewModel.images.collectAsState().value
     var hasImage by remember {
         mutableStateOf(false)
@@ -74,12 +57,24 @@ fun ImagesScreen(//right now using GlideImage with old GetContent() for getting 
         mutableStateOf<Uri?>(null)
     }
 
-    var isViewImage by remember {
+    val isViewImage = remember {
         mutableStateOf(false)
     }
-    var viewImageUri by remember {
+    val viewImageUri = remember {
         mutableStateOf<Uri?>(null)
     }
+    val isDeleteMode = remember {
+        mutableStateOf(false)
+    }
+
+    val imagesToDelete = remember {
+        mutableStateListOf<Image>()
+    }
+
+    val isOpenDeleteDialog = remember {
+        mutableStateOf(false)
+    }
+
     var uri: Uri? = null
 
     val pickImage = rememberLauncherForActivityResult(
@@ -119,8 +114,6 @@ fun ImagesScreen(//right now using GlideImage with old GetContent() for getting 
 
         }
 
-
-
     Scaffold(topBar = {
         TopBar(
             screen = Screens.ImagesScreen,
@@ -132,31 +125,29 @@ fun ImagesScreen(//right now using GlideImage with old GetContent() for getting 
             secondAction = {
                 uri = ImagesFileProvider.getImageUri(context)
                 cameraLauncher.launch(uri)
+            },
+            thirdAction = {
+                if (!isDeleteMode.value) {
+                    isDeleteMode.value = true
+                } else if (isDeleteMode.value) {
+                    if (imagesToDelete.isNotEmpty()) {
+                        isOpenDeleteDialog.value = true
+                    } else {
+                        isDeleteMode.value = false
+                    }
+                }
             }
         ) {
-            if (isViewImage) {
-                isViewImage = false
+            if (isViewImage.value) {
+                isViewImage.value = false
+            } else if (isDeleteMode.value) {
+                isDeleteMode.value = false
             } else {
-                navController.navigate(Screens.MainScreen.name)
+                //navController.navigate(Screens.MainScreen.name)
+                navController.popBackStack()
             }
-
         } /*TODO check if this updates images counter in the note card on main screen*/
     }) {
-
-//        if (ContextCompat.checkSelfPermission(
-//                context,
-//                Manifest.permission.READ_MEDIA_IMAGES
-//            )
-//            == PackageManager.PERMISSION_GRANTED
-//        ) {
-//            Log.d("permission", "ImageScreen: permission available")
-//            //viewModel.createImage(Image(noteId = UUID.fromString(noteId), uri = imageUri!!))
-//
-//        } else {
-//            Log.d("permission", "ImageScreen: requesting")
-//            requestPermissionLauncher.launch(Manifest.permission.READ_MEDIA_IMAGES)
-//        }
-
 
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             LazyVerticalGrid(
@@ -164,40 +155,52 @@ fun ImagesScreen(//right now using GlideImage with old GetContent() for getting 
                 columns = GridCells.Adaptive(minSize = 128.dp)
             ) {
                 items(imagesList) { image ->
-                    Box(
-                        modifier = Modifier
-                            .aspectRatio(1f)
-                            .padding(3.dp)
-                            //.clickable { imageViewer.launch(Intent(Intent.ACTION_VIEW).setData(image.uri)) }
-                            .clickable {
-                                isViewImage = true
-                                viewImageUri = image.uri
-                            }
-                    ) {
-                        GlideImage(//using Glide because Coil has trouble reading images from picker uri
-//                        AsyncImage(
-                            model = image.uri,
-                            contentScale = ContentScale.Crop,
-                            contentDescription = "Attached Image"
-                        )
+                    ImageElement(
+                        isViewImage = isViewImage,
+                        viewImageUri = viewImageUri,
+                        isDeleteMode = isDeleteMode,
+                        isNewDeleteProcess = (imagesToDelete.isEmpty()),
+                        image = image
+                    ) { checkedDelete ->
+                        if (checkedDelete.value) {
+                            checkedDelete.value = !checkedDelete.value
+                            imagesToDelete.remove(image)
+                        } else {
+                            checkedDelete.value = !checkedDelete.value
+                            imagesToDelete.add(image)
+                            Log.d("images", "ImagesScreen: ${imagesToDelete.size}")
+                        }
                     }
-
                 }
             }
-            if (isViewImage) {
-                Surface(
-                    modifier = Modifier.fillMaxSize(0.95f),
-                    //modifier = Modifier.wrapContentSize(),
-                    border = BorderStroke(width = 3.dp, color = MaterialTheme.colors.primary),
-                    shape = RoundedCornerShape(20.dp)
-                ) {
-                    GlideImage(model = viewImageUri, contentDescription = "Enlarged Image")
-//                    AsyncImage(model = viewImageUri, contentDescription = "Enlarged Image")
-                }
+            if (isViewImage.value) {
+                ImageViewer(viewImageUri = viewImageUri)
             }
-
         }
-
+    }
+    if (isOpenDeleteDialog.value) {
+        AlertDialog(onDismissRequest = { isOpenDeleteDialog.value = false },
+            buttons = {
+                TextButton(onClick = {
+                    imagesToDelete.forEach { image -> viewModel.deleteImage(image) }
+                    imagesToDelete.clear()
+                    Log.d("size", "ImagesScreen: ${imagesToDelete.size}")
+                    isOpenDeleteDialog.value = false
+                    isDeleteMode.value = false
+                }) {
+                    Text(text = "Yes")
+                }
+                TextButton(onClick = { isOpenDeleteDialog.value = false }) {
+                    Text(text = "No")
+                }
+            },
+            title = {
+                Text(text = "Are You Sure?")
+            },
+            text = {
+                Text(text = "Are you sure you want to delete ${imagesToDelete.size} image(s)?")
+            }
+        )
     }
 }
 
