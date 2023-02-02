@@ -71,19 +71,19 @@ fun TopBar(
                     }
                 },
                 actions = {
-                    IconButton(onClick = { firstAction.invoke() }) {
-                        Icon(
-                            painterResource(id = R.drawable.gallery),
-                            contentDescription = "Open Gallery Button"
-                        )
-                    }
-                    IconButton(onClick = { secondAction.invoke() }) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.camera),
-                            contentDescription = "Open Camera Button"
-                        )
-                    }
-                    IconButton(onClick = { thirdAction.invoke() }) {
+//                    IconButton(onClick = { firstAction.invoke() }) {
+//                        Icon(
+//                            painterResource(id = R.drawable.gallery),
+//                            contentDescription = "Open Gallery Button"
+//                        )
+//                    }
+//                    IconButton(onClick = { secondAction.invoke() }) {
+//                        Icon(
+//                            painter = painterResource(id = R.drawable.camera),
+//                            contentDescription = "Open Camera Button"
+//                        )
+//                    }
+                    IconButton(onClick = { thirdAction.invoke() }) {//todo update action acount
                         Icon(
                             painter = painterResource(id = R.drawable.trash),
                             contentDescription = "Delete Button"

@@ -1,5 +1,7 @@
 package albayed.moamin.notesattach.screens.images
 
+import albayed.moamin.notesattach.R
+import albayed.moamin.notesattach.components.FloatingButton
 import albayed.moamin.notesattach.components.ImageElement
 import albayed.moamin.notesattach.components.ImageViewer
 import albayed.moamin.notesattach.components.TopBar
@@ -19,6 +21,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -28,6 +31,7 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -125,14 +129,14 @@ fun ImagesScreen(//right now using GlideImage with old GetContent() for getting 
         TopBar(
             screen = Screens.ImagesScreen,
             navController = navController,
-            firstAction = {
-//                pickImage.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-                imagePicker.launch("image/*")
-            },
-            secondAction = {
-                uri = ImagesFileProvider.getImageUri(context)
-                cameraLauncher.launch(uri)
-            },
+//            firstAction = {
+////                pickImage.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+//                imagePicker.launch("image/*")
+//            },
+//            secondAction = {
+//                uri = ImagesFileProvider.getImageUri(context)
+//                cameraLauncher.launch(uri)
+//            },
             thirdAction = {
                 if (!isDeleteMode.value) {
                     isDeleteMode.value = true
@@ -153,8 +157,17 @@ fun ImagesScreen(//right now using GlideImage with old GetContent() for getting 
                 //navController.navigate(Screens.MainScreen.name)
                 navController.popBackStack()
             }
-        } /*TODO check if this updates images counter in the note card on main screen*/
-    }) {
+        }
+    },
+        floatingActionButton = {
+            FloatingButton(icon = R.drawable.camera, contentDescription = "Use Camera Button") {
+                if (isDeleteMode.value){
+                    isDeleteMode.value = false
+                }
+                uri = ImagesFileProvider.getImageUri(context)
+                cameraLauncher.launch(uri)//todo delete created temp file if user presses back after wanting to take a picture
+            }
+        }) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             LazyVerticalGrid(
                 modifier = Modifier.fillMaxSize(),
@@ -205,7 +218,7 @@ fun ImagesScreen(//right now using GlideImage with old GetContent() for getting 
                 }
             },
             title = {
-                Text(text = "Are You Sure?")
+                Text(text = "Deleting Images")
             },
             text = {
                 Text(text = "Are you sure you want to delete ${imagesToDelete.size} image(s)?")

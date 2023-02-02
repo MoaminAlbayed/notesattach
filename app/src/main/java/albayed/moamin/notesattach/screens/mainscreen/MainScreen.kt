@@ -19,6 +19,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -37,13 +39,17 @@ import java.util.*
 @Composable
 fun MainScreen(navController: NavController, viewModel: MainScreenViewModel = hiltViewModel()) {
     val notesList = viewModel.notesList.collectAsState().value
+
     Scaffold(
         topBar = { TopBar(screen = Screens.MainScreen, navController = navController) },
         floatingActionButton = {
-            FloatingButton(
-                screen = Screens.MainScreen,
-                navController = navController
-            )
+//            FloatingButton(
+//                screen = Screens.MainScreen,
+//                navController = navController
+//            )
+            FloatingButton(icon = R.drawable.add, contentDescription = "New Note Button") {
+                navController.navigate(Screens.NoteEditor.name + "/${true}/${null}")
+            }
         }
     ) {
         LazyColumn(modifier = Modifier.fillMaxSize()) {
@@ -54,6 +60,7 @@ fun MainScreen(navController: NavController, viewModel: MainScreenViewModel = hi
             }
         }
     }
+
 }
 
 //@Preview(showBackground = true)
@@ -69,6 +76,9 @@ fun NoteCard(
     navController: NavController,
     onClick: ()-> Unit
 ) {
+    val isOpenDeleteDialog = remember {
+        mutableStateOf(false)
+    }
     Card(
         modifier = Modifier
             .padding(5.dp)
@@ -172,15 +182,37 @@ fun NoteCard(
                     count = note.alarmsCount
                 )
                 AttachmentIcon(
-                    icon = R.drawable.delete,
+                    icon = R.drawable.trash,
                     contentDescription = "Delete Button",
-                    tint = Color.Red,
+                    tint = Color.Red.copy(alpha = 0.7f),
                     isDelete = true
                 ) {
-                    viewModel.deleteNote(note)
+                    isOpenDeleteDialog.value = true
+
                 }
             }
         }
+    }
+    if (isOpenDeleteDialog.value) {
+        AlertDialog(onDismissRequest = { isOpenDeleteDialog.value = false },
+            buttons = {
+                TextButton(onClick = {
+                    viewModel.deleteNote(note)//todo delete all attachments
+                    isOpenDeleteDialog.value = false
+                }) {
+                    Text(text = "Yes")
+                }
+                TextButton(onClick = { isOpenDeleteDialog.value = false }) {
+                    Text(text = "No")
+                }
+            },
+            title = {
+                Text(text = "Deleting Note")
+            },
+            text = {
+                Text(text = "Are you sure you want to delete this note and all of its attachments?")
+            }
+        )
     }
 }
 

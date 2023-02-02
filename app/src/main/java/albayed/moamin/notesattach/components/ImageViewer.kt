@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 
@@ -22,7 +23,7 @@ fun ImageViewer (viewImageUri: MutableState<Uri?>){
         border = BorderStroke(width = 3.dp, color = MaterialTheme.colors.primary),
         shape = RoundedCornerShape(20.dp)
     ) {
-        GlideImage(model = viewImageUri.value, contentDescription = "Enlarged Image")
+        AsyncImage(model = viewImageUri.value, contentDescription = "Enlarged Image")
 //                    AsyncImage(model = viewImageUri, contentDescription = "Enlarged Image")
     }
 }
