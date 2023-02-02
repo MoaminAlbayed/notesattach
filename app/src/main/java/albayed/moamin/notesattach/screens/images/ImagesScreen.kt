@@ -10,6 +10,7 @@ import albayed.moamin.notesattach.models.ImageFile
 import albayed.moamin.notesattach.navigation.Screens
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.util.Log
@@ -39,6 +40,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
@@ -215,10 +217,14 @@ fun ImagesScreen(//right now using GlideImage with old GetContent() for getting 
                             imagesToDelete.add(image)
                         }
                     }
+                    if (isViewImage.value) {
+
+                    }
                 }
             }
             if (isViewImage.value) {
-                ImageViewer(viewImageUri = viewImageUri)
+//                ImageViewer(viewImageUri = viewImageUri)
+                imageViewer.launch(Intent(Intent.ACTION_VIEW).setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION).setData(viewImageUri.value))
             }
         }
     }
@@ -252,4 +258,6 @@ fun ImagesScreen(//right now using GlideImage with old GetContent() for getting 
         )
     }
 }
+
+
 
