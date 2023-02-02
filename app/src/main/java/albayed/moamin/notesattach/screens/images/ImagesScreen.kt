@@ -30,6 +30,8 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.mapSaver
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
@@ -63,10 +65,6 @@ fun ImagesScreen(//right now using GlideImage with old GetContent() for getting 
     var hasImage by remember {
         mutableStateOf(false)
     }
-    var imageUri by remember {
-        mutableStateOf<Uri?>(null)
-    }
-
     val isViewImage = remember {
         mutableStateOf(false)
     }
@@ -85,7 +83,19 @@ fun ImagesScreen(//right now using GlideImage with old GetContent() for getting 
         mutableStateOf(false)
     }
 
-    var newFile: ImageFile? = null
+    val fileSaver = run {
+        val fileKey = "file"
+        val uriKey = "uri"
+        mapSaver(
+            save ={ mapOf(fileKey to it.file!!.absolutePath, uriKey to it.uri.toString()) },
+            restore = {ImageFile(File(it[fileKey].toString()), Uri.parse(it[uriKey].toString()))}
+        )
+    }
+
+    val newFile = rememberSaveable(stateSaver = fileSaver){
+        mutableStateOf<ImageFile>(ImageFile(File(""), Uri.EMPTY))
+    }
+    //var newFile: ImageFile? = null
 
 //    var uri: Uri? = null
 
@@ -115,20 +125,20 @@ fun ImagesScreen(//right now using GlideImage with old GetContent() for getting 
         contract = ActivityResultContracts.TakePicture(),
         onResult = { success ->
             hasImage = success
-            imageUri = newFile!!.uri
-            if (imageUri != null && hasImage) {
+            if (hasImage) {
+                Log.d("here", "ImagesScreen: ${newFile.value}")
                 viewModel.createImage(
                     Image(
                         noteId = UUID.fromString(noteId),
-                        uri = imageUri!!,
-                        file = newFile!!.file
+                        uri = newFile.value.uri!!,
+                        file = newFile.value.file!!
                     )
                 )
                 viewModel.updateImagesCount(imagesCount = imagesCount + 1, noteId = noteId)
             }
             if (!hasImage) {
-                if (newFile!!.file.exists()) {
-                    newFile!!.file.delete()
+                if (newFile.value.file!!.exists()) {
+                    newFile.value.file!!.delete()
                 }
             }
         }
@@ -180,8 +190,8 @@ fun ImagesScreen(//right now using GlideImage with old GetContent() for getting 
                 if (isDeleteMode.value) {
                     isDeleteMode.value = false
                 }
-                newFile = ImagesFileProvider.getImageUri(context)
-                cameraLauncher.launch(newFile!!.uri)//todo delete created temp file if user presses back after wanting to take a picture
+                newFile.value = ImagesFileProvider.getImageUri(context)
+                cameraLauncher.launch(newFile.value!!.uri)//todo delete created temp file if user presses back after wanting to take a picture
             }
         }) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
