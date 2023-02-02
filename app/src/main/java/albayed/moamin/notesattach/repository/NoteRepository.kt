@@ -19,7 +19,10 @@ class NoteRepository @Inject constructor(private val noteDatabaseDao: NoteDataba
 
     fun getAllImagesByNoteId(noteId: String) : Flow<List<Image>> = noteDatabaseDao.getAllImagesByNoteId(noteId).flowOn(Dispatchers.IO).conflate()
     suspend fun createImage(image: Image) = noteDatabaseDao.createImage(image)
-    suspend fun deleteImage(image: Image) = noteDatabaseDao.deleteImage(image)
+    suspend fun deleteImage(image: Image) {
+        noteDatabaseDao.deleteImage(image)
+        image.file.delete()
+    }
 
 
     suspend fun updateImagesCount(imagesCount: Int, noteId: String) =

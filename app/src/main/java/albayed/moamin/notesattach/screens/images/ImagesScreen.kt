@@ -6,6 +6,7 @@ import albayed.moamin.notesattach.components.ImageElement
 import albayed.moamin.notesattach.components.ImageViewer
 import albayed.moamin.notesattach.components.TopBar
 import albayed.moamin.notesattach.models.Image
+import albayed.moamin.notesattach.models.ImageFile
 import albayed.moamin.notesattach.navigation.Screens
 import android.Manifest
 import android.annotation.SuppressLint
@@ -43,6 +44,7 @@ import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
+import java.io.File
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -83,39 +85,51 @@ fun ImagesScreen(//right now using GlideImage with old GetContent() for getting 
         mutableStateOf(false)
     }
 
-    var uri: Uri? = null
+    var newFile: ImageFile? = null
 
-    val pickImage = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.PickVisualMedia()
-    ) { uri ->
-        if (uri != null) {
-            imageUri = uri
-            viewModel.createImage(Image(noteId = UUID.fromString(noteId), uri = imageUri!!))
-            viewModel.updateImagesCount(imagesCount = imagesCount + 1, noteId = noteId)
-        } else {
-            Toast.makeText(context, " No Image Was Selected", Toast.LENGTH_LONG).show()
-        }
-    }
+//    var uri: Uri? = null
 
-    val imagePicker = rememberLauncherForActivityResult(//older way of picking images
-        contract = ActivityResultContracts.GetContent(),
-        onResult = { uri ->
-            hasImage = uri != null
-            imageUri = uri
-            viewModel.createImage(Image(noteId = UUID.fromString(noteId), uri = imageUri!!))
-            viewModel.updateImagesCount(imagesCount = imagesCount + 1, noteId = noteId)
-        }
-    )
+//    val pickImage = rememberLauncherForActivityResult(
+//        contract = ActivityResultContracts.PickVisualMedia()
+//    ) { uri ->
+//        if (uri != null) {
+//            imageUri = uri
+//            viewModel.createImage(Image(noteId = UUID.fromString(noteId), uri = imageUri!!))
+//            viewModel.updateImagesCount(imagesCount = imagesCount + 1, noteId = noteId)
+//        } else {
+//            Toast.makeText(context, " No Image Was Selected", Toast.LENGTH_LONG).show()
+//        }
+//    }
+//
+//    val imagePicker = rememberLauncherForActivityResult(//older way of picking images
+//        contract = ActivityResultContracts.GetContent(),
+//        onResult = { uri ->
+//            hasImage = uri != null
+//            imageUri = uri
+//            viewModel.createImage(Image(noteId = UUID.fromString(noteId), uri = imageUri!!))
+//            viewModel.updateImagesCount(imagesCount = imagesCount + 1, noteId = noteId)
+//        }
+//    )
 
     val cameraLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.TakePicture(),
         onResult = { success ->
             hasImage = success
-            imageUri = uri
-            if (imageUri != null) {
-                viewModel.createImage(Image(noteId = UUID.fromString(noteId), uri = imageUri!!))
+            imageUri = newFile!!.uri
+            if (imageUri != null && hasImage) {
+                viewModel.createImage(
+                    Image(
+                        noteId = UUID.fromString(noteId),
+                        uri = imageUri!!,
+                        file = newFile!!.file
+                    )
+                )
                 viewModel.updateImagesCount(imagesCount = imagesCount + 1, noteId = noteId)
-
+            }
+            if (!hasImage) {
+                if (newFile!!.file.exists()) {
+                    newFile!!.file.delete()
+                }
             }
         }
     )
@@ -138,7 +152,9 @@ fun ImagesScreen(//right now using GlideImage with old GetContent() for getting 
 //                cameraLauncher.launch(uri)
 //            },
             thirdAction = {
-                if (!isDeleteMode.value) {
+                if (imagesCount == 0) {
+                    Toast.makeText(context, "No Images to Delete!", Toast.LENGTH_SHORT).show()
+                } else if (!isDeleteMode.value) {
                     isDeleteMode.value = true
                 } else {
                     if (imagesToDelete.isNotEmpty()) {
@@ -161,11 +177,11 @@ fun ImagesScreen(//right now using GlideImage with old GetContent() for getting 
     },
         floatingActionButton = {
             FloatingButton(icon = R.drawable.camera, contentDescription = "Use Camera Button") {
-                if (isDeleteMode.value){
+                if (isDeleteMode.value) {
                     isDeleteMode.value = false
                 }
-                uri = ImagesFileProvider.getImageUri(context)
-                cameraLauncher.launch(uri)//todo delete created temp file if user presses back after wanting to take a picture
+                newFile = ImagesFileProvider.getImageUri(context)
+                cameraLauncher.launch(newFile!!.uri)//todo delete created temp file if user presses back after wanting to take a picture
             }
         }) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
