@@ -217,14 +217,13 @@ fun ImagesScreen(//right now using GlideImage with old GetContent() for getting 
                             imagesToDelete.add(image)
                         }
                     }
-                    if (isViewImage.value) {
-
-                    }
                 }
             }
             if (isViewImage.value) {
 //                ImageViewer(viewImageUri = viewImageUri)
                 imageViewer.launch(Intent(Intent.ACTION_VIEW).setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION).setData(viewImageUri.value))
+                isViewImage.value = false
+
             }
         }
     }
