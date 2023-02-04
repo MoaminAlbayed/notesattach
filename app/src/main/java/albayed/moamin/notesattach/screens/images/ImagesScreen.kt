@@ -95,11 +95,9 @@ fun ImagesScreen(//right now using GlideImage with old GetContent() for getting 
     }
 
     val newFile = rememberSaveable(stateSaver = fileSaver){
-        mutableStateOf<ImageFile>(ImageFile(File(""), Uri.EMPTY))
+        mutableStateOf(ImageFile(File(""), Uri.EMPTY))
     }
-    //var newFile: ImageFile? = null
 
-//    var uri: Uri? = null
 
 //    val pickImage = rememberLauncherForActivityResult(
 //        contract = ActivityResultContracts.PickVisualMedia()
@@ -155,15 +153,7 @@ fun ImagesScreen(//right now using GlideImage with old GetContent() for getting 
         TopBar(
             screen = Screens.ImagesScreen,
             navController = navController,
-//            firstAction = {
-////                pickImage.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-//                imagePicker.launch("image/*")
-//            },
-//            secondAction = {
-//                uri = ImagesFileProvider.getImageUri(context)
-//                cameraLauncher.launch(uri)
-//            },
-            thirdAction = {
+            firstAction = {
                 if (imagesCount == 0) {
                     Toast.makeText(context, "No Images to Delete!", Toast.LENGTH_SHORT).show()
                 } else if (!isDeleteMode.value) {
@@ -182,7 +172,6 @@ fun ImagesScreen(//right now using GlideImage with old GetContent() for getting 
             } else if (isDeleteMode.value) {
                 isDeleteMode.value = false
             } else {
-                //navController.navigate(Screens.MainScreen.name)
                 navController.popBackStack()
             }
         }
@@ -220,7 +209,6 @@ fun ImagesScreen(//right now using GlideImage with old GetContent() for getting 
                 }
             }
             if (isViewImage.value) {
-//                ImageViewer(viewImageUri = viewImageUri)
                 imageViewer.launch(Intent(Intent.ACTION_VIEW).setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION).setData(viewImageUri.value))
                 isViewImage.value = false
 

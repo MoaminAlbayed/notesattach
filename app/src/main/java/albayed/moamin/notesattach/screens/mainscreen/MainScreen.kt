@@ -95,7 +95,7 @@ fun NoteCard(
             Column(
                 // modifier = Modifier.wrapContentWidth(),
                 horizontalAlignment = Alignment.Start,
-                verticalArrangement = Arrangement.SpaceBetween
+                verticalArrangement = Arrangement.SpaceBetween,
             ) {
                 AttachmentIcon(
                     icon = R.drawable.photo,
