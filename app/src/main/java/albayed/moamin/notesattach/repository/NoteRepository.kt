@@ -3,6 +3,7 @@ package albayed.moamin.notesattach.repository
 import albayed.moamin.notesattach.data.NoteDatabaseDao
 import albayed.moamin.notesattach.models.Image
 import albayed.moamin.notesattach.models.Note
+import albayed.moamin.notesattach.models.Video
 import androidx.compose.runtime.MutableState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -22,6 +23,13 @@ class NoteRepository @Inject constructor(private val noteDatabaseDao: NoteDataba
     suspend fun deleteImage(image: Image) {
         noteDatabaseDao.deleteImage(image)
         image.file.delete()
+    }
+
+    fun getAllVideosByNoteId(noteId: String) : Flow<List<Video>> = noteDatabaseDao.getAllVideosByNoteId(noteId).flowOn(Dispatchers.IO).conflate()
+    suspend fun createVideo(video: Video) = noteDatabaseDao.createVideo(video)
+    suspend fun deleteVideo(video: Video) {
+        noteDatabaseDao.deleteVideo(video)
+        video.file.delete()
     }
 
 

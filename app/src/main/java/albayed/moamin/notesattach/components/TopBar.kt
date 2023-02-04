@@ -71,7 +71,7 @@ fun TopBar(
                     }
                 },
                 actions = {
-                    IconButton(onClick = { firstAction.invoke() }) {//todo update action acount
+                    IconButton(onClick = { firstAction.invoke() }) {
                         Icon(
                             painter = painterResource(id = R.drawable.trash),
                             contentDescription = "Delete Button"

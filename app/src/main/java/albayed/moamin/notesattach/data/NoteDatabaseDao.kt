@@ -2,6 +2,7 @@ package albayed.moamin.notesattach.data
 
 import albayed.moamin.notesattach.models.Image
 import albayed.moamin.notesattach.models.Note
+import albayed.moamin.notesattach.models.Video
 import androidx.compose.runtime.MutableState
 import androidx.room.*
 import kotlinx.coroutines.flow.Flow
@@ -27,11 +28,21 @@ interface NoteDatabaseDao {
     @Query ("SELECT * from images_table where noteId=:noteId")
     fun getAllImagesByNoteId(noteId: String): Flow<List<Image>>
 
+    @Query ("SELECT * from videos_table where noteId=:noteId")
+    fun getAllVideosByNoteId(noteId: String): Flow<List<Video>>
+
     @Insert
     suspend fun createImage(image: Image)
 
     @Delete
     suspend fun deleteImage(image: Image)
+
+    @Insert
+    suspend fun createVideo(video: Video)
+
+    @Delete
+    suspend fun deleteVideo(video: Video)
+
 
     @Query("UPDATE notes_table SET imagesCount=:imagesCount WHERE id=:noteId")
     suspend fun updateImagesCount (imagesCount: Int, noteId: String)

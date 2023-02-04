@@ -3,54 +3,37 @@ package albayed.moamin.notesattach.screens.images
 import albayed.moamin.notesattach.R
 import albayed.moamin.notesattach.components.FloatingButton
 import albayed.moamin.notesattach.components.ImageElement
-import albayed.moamin.notesattach.components.ImageViewer
 import albayed.moamin.notesattach.components.TopBar
 import albayed.moamin.notesattach.models.Image
 import albayed.moamin.notesattach.models.ImageFile
 import albayed.moamin.notesattach.navigation.Screens
-import android.Manifest
+import albayed.moamin.notesattach.utils.fileDateFormatter
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.util.Log
 import android.widget.Toast
-import androidx.activity.OnBackPressedCallback
-import androidx.activity.OnBackPressedDispatcher
-import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.mapSaver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.core.content.ContextCompat
-import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import coil.compose.AsyncImage
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
-import com.bumptech.glide.integration.compose.GlideImage
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import java.io.File
+import java.time.Instant
 import java.util.*
-import kotlin.collections.ArrayList
 
 
 @OptIn(ExperimentalGlideComposeApi::class, ExperimentalPermissionsApi::class)
@@ -181,8 +164,10 @@ fun ImagesScreen(//right now using GlideImage with old GetContent() for getting 
                 if (isDeleteMode.value) {
                     isDeleteMode.value = false
                 }
-                newFile.value = ImagesFileProvider.getImageUri(context)
-                cameraLauncher.launch(newFile.value!!.uri)//todo delete created temp file if user presses back after wanting to take a picture
+                newFile.value = ImagesFileProvider.getImageUri(context, fileDateFormatter(Date.from(
+                    Instant.now()).time))
+//                newFile.value = ImagesFileProvider.getImageUri(context)
+                cameraLauncher.launch(newFile.value!!.uri)
             }
         }) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {

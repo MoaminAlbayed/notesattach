@@ -1,6 +1,5 @@
 package albayed.moamin.notesattach.components
 
-import albayed.moamin.notesattach.utils.ZoomableImage
 import android.net.Uri
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -20,7 +19,7 @@ import com.bumptech.glide.integration.compose.GlideImage
 
 @OptIn(ExperimentalGlideComposeApi::class, ExperimentalFoundationApi::class)
 @Composable
-fun ImageViewer (viewImageUri: MutableState<Uri?>){
+fun ImageViewer (viewImageUri: MutableState<Uri?>){//todo delete this whole file
     Surface(
         modifier = Modifier.fillMaxSize(0.95f),
         //modifier = Modifier.wrapContentSize(),
@@ -28,6 +27,6 @@ fun ImageViewer (viewImageUri: MutableState<Uri?>){
         shape = RoundedCornerShape(20.dp)
     ) {
 //        AsyncImage(model = viewImageUri.value, contentDescription = "Enlarged Image")
-        ZoomableImage(painter = rememberAsyncImagePainter(model = viewImageUri.value), isRotation = false)
+//        ZoomableImage(painter = rememberAsyncImagePainter(model = viewImageUri.value), isRotation = false)
     }
 }

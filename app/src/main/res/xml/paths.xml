@@ -11,19 +11,13 @@
     <files-path
         name="images"
         path="images/" />
-    <cache-path
-        name="images"
-        path="images/" />
-<!--    <external-path-->
-<!--        name="images"-->
-<!--        path="images/"/>-->
+<!--    <cache-path-->
+<!--        name="images_cache"-->
+<!--        path="images_cache/" />-->
     <files-path
         name="videos"
         path="videos/" />
-    <cache-path
-        name="videos"
-        path="videos/" />
-<!--    <external-path-->
-<!--        name="videos"-->
-<!--        path="videos/"/>-->
+<!--    <cache-path-->
+<!--        name="videos_cache"-->
+<!--        path="videos_cache/" />-->
 </paths>
