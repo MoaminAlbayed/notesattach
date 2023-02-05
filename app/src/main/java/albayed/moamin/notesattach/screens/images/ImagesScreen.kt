@@ -8,8 +8,8 @@ import albayed.moamin.notesattach.models.Image
 import albayed.moamin.notesattach.models.FileInfo
 import albayed.moamin.notesattach.models.FileTypes
 import albayed.moamin.notesattach.navigation.Screens
+import albayed.moamin.notesattach.utils.BackPressHandler
 import albayed.moamin.notesattach.utils.NewFileProvider
-import albayed.moamin.notesattach.utils.fileDateFormatter
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
@@ -34,7 +34,6 @@ import androidx.navigation.NavController
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import java.io.File
-import java.time.Instant
 import java.util.*
 
 
@@ -131,7 +130,6 @@ fun ImagesScreen(//right now using GlideImage with old GetContent() for getting 
 
     val imageViewer =
         rememberLauncherForActivityResult(contract = ActivityResultContracts.StartActivityForResult()) {
-
         }
 
     Scaffold(topBar = {
@@ -156,6 +154,7 @@ fun ImagesScreen(//right now using GlideImage with old GetContent() for getting 
                 isViewImage.value = false
             } else if (isDeleteMode.value) {
                 isDeleteMode.value = false
+                imagesToDelete.clear()
             } else {
                 navController.popBackStack()
             }
@@ -169,7 +168,7 @@ fun ImagesScreen(//right now using GlideImage with old GetContent() for getting 
 //                newFile.value = ImagesFileProvider.getImageUri(context, fileDateFormatter(Date.from(
 //                    Instant.now()).time))
 //                newFile.value = ImagesFileProvider.getImageUri(context)
-                newFile.value = NewFileProvider.getFileUri(context, FileTypes.imageFile)
+                newFile.value = NewFileProvider.getFileUri(context, FileTypes.ImageFile)
                 cameraLauncher.launch(newFile.value!!.uri)
             }
         }) {
@@ -218,19 +217,34 @@ fun ImagesScreen(//right now using GlideImage with old GetContent() for getting 
                     isOpenDeleteDialog.value = false
                     isDeleteMode.value = false
                 }) {
-                    Text(text = "Yes")
+                    Text(text = "Yes", style = MaterialTheme.typography.button)
                 }
-                TextButton(onClick = { isOpenDeleteDialog.value = false }) {
-                    Text(text = "No")
+                TextButton(onClick = {
+                    isOpenDeleteDialog.value = false
+                    imagesToDelete.clear()
+                    isDeleteMode.value = false
+                }) {
+                    Text(text = "No", style = MaterialTheme.typography.button)
                 }
             },
             title = {
-                Text(text = "Deleting Images")
+                Text(text = "Deleting Images", style = MaterialTheme.typography.h6)
             },
             text = {
-                Text(text = "Are you sure you want to delete ${imagesToDelete.size} image(s)?")
+                Text(text = "Are you sure you want to delete ${imagesToDelete.size} image(s)?",
+                    style = MaterialTheme.typography.body1)
             }
         )
+    }
+    fun backToMainScreen() {
+        if (isDeleteMode.value) {
+            isDeleteMode.value = false
+            imagesToDelete.clear()
+        } else
+            navController.popBackStack()
+    }
+    BackPressHandler() {
+        backToMainScreen()
     }
 }
 

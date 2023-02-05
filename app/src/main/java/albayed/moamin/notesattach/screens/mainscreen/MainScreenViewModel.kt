@@ -2,6 +2,7 @@ package albayed.moamin.notesattach.screens.mainscreen
 
 import albayed.moamin.notesattach.models.Image
 import albayed.moamin.notesattach.models.Note
+import albayed.moamin.notesattach.models.Video
 import albayed.moamin.notesattach.repository.NoteRepository
 import androidx.compose.runtime.MutableState
 import androidx.lifecycle.ViewModel
@@ -24,7 +25,6 @@ class MainScreenViewModel @Inject constructor(private val noteRepository: NoteRe
         viewModelScope.launch(Dispatchers.IO) {
             noteRepository.getAllNotes().collect() {
                 _notesList.value = it
-
             }
         }
     }
@@ -33,6 +33,8 @@ class MainScreenViewModel @Inject constructor(private val noteRepository: NoteRe
     fun deleteNote(note: Note) = viewModelScope.launch {
         if (note.imagesCount > 0)
             deleteAllImages(note)
+        if (note.imagesCount > 0)
+            deleteAllVideos(note)
         noteRepository.deleteNote(note)
     }//TODO loop through all attachments to delete
 
@@ -47,6 +49,17 @@ class MainScreenViewModel @Inject constructor(private val noteRepository: NoteRe
                 noteRepository.deleteImage(image)
             }
         }
+    }
 
+    private fun deleteAllVideos(note: Note) {
+        val videos = MutableStateFlow<List<Video>>(emptyList())
+        viewModelScope.launch(Dispatchers.IO) {
+            noteRepository.getAllVideosByNoteId(note.id.toString()).collect() {
+                videos.value = it
+            }
+            videos.value.forEach { video ->
+                noteRepository.deleteVideo(video)
+            }
+        }
     }
 }

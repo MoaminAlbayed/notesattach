@@ -1,12 +1,10 @@
-package albayed.moamin.notesattach.data
+package albayed.moamin.notesattach.database
 
 import albayed.moamin.notesattach.models.Image
 import albayed.moamin.notesattach.models.Note
 import albayed.moamin.notesattach.models.Video
-import androidx.compose.runtime.MutableState
 import androidx.room.*
 import kotlinx.coroutines.flow.Flow
-import org.intellij.lang.annotations.Language
 
 @Dao
 interface NoteDatabaseDao {

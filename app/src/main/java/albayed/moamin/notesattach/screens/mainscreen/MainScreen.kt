@@ -113,7 +113,10 @@ fun NoteCard(
                     contentDescription = "Video Button",
                     tint = MaterialTheme.colors.primary,
                     count = note.videosCount
-                )
+                ){
+                    navController.navigate(Screens.VideosScreen.name + "/${note.id}")
+
+                }
                 AttachmentIcon(
                     icon = R.drawable.mic,
                     contentDescription = "Microphone Button",

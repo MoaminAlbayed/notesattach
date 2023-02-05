@@ -1,7 +1,7 @@
 package albayed.moamin.notesattach.di
 
-import albayed.moamin.notesattach.data.NoteDatabase
-import albayed.moamin.notesattach.data.NoteDatabaseDao
+import albayed.moamin.notesattach.database.NoteDatabase
+import albayed.moamin.notesattach.database.NoteDatabaseDao
 import android.content.Context
 import androidx.room.Room
 import dagger.Module

@@ -6,6 +6,7 @@ import androidx.navigation.NavController
 import albayed.moamin.notesattach.components.TopBar
 import albayed.moamin.notesattach.models.Note
 import albayed.moamin.notesattach.navigation.Screens
+import albayed.moamin.notesattach.utils.BackPressHandler
 import android.annotation.SuppressLint
 import android.util.Log
 import androidx.activity.OnBackPressedCallback
@@ -150,27 +151,4 @@ fun NoteEditor(
     }
 }
 
-@Composable
-fun BackPressHandler(
-    backPressedDispatcher: OnBackPressedDispatcher? =
-        LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher,
-    onBackPressed: () -> Unit
-) {
-    val currentOnBackPressed by rememberUpdatedState(newValue = onBackPressed)
 
-    val backCallback = remember {
-        object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                currentOnBackPressed()
-            }
-        }
-    }
-
-    DisposableEffect(key1 = backPressedDispatcher) {
-        backPressedDispatcher?.addCallback(backCallback)
-
-        onDispose {
-            backCallback.remove()
-        }
-    }
-}

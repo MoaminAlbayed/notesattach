@@ -22,7 +22,7 @@ fun TopBar(
     thirdAction: ()-> Unit ={},
     onClick: () -> Unit = {}
 ) {
-    when (screen) {
+    when (screen) {//todo refactor to make shorter
         Screens.MainScreen -> {
             TopAppBar(title = {
                 Text(text = "My Notes")
@@ -60,7 +60,29 @@ fun TopBar(
         }
         Screens.ImagesScreen -> {
             TopAppBar(title = {
-                Text(text = "Image Viewer")
+                Text(text = "Images Viewer")
+            },
+                navigationIcon = {
+                    IconButton(onClick = { onClick.invoke() }) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = "Back Button"
+                        )
+                    }
+                },
+                actions = {
+                    IconButton(onClick = { firstAction.invoke() }) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.trash),
+                            contentDescription = "Delete Button"
+                        )
+                    }
+                }
+            )
+        }
+        Screens.VideosScreen -> {
+            TopAppBar(title = {
+                Text(text = "Videos Viewer")
             },
                 navigationIcon = {
                     IconButton(onClick = { onClick.invoke() }) {

@@ -1,4 +1,4 @@
-package albayed.moamin.notesattach.data
+package albayed.moamin.notesattach.database
 
 import albayed.moamin.notesattach.models.Image
 import albayed.moamin.notesattach.models.Note

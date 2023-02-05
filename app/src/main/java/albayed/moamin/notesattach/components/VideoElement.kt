@@ -1,24 +1,20 @@
 package albayed.moamin.notesattach.components
 
 import albayed.moamin.notesattach.R
-import albayed.moamin.notesattach.models.Image
+import albayed.moamin.notesattach.models.Video
 import android.net.Uri
 import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -32,19 +28,18 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import coil.ImageLoader
 import coil.compose.AsyncImage
-import coil.request.ImageRequest
-import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
-import com.bumptech.glide.integration.compose.GlideImage
+import coil.compose.rememberImagePainter
+import coil.decode.VideoFrameDecoder
 
-@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun ImageElement(
+fun VideoElement(
     modifier: Modifier = Modifier,
-    isViewImage: MutableState<Boolean>,
-    viewImageUri: MutableState<Uri?>,
+    isViewVideo: MutableState<Boolean>,
+    viewVideoUri: MutableState<Uri?>,
     isDeleteMode: MutableState<Boolean>,
-    image: Image,
+    video: Video,
     isNewDeleteProcess: Boolean,
     checkedDelete: (MutableState<Boolean>) -> Unit
 ) {
@@ -67,8 +62,8 @@ fun ImageElement(
                             checkedDelete(isSelected)
                             Log.d("click", "ImageElement: ${isSelected.value}")
                         } else {
-                            isViewImage.value = true
-                            viewImageUri.value = image.uri
+                            isViewVideo.value = true
+                            viewVideoUri.value = video.uri
                         }
                     },
                     onLongPress = {
@@ -79,21 +74,23 @@ fun ImageElement(
                 )
             }
     ) {
-        AsyncImage(
-//            model = image.uri,
-            model = ImageRequest.Builder(LocalContext.current)
-                .data(image.uri)
-                .crossfade(true)
-                .build(),
-            contentScale = ContentScale.Crop,
-            contentDescription = "Attached Image"
-        )
+
+//        AsyncImage(
+//            model = video.uri,
+//            contentScale = ContentScale.Crop,
+//            contentDescription = "Attached Image"
+//        )
+        val context = LocalContext.current
+        val imageLoader = ImageLoader.Builder(context)
+            .components{
+                add(VideoFrameDecoder.Factory())
+            }.crossfade(true)
+            .build()
+        AsyncImage(model = video.uri, contentScale = ContentScale.Crop,contentDescription = "Attached Video", imageLoader = imageLoader)
         if (isDeleteMode.value) {
             CircleCheckbox(selected = isSelected.value) {
             }
         }
     }
 }
-
-
 

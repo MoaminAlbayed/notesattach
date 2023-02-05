@@ -15,19 +15,19 @@ class NewFileProvider: FileProvider(R.xml.paths){
             val fileName: String
             val folderName: String
             when (fileTypes){
-                FileTypes.imageFile -> {
+                FileTypes.ImageFile -> {
                     fileName = "image_" + fileDateFormatter(
                         Date.from(
                         Instant.now()).time) + ".jpg"
                     folderName = "images"
                 }
-                FileTypes.videoFile -> {
+                FileTypes.VideoFile -> {
                     fileName = "video_" + fileDateFormatter(
                         Date.from(
                             Instant.now()).time) + ".mp4"
                     folderName = "videos"
                 }
-                FileTypes.audioFile -> {
+                FileTypes.AudioFile -> {
                     fileName = "audio_" + fileDateFormatter(
                         Date.from(
                             Instant.now()).time) + ".mp3"//todo confirm mp3 works
