@@ -52,10 +52,12 @@ fun MainScreen(navController: NavController, viewModel: MainScreenViewModel = hi
             }
         }
     ) {
-        LazyColumn(modifier = Modifier.fillMaxSize()) {
-            items(notesList.asReversed()) {note ->
-                NoteCard(note, navController = navController){
-                    navController.navigate(Screens.NoteEditor.name+"/${false}/${note.id}")
+        LazyColumn(modifier = Modifier
+            .fillMaxSize()
+            .padding(start = 5.dp, end = 5.dp)) {
+            items(notesList.asReversed()) { note ->
+                NoteCard(note, navController = navController) {
+                    navController.navigate(Screens.NoteEditor.name + "/${false}/${note.id}")
                 }
             }
         }
@@ -74,11 +76,12 @@ fun NoteCard(
     note: Note,
     viewModel: MainScreenViewModel = hiltViewModel(),
     navController: NavController,
-    onClick: ()-> Unit
+    onClick: () -> Unit
 ) {
     val isOpenDeleteDialog = remember {
         mutableStateOf(false)
     }
+    val attachmentsColumnsWeight: Float = 0.25f
     Card(
         modifier = Modifier
             .padding(5.dp)
@@ -93,8 +96,8 @@ fun NoteCard(
     ) {
         Row() {
             Column(
-                // modifier = Modifier.wrapContentWidth(),
-                horizontalAlignment = Alignment.Start,
+                modifier = Modifier.weight(attachmentsColumnsWeight),
+                horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.SpaceBetween,
             ) {
                 AttachmentIcon(
@@ -102,7 +105,7 @@ fun NoteCard(
                     contentDescription = "Photo Button",
                     tint = MaterialTheme.colors.primary,
                     count = note.imagesCount
-                ){
+                ) {
                     navController.navigate(Screens.ImagesScreen.name + "/${note.id}")
                 }
                 AttachmentIcon(
@@ -129,16 +132,17 @@ fun NoteCard(
             )
 
             Column(modifier = Modifier.weight(1f)) {
+                if (note.title.isNotEmpty()) {
+                    Text(
+                        modifier = Modifier.padding(start = 5.dp, top = 5.dp),
+                        text = note.title,
+                        style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 18.sp),
+                        overflow = TextOverflow.Ellipsis,
+                        maxLines = 1
+                    )
+                }
                 Text(
-                    modifier = Modifier.padding(start = 5.dp, top = 5.dp),
-                    text = note.title,
-                    style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 18.sp),
-                    overflow = TextOverflow.Ellipsis,
-                    maxLines = 1
-                )
-                Text(
-                    modifier = Modifier.padding(start = 5.dp, bottom = 2.dp),
-                    //text = "Created: ${dateFormatter(Date.from(Instant.now()).time)}",
+                    modifier = Modifier.padding(start = 5.dp, bottom = 2.dp, top = if (note.title.isNotEmpty()) 0.dp else 2.dp),
                     text = "Created: ${dateFormatter(note.date.time)}",
                     style = TextStyle(fontWeight = FontWeight.Thin, fontSize = 14.sp)
                 )
@@ -165,8 +169,8 @@ fun NoteCard(
             )
 
             Column(
-                //modifier = Modifier.wrapContentWidth(),
-                horizontalAlignment = Alignment.End,
+                modifier = Modifier.weight(attachmentsColumnsWeight),
+                horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
                 AttachmentIcon(
@@ -200,17 +204,20 @@ fun NoteCard(
                     viewModel.deleteNote(note)//todo delete all attachments
                     isOpenDeleteDialog.value = false
                 }) {
-                    Text(text = "Yes")
+                    Text(text = "Yes", style = MaterialTheme.typography.button)
                 }
                 TextButton(onClick = { isOpenDeleteDialog.value = false }) {
-                    Text(text = "No")
+                    Text(text = "No", style = MaterialTheme.typography.button)
                 }
             },
             title = {
-                Text(text = "Deleting Note")
+                Text(text = "Deleting Note", style = MaterialTheme.typography.h6)
             },
             text = {
-                Text(text = "Are you sure you want to delete this note and all of its attachments?")
+                Text(
+                    text = "Are you sure you want to delete this note and all of its attachments?",
+                    style = MaterialTheme.typography.body1
+                )
             }
         )
     }

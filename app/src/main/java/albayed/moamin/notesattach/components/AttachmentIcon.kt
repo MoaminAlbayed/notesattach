@@ -33,7 +33,7 @@ fun AttachmentIcon(
         //val (iconButton, counter) = createRefs()
         val counterRef = createRef()
         IconButton(modifier = modifier
-            .scale(2f),
+            .scale(2.2f),
 //            .constrainAs(iconButton) {
 //            },
             onClick = { onClick.invoke() }

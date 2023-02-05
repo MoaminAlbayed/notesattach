@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -50,15 +51,15 @@ fun NoteEditor(
         }.value
     }
 
-    var title by remember(note) {
+    var title by rememberSaveable(note) {
         mutableStateOf(note.title)
     }
-    var content by remember(note) {
+    var content by rememberSaveable(note) {
         mutableStateOf(note.content)
     }
 
 
-    fun BackToMainScreen() {
+    fun backToMainScreen() {
         if (isNewNote) {
             if (title.isEmpty() && content.isEmpty()) {
                 navController.popBackStack()
@@ -78,12 +79,12 @@ fun NoteEditor(
         }
     }
     BackPressHandler() {
-        BackToMainScreen()
+        backToMainScreen()
     }
     Scaffold(
         topBar = {
             TopBar(screen = Screens.NoteEditor, navController = navController) {
-                BackToMainScreen()
+                backToMainScreen()
             }
         }
     ) {
@@ -130,11 +131,11 @@ fun NoteEditor(
                         Text(text = "Content", fontSize = contentFontSize)
                     },
                     textStyle = TextStyle(fontSize = contentFontSize),
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                    keyboardActions = KeyboardActions(onDone = {
-                        Log.d("keyboard", "NoteEditor: here")
-                        keyboardController?.hide()
-                    }),
+//                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+//                    keyboardActions = KeyboardActions(onDone = {
+//                        Log.d("keyboard", "NoteEditor: here")
+//                        keyboardController?.hide()
+//                    }),
                     colors = TextFieldDefaults.textFieldColors(
                         //textColor = Color.Gray,
                         //disabledTextColor = Color.Transparent,

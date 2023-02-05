@@ -5,8 +5,10 @@ import albayed.moamin.notesattach.components.FloatingButton
 import albayed.moamin.notesattach.components.ImageElement
 import albayed.moamin.notesattach.components.TopBar
 import albayed.moamin.notesattach.models.Image
-import albayed.moamin.notesattach.models.ImageFile
+import albayed.moamin.notesattach.models.FileInfo
+import albayed.moamin.notesattach.models.FileTypes
 import albayed.moamin.notesattach.navigation.Screens
+import albayed.moamin.notesattach.utils.NewFileProvider
 import albayed.moamin.notesattach.utils.fileDateFormatter
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -73,12 +75,12 @@ fun ImagesScreen(//right now using GlideImage with old GetContent() for getting 
         val uriKey = "uri"
         mapSaver(
             save ={ mapOf(fileKey to it.file!!.absolutePath, uriKey to it.uri.toString()) },
-            restore = {ImageFile(File(it[fileKey].toString()), Uri.parse(it[uriKey].toString()))}
+            restore = {FileInfo(File(it[fileKey].toString()), Uri.parse(it[uriKey].toString()))}
         )
     }
 
     val newFile = rememberSaveable(stateSaver = fileSaver){
-        mutableStateOf(ImageFile(File(""), Uri.EMPTY))
+        mutableStateOf(FileInfo(File(""), Uri.EMPTY))
     }
 
 
@@ -164,15 +166,16 @@ fun ImagesScreen(//right now using GlideImage with old GetContent() for getting 
                 if (isDeleteMode.value) {
                     isDeleteMode.value = false
                 }
-                newFile.value = ImagesFileProvider.getImageUri(context, fileDateFormatter(Date.from(
-                    Instant.now()).time))
+//                newFile.value = ImagesFileProvider.getImageUri(context, fileDateFormatter(Date.from(
+//                    Instant.now()).time))
 //                newFile.value = ImagesFileProvider.getImageUri(context)
+                newFile.value = NewFileProvider.getFileUri(context, FileTypes.imageFile)
                 cameraLauncher.launch(newFile.value!!.uri)
             }
         }) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             LazyVerticalGrid(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier.fillMaxSize().padding(start = 6.dp, end = 6.dp),
                 columns = GridCells.Adaptive(minSize = 128.dp)
             ) {
                 items(imagesList) { image ->
