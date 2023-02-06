@@ -2,10 +2,14 @@ package albayed.moamin.notesattach.utils
 
 
 
+import android.content.Context
+import android.media.MediaMetadataRetriever
+import android.net.Uri
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.OnBackPressedDispatcher
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.runtime.*
+import androidx.compose.ui.platform.LocalContext
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -20,20 +24,15 @@ fun fileDateFormatter(time: Long): String{
     return formatter.format(Date(time))
 }
 
-fun videoLengthFormatter(milliseconds: Long) :String{
-//    // long minutes = (milliseconds / 1000) / 60;
-//    val minutes = TimeUnit.MILLISECONDS.toMinutes(milliseconds)
-//
-//    // long seconds = (milliseconds / 1000);
-//    val seconds = TimeUnit.MILLISECONDS.toSeconds(milliseconds)
-
-//    return "$minutes:$seconds"
+fun videoLength(context: Context, videoUri: Uri) :String{
+    val retriever = MediaMetadataRetriever()
+    retriever.setDataSource(context, videoUri)
+    var videoTime = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)!!.toLong()
     return String.format("%02d:%02d",
-        TimeUnit.MILLISECONDS.toMinutes(milliseconds),
-        TimeUnit.MILLISECONDS.toSeconds(milliseconds) -
-                TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(milliseconds))
+        TimeUnit.MILLISECONDS.toMinutes(videoTime),
+        TimeUnit.MILLISECONDS.toSeconds(videoTime) -
+                TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(videoTime))
     )
-
 }
 
 @Composable

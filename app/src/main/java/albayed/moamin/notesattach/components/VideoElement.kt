@@ -1,19 +1,13 @@
 package albayed.moamin.notesattach.components
 
-import albayed.moamin.notesattach.R
 import albayed.moamin.notesattach.models.Video
-import albayed.moamin.notesattach.utils.videoLengthFormatter
-import android.media.MediaMetadataRetriever
+import albayed.moamin.notesattach.utils.videoLength
 import android.net.Uri
 import android.util.Log
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -30,12 +24,10 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import coil.ImageLoader
 import coil.compose.AsyncImage
-import coil.compose.rememberImagePainter
 import coil.decode.VideoFrameDecoder
 
 @Composable
@@ -56,13 +48,6 @@ fun VideoElement(
         isSelected.value = false
     }
 
-    val videoViewer =
-        rememberLauncherForActivityResult(contract = ActivityResultContracts.StartActivityForResult()) {
-        }
-    val retriever = MediaMetadataRetriever()
-    retriever.setDataSource(LocalContext.current, video.uri)
-    var videoTime = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
-    val videoLength = videoLengthFormatter(videoTime!!.toLong())
 
     ConstraintLayout(
         modifier = modifier
@@ -89,11 +74,6 @@ fun VideoElement(
             }
     ) {
 
-//        AsyncImage(
-//            model = video.uri,
-//            contentScale = ContentScale.Crop,
-//            contentDescription = "Attached Image"
-//        )
         val (checkMarkRef, timerRef) = createRefs()
         val context = LocalContext.current
         val imageLoader = ImageLoader.Builder(context)
@@ -117,7 +97,7 @@ fun VideoElement(
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(modifier = Modifier.size(20.dp), imageVector = Icons.Default.PlayArrow, tint = Color.White, contentDescription = "")
-                Text(modifier = Modifier.padding(end = 3.dp), text = videoLength, style = MaterialTheme.typography.caption, color = Color.White)
+                Text(modifier = Modifier.padding(end = 3.dp), text = videoLength(context, video.uri), style = MaterialTheme.typography.caption, color = Color.White)
             }
         }
         if (isDeleteMode.value) {

@@ -81,7 +81,7 @@ fun NoteCard(
     val isOpenDeleteDialog = remember {
         mutableStateOf(false)
     }
-    val attachmentsColumnsWeight: Float = 0.25f
+    val attachmentsColumnsWidth = 70.dp
     Card(
         modifier = Modifier
             .padding(5.dp)
@@ -96,7 +96,7 @@ fun NoteCard(
     ) {
         Row() {
             Column(
-                modifier = Modifier.weight(attachmentsColumnsWeight),
+                modifier = Modifier.width(attachmentsColumnsWidth),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.SpaceBetween,
             ) {
@@ -172,7 +172,7 @@ fun NoteCard(
             )
 
             Column(
-                modifier = Modifier.weight(attachmentsColumnsWeight),
+                modifier = Modifier.width(attachmentsColumnsWidth),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
