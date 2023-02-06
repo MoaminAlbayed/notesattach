@@ -9,17 +9,18 @@ import android.media.MediaPlayer
 import android.media.MediaRecorder
 import android.net.Uri
 import android.util.Log
+import android.widget.SeekBar
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.Button
+import androidx.compose.material.LinearProgressIndicator
+import androidx.compose.material.Slider
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.SideEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.mapSaver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -28,6 +29,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import kotlinx.coroutines.delay
 import java.io.File
 import java.io.IOException
 
@@ -65,13 +67,20 @@ fun AudioClipsScreen(
     val paused = rememberSaveable() {
         mutableStateOf(false)
     }
+    val currentPosition = rememberSaveable() {
+        mutableStateOf<Int?>(0)
+    }
+    val duration = rememberSaveable() {
+        mutableStateOf<Int?>(0)
+    }
+
 
     val requestPermissionLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
             if (!isGranted) {
-                Log.d("permission", "ImageScreen perm: permission denied")
+                Log.d("permission", "audioClipsScreen perm: permission denied")
             } else {
-                Log.d("permission", "ImageScreen perm: permission granted")
+                Log.d("permission", "audioClipsScreen perm: permission granted")
                 //viewModel.createImage(Image(noteId = UUID.fromString(noteId), uri = imageUri!!))
             }
         }
@@ -82,11 +91,11 @@ fun AudioClipsScreen(
         )
         == PackageManager.PERMISSION_GRANTED
     ) {
-        Log.d("permission", "ImageScreen: permission available")
+        Log.d("permission", "audioClipsScreen: permission available")
         //viewModel.createImage(Image(noteId = UUID.fromString(noteId), uri = imageUri!!))
 
     } else {
-        Log.d("permission", "ImageScreen: requesting")
+        Log.d("permission", "audioClipsScreen: requesting")
         SideEffect {
 
             requestPermissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
@@ -131,12 +140,24 @@ fun AudioClipsScreen(
             startRecording()
     }
     fun startPlaying(){
-        playing.value = true
+
+//        try {
+//            player.setDataSource(newFile.value.file.toString())
+//            player.setOnCompletionListener { playing.value = false }
+//            player.prepare()
+//            player.start()
+//            playing.value = true
+//        }catch (e: IOException){
+//                Log.e("here", "startPlaying: ${e.localizedMessage}" )
+//            }
         player = MediaPlayer().apply {
             try{
+                playing.value = true
                 setDataSource(newFile.value.file.toString())
                 setOnCompletionListener {
                     playing.value = false
+//                    release()
+//                    player = null
                 }
                 prepare()
                 start()
@@ -144,11 +165,19 @@ fun AudioClipsScreen(
                 Log.e("here", "startPlaying: ${e.localizedMessage}" )
             }
         }
+
+        Log.d("here", "startPlaying: ${player?.duration}")
+        duration.value = player?.duration
+        playing.value = true
+        //player.prepare()
+//        player.start()
+        
     }
     fun stopPlaying(){
         playing.value = false
         player?.release()
-        player = null
+//        player?.stop()
+        //player = MediaPlayer()
     }
 
     fun onPlay(){
@@ -187,9 +216,24 @@ fun AudioClipsScreen(
         Button(onClick = { onPlay() }) {
             Text(text = if (playing.value) "Stop Playing" else "Start Playing")
         }
-        Button(onClick = { onPause() }) {
-            Text(text = if (paused.value) "Resume" else "Pause")
+
+        
+        
+        if(playing.value) {
+            Button(onClick = { onPause() }) {
+                Text(text = if (paused.value) "Resume" else "Pause")
+            }
+            Button(onClick = {
+                currentPosition.value = player?.duration
+                Log.d("here", "AudioClipsScreen: button ${player?.duration}")
+            }) {
+                Text(text = currentPosition.value.toString())
+            }
+            Text(text = duration.value.toString())
+            Slider(modifier = Modifier.fillMaxWidth(), value = 0f, onValueChange = {})
+//            LinearProgressIndicator(modifier = Modifier.fillMaxWidth(), progress = player?.currentPosition!!.toFloat())
         }
+            
 
     }
 
