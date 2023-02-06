@@ -53,11 +53,14 @@ fun AudioClipsScreen(
     }
 
     val newFile = rememberSaveable(stateSaver = fileSaver) {
-        mutableStateOf(FileInfo(File(""), Uri.EMPTY))
+        mutableStateOf(NewFileProvider.getFileUri(context, FileTypes.AudioFile))
     }
 
     var recorder: MediaRecorder? = null
-    var player: MediaPlayer? = null
+//    var player: MediaPlayer? = null
+    var player by remember{
+        mutableStateOf(MediaPlayer())
+    }
     val recording = rememberSaveable() {
         mutableStateOf(false)
     }
@@ -73,6 +76,8 @@ fun AudioClipsScreen(
     val duration = rememberSaveable() {
         mutableStateOf<Int?>(0)
     }
+
+
 
 
     val requestPermissionLauncher =
@@ -104,7 +109,7 @@ fun AudioClipsScreen(
 
 
 
-    newFile.value = NewFileProvider.getFileUri(context, FileTypes.AudioFile)
+    //newFile.value = NewFileProvider.getFileUri(context, FileTypes.AudioFile)
 
     fun startRecording() {
         recording.value = true
@@ -131,6 +136,24 @@ fun AudioClipsScreen(
             release()
         }
         recorder = null
+
+//        player = MediaPlayer().apply {
+//            try {
+////                playing.value = true
+//                setDataSource(newFile.value.file.toString())
+//                setOnCompletionListener {
+//                    playing.value = false
+////                    player?.stop()
+////                    release()
+////                    player = null
+//                    player?.reset()
+//                }
+//            } catch (e: IOException) {
+//                Log.e("here", "startPlaying: ${e.localizedMessage}")
+//            }
+//        }
+//        duration.value = player?.duration
+//        playing.value = true
     }
 
     fun onRecord (){
@@ -139,6 +162,7 @@ fun AudioClipsScreen(
         else
             startRecording()
     }
+
     fun startPlaying(){
 
 //        try {
@@ -150,13 +174,16 @@ fun AudioClipsScreen(
 //        }catch (e: IOException){
 //                Log.e("here", "startPlaying: ${e.localizedMessage}" )
 //            }
-        player = MediaPlayer().apply {
+        player.apply {
             try{
                 playing.value = true
                 setDataSource(newFile.value.file.toString())
+                Log.d("here", "startPlaying file: ${newFile.value.file}")
                 setOnCompletionListener {
                     playing.value = false
+                    reset()
 //                    release()
+
 //                    player = null
                 }
                 prepare()
@@ -165,20 +192,33 @@ fun AudioClipsScreen(
                 Log.e("here", "startPlaying: ${e.localizedMessage}" )
             }
         }
+        duration.value = player.duration
+//        player?.prepare()
+//        player?.start()
 
-        Log.d("here", "startPlaying: ${player?.duration}")
-        duration.value = player?.duration
-        playing.value = true
+//        Log.d("here", "startPlaying: ${player?.duration}")
+
+//        currentPosition = produceState(initialValue = 0){
+//            value = player!!.currentPosition
+//        }.value
+
+
+
+
+
         //player.prepare()
 //        player.start()
         
     }
     fun stopPlaying(){
         playing.value = false
-        player?.release()
+
+//        player?.release()
+        player?.reset()
 //        player?.stop()
         //player = MediaPlayer()
     }
+
 
     fun onPlay(){
         if (playing.value)
@@ -224,8 +264,8 @@ fun AudioClipsScreen(
                 Text(text = if (paused.value) "Resume" else "Pause")
             }
             Button(onClick = {
-                currentPosition.value = player?.duration
-                Log.d("here", "AudioClipsScreen: button ${player?.duration}")
+                currentPosition.value = player?.currentPosition
+                Log.d("here", "AudioClipsScreen: button duration ${player?.duration}")
             }) {
                 Text(text = currentPosition.value.toString())
             }

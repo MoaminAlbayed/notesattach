@@ -2,14 +2,19 @@ package albayed.moamin.notesattach.utils
 
 
 
+import albayed.moamin.notesattach.models.FileInfo
+import albayed.moamin.notesattach.models.FileTypes
 import android.content.Context
 import android.media.MediaMetadataRetriever
+import android.media.MediaRecorder
 import android.net.Uri
+import android.util.Log
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.OnBackPressedDispatcher
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
+import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -58,3 +63,6 @@ fun BackPressHandler(
         }
     }
 }
+
+
+
