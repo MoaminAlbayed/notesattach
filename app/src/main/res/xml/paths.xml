@@ -20,4 +20,7 @@
 <!--    <cache-path-->
 <!--        name="videos_cache"-->
 <!--        path="videos_cache/" />-->
+    <files-path
+        name="audioClips"
+        path="audioClips/"/>
 </paths>

@@ -115,14 +115,15 @@ fun NoteCard(
                     count = note.videosCount
                 ){
                     navController.navigate(Screens.VideosScreen.name + "/${note.id}")
-
                 }
                 AttachmentIcon(
                     icon = R.drawable.mic,
                     contentDescription = "Microphone Button",
                     tint = MaterialTheme.colors.primary,
                     count = note.voiceClipsCount
-                )
+                ){
+                    navController.navigate(Screens.AudioClipsScreen.name + "/${note.id}")
+                }
             }
 
             Divider(

@@ -28,10 +28,10 @@ class NewFileProvider: FileProvider(R.xml.paths){
                     folderName = "videos"
                 }
                 FileTypes.AudioFile -> {
-                    fileName = "audio_" + fileDateFormatter(
+                    fileName = "audioClip_" + fileDateFormatter(
                         Date.from(
                             Instant.now()).time) + ".mp3"//todo confirm mp3 works
-                    folderName = "audio"
+                    folderName = "audioClips"
                 }
             }
             val directory = File(context.filesDir, folderName)

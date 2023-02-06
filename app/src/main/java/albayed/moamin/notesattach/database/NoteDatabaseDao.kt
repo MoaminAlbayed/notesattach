@@ -1,5 +1,6 @@
 package albayed.moamin.notesattach.database
 
+import albayed.moamin.notesattach.models.AudioClip
 import albayed.moamin.notesattach.models.Image
 import albayed.moamin.notesattach.models.Note
 import albayed.moamin.notesattach.models.Video
@@ -23,11 +24,9 @@ interface NoteDatabaseDao {
     @Delete
     suspend fun deleteNote(note: Note)
 
+
     @Query ("SELECT * from images_table where noteId=:noteId")
     fun getAllImagesByNoteId(noteId: String): Flow<List<Image>>
-
-    @Query ("SELECT * from videos_table where noteId=:noteId")
-    fun getAllVideosByNoteId(noteId: String): Flow<List<Video>>
 
     @Insert
     suspend fun createImage(image: Image)
@@ -35,11 +34,27 @@ interface NoteDatabaseDao {
     @Delete
     suspend fun deleteImage(image: Image)
 
+
+    @Query ("SELECT * from videos_table where noteId=:noteId")
+    fun getAllVideosByNoteId(noteId: String): Flow<List<Video>>
+
     @Insert
     suspend fun createVideo(video: Video)
 
     @Delete
     suspend fun deleteVideo(video: Video)
+
+
+    @Query ("SELECT * from audio_table where noteId = :noteId")
+    fun getAllAudioClipsByNoteId (noteId: String): Flow<List<AudioClip>>
+
+    @Insert
+    suspend fun createAudioClip (audioClip: AudioClip)
+
+    @Delete
+    suspend fun deleteAudioClip (audioClip: AudioClip)
+
+
 
 
     @Query("UPDATE notes_table SET imagesCount=:imagesCount WHERE id=:noteId")
@@ -49,7 +64,7 @@ interface NoteDatabaseDao {
     suspend fun updateVideosCount (videosCount: Int, noteId: String)
 
     @Query("UPDATE notes_table SET voiceClipsCount=:voiceClipsCount WHERE id=:noteId")
-    suspend fun updateVoiceClipsCount (voiceClipsCount: Int, noteId: String)
+    suspend fun updateAudioClipsCount (voiceClipsCount: Int, noteId: String)
 
     @Query("UPDATE notes_table SET locationsCount=:locationsCount WHERE id=:noteId")
     suspend fun updateLocationsCount (locationsCount: Int, noteId: String)
@@ -64,7 +79,7 @@ interface NoteDatabaseDao {
     fun getVideosCount (noteId: String): Flow<Int>
 
     @Query ("SELECT voiceClipsCount from notes_table where id=:noteId")
-    fun getVoiceClipsCount (noteId: String): Flow<Int>
+    fun getAudioClipsCount (noteId: String): Flow<Int>
 
     @Query ("SELECT locationsCount from notes_table where id=:noteId")
     fun getLocationsCount(noteId: String): Flow<Int>

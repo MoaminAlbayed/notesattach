@@ -4,5 +4,6 @@ enum class Screens {
     MainScreen,
     NoteEditor,
     ImagesScreen,
-    VideosScreen
+    VideosScreen,
+    AudioClipsScreen,
 }
