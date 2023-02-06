@@ -11,23 +11,21 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 
 @Composable
-fun CircleCheckbox(selected: Boolean, enabled: Boolean = true, onChecked: () -> Unit) {
+fun CircleCheckbox(modifier: Modifier = Modifier, selected: Boolean, enabled: Boolean = true, onChecked: () -> Unit) {
 
-    //val color = MaterialTheme.colors.primary
     val imageVector = if (selected) R.drawable.check_circle else R.drawable.outline_circle
     val tint = if (selected) Color.Black.copy(alpha = 0.8f) else Color.White.copy(alpha = 0.8f)
     val background = if (selected) Color.White else Color.Transparent
-//    val background = Color.Transparent
 
     IconButton(
+        modifier = modifier,
         onClick = { onChecked() },
-        // modifier = Modifier.offset(x = 4.dp, y = 4.dp),
         enabled = enabled
     ) {
 
         Icon(
             painter = painterResource(id = imageVector), tint = tint,
-            modifier = Modifier.background(background, shape = CircleShape),
+            modifier = Modifier.background(color = background, shape = CircleShape),
             contentDescription = "checkbox"
         )
     }

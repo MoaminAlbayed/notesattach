@@ -11,9 +11,12 @@ import albayed.moamin.notesattach.models.Video
 import albayed.moamin.notesattach.navigation.Screens
 import albayed.moamin.notesattach.utils.BackPressHandler
 import albayed.moamin.notesattach.utils.NewFileProvider
+import albayed.moamin.notesattach.utils.videoLengthFormatter
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.media.MediaMetadataRetriever
 import android.net.Uri
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -102,6 +105,7 @@ fun VideosScreen(
     val videoViewer =
         rememberLauncherForActivityResult(contract = ActivityResultContracts.StartActivityForResult()) {
         }
+
 
     Scaffold(topBar = {
         TopBar(
