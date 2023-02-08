@@ -1,31 +1,46 @@
 package albayed.moamin.notesattach.screens.audioClips
 
+import albayed.moamin.notesattach.R
+import albayed.moamin.notesattach.components.FloatingButton
+import albayed.moamin.notesattach.components.TopBar
+import albayed.moamin.notesattach.models.AudioClip
 import albayed.moamin.notesattach.models.FileInfo
 import albayed.moamin.notesattach.models.FileTypes
+import albayed.moamin.notesattach.models.Image
+import albayed.moamin.notesattach.navigation.Screens
+import albayed.moamin.notesattach.ui.theme.NotesAttachTheme
 import albayed.moamin.notesattach.utils.NewFileProvider
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.media.MediaPlayer
 import android.media.MediaRecorder
 import android.net.Uri
 import android.util.Log
 import android.widget.SeekBar
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material.Button
-import androidx.compose.material.LinearProgressIndicator
-import androidx.compose.material.Slider
-import androidx.compose.material.Text
+import androidx.annotation.DrawableRes
+import androidx.compose.animation.*
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.mapSaver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -33,6 +48,7 @@ import kotlinx.coroutines.delay
 import java.io.File
 import java.io.IOException
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun AudioClipsScreen(
     navController: NavController,
@@ -43,27 +59,68 @@ fun AudioClipsScreen(
     val audioClips = viewModel.audioClips.collectAsState().value
     val audioClipsCount = viewModel.audioClipsCount.collectAsState().value
 
-    val fileSaver = run {
-        val fileKey = "file"
-        val uriKey = "uri"
-        mapSaver(
-            save = { mapOf(fileKey to it.file!!.absolutePath, uriKey to it.uri.toString()) },
-            restore = { FileInfo(File(it[fileKey].toString()), Uri.parse(it[uriKey].toString())) }
-        )
+    val isDeleteMode = remember {
+        mutableStateOf(false)
+    }
+    val audioClipsToDelete = remember {
+        mutableStateListOf<AudioClip>()
+    }
+    val isOpenDeleteDialog = remember {
+        mutableStateOf(false)
     }
 
-    val newFile = rememberSaveable(stateSaver = fileSaver) {
-        mutableStateOf(NewFileProvider.getFileUri(context, FileTypes.AudioFile))
+
+
+    Scaffold(
+        topBar = {
+            TopBar(
+                screen = Screens.AudioClipsScreen,
+                navController = navController,
+                firstAction = {
+                    if (audioClipsCount == 0) {
+                        Toast.makeText(context, "No Audio Clips to Delete!", Toast.LENGTH_SHORT)
+                            .show()
+                    } else if (!isDeleteMode.value) {
+                        isDeleteMode.value = true
+                    } else {
+                        if (audioClipsToDelete.isNotEmpty()) {
+                            isOpenDeleteDialog.value = true
+                        } else {
+                            isDeleteMode.value = false
+                        }
+                    }
+                }
+            ) {
+                if (isDeleteMode.value) {
+                    isDeleteMode.value = false
+                    audioClipsToDelete.clear()
+                } else {
+                    navController.popBackStack()
+                }
+            }
+        },
+        floatingActionButton = {
+            FloatingButton(icon = R.drawable.mic, contentDescription = "Use Mic Button") {
+                if (isDeleteMode.value){
+                    isDeleteMode.value = false
+                }
+
+
+
+            }
+        }
+    ) {
+
+
     }
 
-    var recorder: MediaRecorder? = null
+
+
 //    var player: MediaPlayer? = null
     var player by remember {
         mutableStateOf(MediaPlayer())
     }
-    val recording = rememberSaveable() {
-        mutableStateOf(false)
-    }
+
     val playing = rememberSaveable() {
         mutableStateOf(false)
     }
@@ -81,14 +138,14 @@ fun AudioClipsScreen(
         value = player.currentPosition.toFloat()
     }.value
 
-    var currentPositionLaunched by remember{
+    var currentPositionLaunched by remember {
         mutableStateOf(0)
     }
 
-    var currentPositionRemember = remember(player){
+    var currentPositionRemember = remember(player) {
         mutableStateOf(player.currentPosition)
     }
-    LaunchedEffect(key1 =  Unit ){
+    LaunchedEffect(key1 = Unit) {
         while (true) {
             currentPositionLaunched = player.currentPosition
             Log.d("here", "AudioClipsScreen Launched: ${player.currentPosition}")
@@ -130,99 +187,50 @@ fun AudioClipsScreen(
 
     //newFile.value = NewFileProvider.getFileUri(context, FileTypes.AudioFile)
 
-    fun startRecording() {
-        recording.value = true
-        recorder = MediaRecorder(context).apply {
-            setAudioSource(MediaRecorder.AudioSource.MIC)
-            setOutputFile(newFile.value.file)
-            setOutputFormat(MediaRecorder.OutputFormat.DEFAULT)
-            setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT)
-            try {
-                prepare()
-            } catch (e: IOException) {
-                Log.e("here", "starRecording: ${e.localizedMessage}")
-            }
-            start()
-        }
-    }
 
 
-    fun stopRecording() {
-        recording.value = false
-        recorder?.apply {
-            stop()
-            release()
-        }
-        recorder = null
-
-//        player = MediaPlayer().apply {
+    fun startPlaying() {
+//
+////        try {
+////            player.setDataSource(newFile.value.file.toString())
+////            player.setOnCompletionListener { playing.value = false }
+////            player.prepare()
+////            player.start()
+////            playing.value = true
+////        }catch (e: IOException){
+////                Log.e("here", "startPlaying: ${e.localizedMessage}" )
+////            }
+//        player.apply {
 //            try {
-////                playing.value = true
+//                playing.value = true
 //                setDataSource(newFile.value.file.toString())
+//                Log.d("here", "startPlaying file: ${newFile.value.file}")
 //                setOnCompletionListener {
 //                    playing.value = false
-////                    player?.stop()
+//                    reset()
 ////                    release()
+//
 ////                    player = null
-//                    player?.reset()
 //                }
+//                prepare()
+//                start()
 //            } catch (e: IOException) {
 //                Log.e("here", "startPlaying: ${e.localizedMessage}")
 //            }
 //        }
-//        duration.value = player?.duration
-//        playing.value = true
-    }
-
-    fun onRecord() {
-        if (recording.value)
-            stopRecording()
-        else
-            startRecording()
-    }
-
-    fun startPlaying() {
-
-//        try {
-//            player.setDataSource(newFile.value.file.toString())
-//            player.setOnCompletionListener { playing.value = false }
-//            player.prepare()
-//            player.start()
-//            playing.value = true
-//        }catch (e: IOException){
-//                Log.e("here", "startPlaying: ${e.localizedMessage}" )
-//            }
-        player.apply {
-            try {
-                playing.value = true
-                setDataSource(newFile.value.file.toString())
-                Log.d("here", "startPlaying file: ${newFile.value.file}")
-                setOnCompletionListener {
-                    playing.value = false
-                    reset()
-//                    release()
-
-//                    player = null
-                }
-                prepare()
-                start()
-            } catch (e: IOException) {
-                Log.e("here", "startPlaying: ${e.localizedMessage}")
-            }
-        }
-        duration.value = player.duration
-//        player?.prepare()
-//        player?.start()
-
-//        Log.d("here", "startPlaying: ${player?.duration}")
-
-//        currentPosition = produceState(initialValue = 0){
-//            value = player!!.currentPosition
-//        }.value
-
-
-        //player.prepare()
-//        player.start()
+//        duration.value = player.duration
+////        player?.prepare()
+////        player?.start()
+//
+////        Log.d("here", "startPlaying: ${player?.duration}")
+//
+////        currentPosition = produceState(initialValue = 0){
+////            value = player!!.currentPosition
+////        }.value
+//
+//
+//        //player.prepare()
+////        player.start()
 
     }
 
@@ -260,17 +268,12 @@ fun AudioClipsScreen(
             pausePlaying()
     }
 
-
-
-
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Button(onClick = { onRecord() }) {
-            Text(text = if (recording.value) "Stop Recording" else "Start Recording")
-        }
+
         Button(onClick = {
             onPlay()
         }) {
@@ -294,7 +297,9 @@ fun AudioClipsScreen(
 //            Text(text = currentPositionState.toString())
             Text(text = "remember: ${currentPositionRemember.value}")
             Slider(
-                modifier = Modifier.fillMaxWidth(), value = currentPositionLaunched.toFloat(), onValueChange = {
+                modifier = Modifier.fillMaxWidth(),
+                value = currentPositionLaunched.toFloat(),
+                onValueChange = {
 
                 },
                 valueRange = (0f..player.duration.toFloat())
@@ -304,4 +309,83 @@ fun AudioClipsScreen(
 
     }
 
+}
+
+@Preview
+@Composable
+fun AudioClipCard(onClick: () -> Unit = {}) {
+    NotesAttachTheme() {//todo remove theme
+
+
+        var playing by remember { mutableStateOf(false) }
+        val icon = if (playing) R.drawable.stop_button else R.drawable.play_button
+        val buttonContentDescription = if (playing) "Stop Playing Button" else "Play Button"
+        Card(
+            modifier = Modifier
+                .padding(5.dp)
+                .height(100.dp)
+                .fillMaxWidth(),
+            //.clickable { onClick.invoke() },
+            shape = RoundedCornerShape(5.dp),
+            border = BorderStroke(2.dp, color = MaterialTheme.colors.primary),
+            elevation = 5.dp
+        ) {
+            Row {
+                IconButton(
+                    modifier = Modifier.align(Alignment.CenterVertically),
+                    onClick = { /*TODO onPlay*/
+                        playing = !playing
+                    }) {
+                    Icon(
+                        painter = painterResource(id = icon),
+                        contentDescription = buttonContentDescription
+                    )
+                }
+                Divider(
+                    modifier = Modifier
+                        .width(2.dp)
+                        .fillMaxHeight(0.9f)
+                        .align(Alignment.CenterVertically),
+                    color = MaterialTheme.colors.primary
+                )
+                Column(
+                    modifier = Modifier
+                        .padding(5.dp)
+                        .fillMaxHeight(),
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        text = "Created: 01/02/2023 15:16",
+                        fontSize = 14.sp
+                    )
+                    Text(
+                        text = "Length: 4:02",
+                        fontSize = 14.sp
+                    )
+                    AnimatedVisibility(//todo make text on top of slider move smoothly
+                        visible = playing,
+                        enter =
+                        slideInVertically(initialOffsetY = { it }),
+                        //expandVertically(expandFrom = Alignment.Bottom) +
+
+                        exit =
+                        //fadeOut() +
+                        slideOutVertically(targetOffsetY = { it })
+                    ) {
+                        Slider(
+                            modifier = Modifier.fillMaxWidth(),
+                            value = 0f,
+                            onValueChange = {},
+                            valueRange = (0f..100f),
+                            colors = SliderDefaults.colors(
+                                thumbColor = MaterialTheme.colors.primary,
+                                activeTrackColor = MaterialTheme.colors.primary
+                            )
+                        )
+                    }
+
+                }
+            }
+        }
+    }
 }

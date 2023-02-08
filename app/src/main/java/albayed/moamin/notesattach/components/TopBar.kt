@@ -102,6 +102,50 @@ fun TopBar(
                 }
             )
         }
+        Screens.AudioClipsScreen -> {
+            TopAppBar(title = {
+                Text(text = "Audio Clips Viewer")
+            },
+                navigationIcon = {
+                    IconButton(onClick = { onClick.invoke() }) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = "Back Button"
+                        )
+                    }
+                },
+                actions = {
+                    IconButton(onClick = { firstAction.invoke() }) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.trash),
+                            contentDescription = "Delete Button"
+                        )
+                    }
+                }
+            )
+        }
+        Screens.RecordAudioScreen -> {
+            TopAppBar(title = {
+                Text(text = "Record a Clip")
+            },
+                navigationIcon = {
+                    IconButton(onClick = { onClick.invoke() }) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = "Back Button"
+                        )
+                    }
+                },
+//                actions = {
+//                    IconButton(onClick = { firstAction.invoke() }) {
+//                        Icon(
+//                            painter = painterResource(id = R.drawable.trash),
+//                            contentDescription = "Delete Button"
+//                        )
+//                    }
+//                }
+            )
+        }
         else -> {}
     }
 

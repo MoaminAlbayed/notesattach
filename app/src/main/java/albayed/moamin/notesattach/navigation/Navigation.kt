@@ -2,6 +2,7 @@ package albayed.moamin.notesattach.navigation
 
 import albayed.moamin.notesattach.screens.mainscreen.MainScreen
 import albayed.moamin.notesattach.screens.audioClips.AudioClipsScreen
+import albayed.moamin.notesattach.screens.audioClips.RecordAudioScreen
 import albayed.moamin.notesattach.screens.images.ImagesScreen
 import albayed.moamin.notesattach.screens.noteEditor.NoteEditor
 import albayed.moamin.notesattach.screens.videos.VideosScreen
@@ -72,6 +73,17 @@ fun Navigation() {
         ) { navBackStack ->
             val noteId = navBackStack.arguments?.getString("noteId")
             AudioClipsScreen(navController = navController, noteId = noteId.toString())
+        }
+        composable(route = Screens.RecordAudioScreen.name + "/{noteId}",
+            arguments = listOf(
+                navArgument(name = "noteId") {
+                    type = NavType.StringType
+                }
+            )
+        ) {navBackStack ->
+            val noteId = navBackStack.arguments?.getString("noteId")
+            RecordAudioScreen(navController = navController, noteId = noteId.toString())
+
         }
     }
 }

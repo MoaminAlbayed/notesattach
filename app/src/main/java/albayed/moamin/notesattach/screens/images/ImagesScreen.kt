@@ -49,7 +49,7 @@ fun ImagesScreen(//right now using GlideImage with old GetContent() for getting 
     val context = LocalContext.current
     val imagesList = viewModel.images.collectAsState().value
     val imagesCount = viewModel.imagesCount.collectAsState().value
-    var hasImage by remember {
+    var hasImage by remember {//todo remove this probably not needed
         mutableStateOf(false)
     }
     val isViewImage = remember {
