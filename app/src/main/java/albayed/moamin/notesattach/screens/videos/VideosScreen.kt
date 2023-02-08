@@ -1,10 +1,7 @@
 package albayed.moamin.notesattach.screens.videos
 
 import albayed.moamin.notesattach.R
-import albayed.moamin.notesattach.components.FloatingButton
-import albayed.moamin.notesattach.components.ImageElement
-import albayed.moamin.notesattach.components.TopBar
-import albayed.moamin.notesattach.components.VideoElement
+import albayed.moamin.notesattach.components.*
 import albayed.moamin.notesattach.models.FileInfo
 import albayed.moamin.notesattach.models.FileTypes
 import albayed.moamin.notesattach.models.Video
@@ -180,40 +177,62 @@ fun VideosScreen(
         }
     }
     if (isOpenDeleteDialog.value) {
-        AlertDialog(onDismissRequest = { isOpenDeleteDialog.value = false },
-            buttons = {
-                TextButton(onClick = {
-                    videosToDelete.forEach { video ->
-                        viewModel.deleteVideo(video)
-                    }
-                    viewModel.updateVideosCount(
-                        videosCount = videosCount - videosToDelete.size,
-                        noteId = noteId
-                    )
-                    videosToDelete.clear()
-                    isOpenDeleteDialog.value = false
-                    isDeleteMode.value = false
-                }) {
-                    Text(text = "Yes", style = MaterialTheme.typography.button)
+        DeleteAlert(
+            isOpenDeleteDialog = isOpenDeleteDialog,
+            onClickYes = {
+                videosToDelete.forEach { video ->
+                    viewModel.deleteVideo(video)
                 }
-                TextButton(onClick = {
-                    isOpenDeleteDialog.value = false
-                    videosToDelete.clear()
-                    isDeleteMode.value = false
-                }) {
-                    Text(text = "No", style = MaterialTheme.typography.button)
-                }
-            },
-            title = {
-                Text(text = "Deleting Images", style = MaterialTheme.typography.h6)
-            },
-            text = {
-                Text(
-                    text = "Are you sure you want to delete ${videosToDelete.size} video(s)?",
-                    style = MaterialTheme.typography.body1
+                viewModel.updateVideosCount(
+                    videosCount = videosCount - videosToDelete.size,
+                    noteId = noteId
                 )
-            }
+                videosToDelete.clear()
+                isOpenDeleteDialog.value = false
+                isDeleteMode.value = false
+            },
+            onClickNo = {
+                isOpenDeleteDialog.value = false
+                videosToDelete.clear()
+                isDeleteMode.value = false
+            },
+            title = "Deleting Images",
+            text = "Are you sure you want to delete ${videosToDelete.size} video(s)?"
         )
+//        AlertDialog(onDismissRequest = { isOpenDeleteDialog.value = false },
+//            buttons = {
+//                TextButton(onClick = {
+//                    videosToDelete.forEach { video ->
+//                        viewModel.deleteVideo(video)
+//                    }
+//                    viewModel.updateVideosCount(
+//                        videosCount = videosCount - videosToDelete.size,
+//                        noteId = noteId
+//                    )
+//                    videosToDelete.clear()
+//                    isOpenDeleteDialog.value = false
+//                    isDeleteMode.value = false
+//                }) {
+//                    Text(text = "Yes", style = MaterialTheme.typography.button)
+//                }
+//                TextButton(onClick = {
+//                    isOpenDeleteDialog.value = false
+//                    videosToDelete.clear()
+//                    isDeleteMode.value = false
+//                }) {
+//                    Text(text = "No", style = MaterialTheme.typography.button)
+//                }
+//            },
+//            title = {
+//                Text(text = "Deleting Images", style = MaterialTheme.typography.h6)
+//            },
+//            text = {
+//                Text(
+//                    text = "Are you sure you want to delete ${videosToDelete.size} video(s)?",
+//                    style = MaterialTheme.typography.body1
+//                )
+//            }
+//        )
     }
     fun backToMainScreen() {
         if (isDeleteMode.value) {

@@ -52,8 +52,8 @@ class NoteRepository @Inject constructor(private val noteDatabaseDao: NoteDataba
     suspend fun updateVideosCount(videosCount: Int, noteId: String) =
         noteDatabaseDao.updateVideosCount(videosCount, noteId)
 
-    suspend fun updateAudioClipsCount(voiceClipsCount: Int, noteId: String) =
-        noteDatabaseDao.updateAudioClipsCount(voiceClipsCount, noteId)
+    suspend fun updateAudioClipsCount(audioClipsCount: Int, noteId: String) =
+        noteDatabaseDao.updateAudioClipsCount(audioClipsCount, noteId)
 
     suspend fun updateLocationsCount(locationsCount: Int, noteId: String) =
         noteDatabaseDao.updateLocationsCount(locationsCount, noteId)

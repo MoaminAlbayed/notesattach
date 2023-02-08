@@ -12,7 +12,7 @@ import albayed.moamin.notesattach.utils.UUIDConverter
 import albayed.moamin.notesattach.utils.UriConverter
 import androidx.room.RoomDatabase
 
-@Database(entities = [Note::class, Image::class, Video::class, AudioClip::class], version = 7, exportSchema = false)
+@Database(entities = [Note::class, Image::class, Video::class, AudioClip::class], version = 8, exportSchema = false)
 @TypeConverters(DateConverter::class, UUIDConverter::class, UriConverter::class, FileConverter::class)
 abstract class NoteDatabase: RoomDatabase() {
     abstract fun noteDao(): NoteDatabaseDao

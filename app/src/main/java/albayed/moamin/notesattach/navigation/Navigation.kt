@@ -1,11 +1,10 @@
 package albayed.moamin.notesattach.navigation
 
-import albayed.moamin.notesattach.screens.MainScreen
+import albayed.moamin.notesattach.screens.mainscreen.MainScreen
 import albayed.moamin.notesattach.screens.audioClips.AudioClipsScreen
 import albayed.moamin.notesattach.screens.images.ImagesScreen
 import albayed.moamin.notesattach.screens.noteEditor.NoteEditor
 import albayed.moamin.notesattach.screens.videos.VideosScreen
-import android.icu.text.MessagePattern.ArgType
 import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavType

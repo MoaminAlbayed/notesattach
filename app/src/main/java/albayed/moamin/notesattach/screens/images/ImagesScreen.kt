@@ -1,6 +1,7 @@
 package albayed.moamin.notesattach.screens.images
 
 import albayed.moamin.notesattach.R
+import albayed.moamin.notesattach.components.DeleteAlert
 import albayed.moamin.notesattach.components.FloatingButton
 import albayed.moamin.notesattach.components.ImageElement
 import albayed.moamin.notesattach.components.TopBar
@@ -174,7 +175,9 @@ fun ImagesScreen(//right now using GlideImage with old GetContent() for getting 
         }) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             LazyVerticalGrid(
-                modifier = Modifier.fillMaxSize().padding(start = 6.dp, end = 6.dp),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(start = 6.dp, end = 6.dp),
                 columns = GridCells.Adaptive(minSize = 128.dp)
             ) {
                 items(imagesList) { image ->
@@ -203,38 +206,60 @@ fun ImagesScreen(//right now using GlideImage with old GetContent() for getting 
         }
     }
     if (isOpenDeleteDialog.value) {
-        AlertDialog(onDismissRequest = { isOpenDeleteDialog.value = false },
-            buttons = {
-                TextButton(onClick = {
-                    imagesToDelete.forEach { image ->
-                        viewModel.deleteImage(image)
-                    }
-                    viewModel.updateImagesCount(
-                        imagesCount = imagesCount - imagesToDelete.size,
-                        noteId = noteId
-                    )
-                    imagesToDelete.clear()
-                    isOpenDeleteDialog.value = false
-                    isDeleteMode.value = false
-                }) {
-                    Text(text = "Yes", style = MaterialTheme.typography.button)
+        DeleteAlert(
+            isOpenDeleteDialog = isOpenDeleteDialog,
+            onClickYes = {
+                imagesToDelete.forEach { image ->
+                    viewModel.deleteImage(image)
                 }
-                TextButton(onClick = {
-                    isOpenDeleteDialog.value = false
-                    imagesToDelete.clear()
-                    isDeleteMode.value = false
-                }) {
-                    Text(text = "No", style = MaterialTheme.typography.button)
-                }
+                viewModel.updateImagesCount(
+                    imagesCount = imagesCount - imagesToDelete.size,
+                    noteId = noteId
+                )
+                imagesToDelete.clear()
+                isOpenDeleteDialog.value = false
+                isDeleteMode.value = false
             },
-            title = {
-                Text(text = "Deleting Images", style = MaterialTheme.typography.h6)
+            onClickNo = {
+                isOpenDeleteDialog.value = false
+                imagesToDelete.clear()
+                isDeleteMode.value = false
             },
-            text = {
-                Text(text = "Are you sure you want to delete ${imagesToDelete.size} image(s)?",
-                    style = MaterialTheme.typography.body1)
-            }
+            title = "Deleting Images",
+            text = "Are you sure you want to delete ${imagesToDelete.size} image(s)?"
         )
+//        AlertDialog(onDismissRequest = { isOpenDeleteDialog.value = false },
+//            buttons = {
+//                TextButton(onClick = {
+//                    imagesToDelete.forEach { image ->
+//                        viewModel.deleteImage(image)
+//                    }
+//                    viewModel.updateImagesCount(
+//                        imagesCount = imagesCount - imagesToDelete.size,
+//                        noteId = noteId
+//                    )
+//                    imagesToDelete.clear()
+//                    isOpenDeleteDialog.value = false
+//                    isDeleteMode.value = false
+//                }) {
+//                    Text(text = "Yes", style = MaterialTheme.typography.button)
+//                }
+//                TextButton(onClick = {
+//                    isOpenDeleteDialog.value = false
+//                    imagesToDelete.clear()
+//                    isDeleteMode.value = false
+//                }) {
+//                    Text(text = "No", style = MaterialTheme.typography.button)
+//                }
+//            },
+//            title = {
+//                Text(text = "Deleting Images", style = MaterialTheme.typography.h6)
+//            },
+//            text = {
+//                Text(text = "Are you sure you want to delete ${imagesToDelete.size} image(s)?",
+//                    style = MaterialTheme.typography.body1)
+//            }
+//        )
     }
     fun backToMainScreen() {
         if (isDeleteMode.value) {

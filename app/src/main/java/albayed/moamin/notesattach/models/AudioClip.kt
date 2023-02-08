@@ -11,6 +11,7 @@ data class AudioClip(
     @PrimaryKey
     val audioId: UUID = UUID.randomUUID(),
     val noteId: String,
+    val duration: Int,
     val uri: Uri,
     val file: File
 )

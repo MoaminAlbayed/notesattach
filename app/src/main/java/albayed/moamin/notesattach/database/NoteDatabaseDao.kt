@@ -63,8 +63,8 @@ interface NoteDatabaseDao {
     @Query("UPDATE notes_table SET videosCount=:videosCount WHERE id=:noteId")
     suspend fun updateVideosCount (videosCount: Int, noteId: String)
 
-    @Query("UPDATE notes_table SET voiceClipsCount=:voiceClipsCount WHERE id=:noteId")
-    suspend fun updateAudioClipsCount (voiceClipsCount: Int, noteId: String)
+    @Query("UPDATE notes_table SET audioClipsCount=:audioClipsCount WHERE id=:noteId")
+    suspend fun updateAudioClipsCount (audioClipsCount: Int, noteId: String)
 
     @Query("UPDATE notes_table SET locationsCount=:locationsCount WHERE id=:noteId")
     suspend fun updateLocationsCount (locationsCount: Int, noteId: String)
@@ -78,7 +78,7 @@ interface NoteDatabaseDao {
     @Query ("SELECT videosCount from notes_table where id=:noteId")
     fun getVideosCount (noteId: String): Flow<Int>
 
-    @Query ("SELECT voiceClipsCount from notes_table where id=:noteId")
+    @Query ("SELECT audioClipsCount from notes_table where id=:noteId")
     fun getAudioClipsCount (noteId: String): Flow<Int>
 
     @Query ("SELECT locationsCount from notes_table where id=:noteId")

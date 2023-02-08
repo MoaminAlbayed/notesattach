@@ -58,7 +58,7 @@ fun AudioClipsScreen(
 
     var recorder: MediaRecorder? = null
 //    var player: MediaPlayer? = null
-    var player by remember{
+    var player by remember {
         mutableStateOf(MediaPlayer())
     }
     val recording = rememberSaveable() {
@@ -77,7 +77,27 @@ fun AudioClipsScreen(
         mutableStateOf<Int?>(0)
     }
 
+    val currentPositionState = produceState(initialValue = 0f) {
+        value = player.currentPosition.toFloat()
+    }.value
 
+    var currentPositionLaunched by remember{
+        mutableStateOf(0)
+    }
+
+    var currentPositionRemember = remember(player){
+        mutableStateOf(player.currentPosition)
+    }
+    LaunchedEffect(key1 =  Unit ){
+        while (true) {
+            currentPositionLaunched = player.currentPosition
+            Log.d("here", "AudioClipsScreen Launched: ${player.currentPosition}")
+            delay(1000)
+        }
+    }
+    val sliderValue by remember {
+        mutableStateOf(0f)
+    }
 
 
     val requestPermissionLauncher =
@@ -108,7 +128,6 @@ fun AudioClipsScreen(
     }
 
 
-
     //newFile.value = NewFileProvider.getFileUri(context, FileTypes.AudioFile)
 
     fun startRecording() {
@@ -120,13 +139,12 @@ fun AudioClipsScreen(
             setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT)
             try {
                 prepare()
-            } catch (e: IOException){
-                Log.e("here", "starRecording: ${e.localizedMessage}" )
+            } catch (e: IOException) {
+                Log.e("here", "starRecording: ${e.localizedMessage}")
             }
             start()
         }
     }
-
 
 
     fun stopRecording() {
@@ -156,14 +174,14 @@ fun AudioClipsScreen(
 //        playing.value = true
     }
 
-    fun onRecord (){
+    fun onRecord() {
         if (recording.value)
             stopRecording()
         else
             startRecording()
     }
 
-    fun startPlaying(){
+    fun startPlaying() {
 
 //        try {
 //            player.setDataSource(newFile.value.file.toString())
@@ -175,7 +193,7 @@ fun AudioClipsScreen(
 //                Log.e("here", "startPlaying: ${e.localizedMessage}" )
 //            }
         player.apply {
-            try{
+            try {
                 playing.value = true
                 setDataSource(newFile.value.file.toString())
                 Log.d("here", "startPlaying file: ${newFile.value.file}")
@@ -188,8 +206,8 @@ fun AudioClipsScreen(
                 }
                 prepare()
                 start()
-            }catch (e: IOException){
-                Log.e("here", "startPlaying: ${e.localizedMessage}" )
+            } catch (e: IOException) {
+                Log.e("here", "startPlaying: ${e.localizedMessage}")
             }
         }
         duration.value = player.duration
@@ -203,14 +221,12 @@ fun AudioClipsScreen(
 //        }.value
 
 
-
-
-
         //player.prepare()
 //        player.start()
-        
+
     }
-    fun stopPlaying(){
+
+    fun stopPlaying() {
         playing.value = false
 
 //        player?.release()
@@ -220,24 +236,25 @@ fun AudioClipsScreen(
     }
 
 
-    fun onPlay(){
+    fun onPlay() {
         if (playing.value)
             stopPlaying()
         else
             startPlaying()
     }
 
-    fun resumePlaying(){
+    fun resumePlaying() {
         player?.start()
         paused.value = false
     }
-    fun pausePlaying(){
+
+    fun pausePlaying() {
         player?.pause()
         paused.value = true
     }
 
-    fun onPause (){
-        if(paused.value)
+    fun onPause() {
+        if (paused.value)
             resumePlaying()
         else
             pausePlaying()
@@ -246,34 +263,44 @@ fun AudioClipsScreen(
 
 
 
-    Column(modifier = Modifier.fillMaxSize(),
+    Column(
+        modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Button(onClick = { onRecord() }) {
             Text(text = if (recording.value) "Stop Recording" else "Start Recording")
         }
-        Button(onClick = { onPlay() }) {
+        Button(onClick = {
+            onPlay()
+        }) {
             Text(text = if (playing.value) "Stop Playing" else "Start Playing")
         }
 
-        
-        
-        if(playing.value) {
+
+        Log.d("here", "AudioClipsScreen positionState: $currentPositionState ")
+        if (playing.value) {
             Button(onClick = { onPause() }) {
                 Text(text = if (paused.value) "Resume" else "Pause")
             }
+
             Button(onClick = {
                 currentPosition.value = player?.currentPosition
                 Log.d("here", "AudioClipsScreen: button duration ${player?.duration}")
             }) {
                 Text(text = currentPosition.value.toString())
             }
-            Text(text = duration.value.toString())
-            Slider(modifier = Modifier.fillMaxWidth(), value = 0f, onValueChange = {})
-//            LinearProgressIndicator(modifier = Modifier.fillMaxWidth(), progress = player?.currentPosition!!.toFloat())
+//            Text(text = currentPositionLaunched.toString())
+//            Text(text = currentPositionState.toString())
+            Text(text = "remember: ${currentPositionRemember.value}")
+            Slider(
+                modifier = Modifier.fillMaxWidth(), value = currentPositionLaunched.toFloat(), onValueChange = {
+
+                },
+                valueRange = (0f..player.duration.toFloat())
+            )
         }
-            
+
 
     }
 

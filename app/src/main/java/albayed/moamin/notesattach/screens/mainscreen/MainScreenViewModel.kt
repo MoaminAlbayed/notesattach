@@ -1,5 +1,6 @@
 package albayed.moamin.notesattach.screens.mainscreen
 
+import albayed.moamin.notesattach.models.AudioClip
 import albayed.moamin.notesattach.models.Image
 import albayed.moamin.notesattach.models.Note
 import albayed.moamin.notesattach.models.Video
@@ -33,8 +34,10 @@ class MainScreenViewModel @Inject constructor(private val noteRepository: NoteRe
     fun deleteNote(note: Note) = viewModelScope.launch {
         if (note.imagesCount > 0)
             deleteAllImages(note)
-        if (note.imagesCount > 0)
+        if (note.videosCount > 0)
             deleteAllVideos(note)
+        if (note.audioClipsCount > 0)
+            deleteAllAudioClips(note)
         noteRepository.deleteNote(note)
     }//TODO loop through all attachments to delete
 
@@ -59,6 +62,18 @@ class MainScreenViewModel @Inject constructor(private val noteRepository: NoteRe
             }
             videos.value.forEach { video ->
                 noteRepository.deleteVideo(video)
+            }
+        }
+    }
+
+    private fun deleteAllAudioClips(note: Note){
+        val audioClips = MutableStateFlow<List<AudioClip>>(emptyList())
+        viewModelScope.launch (Dispatchers.IO){
+            noteRepository.getAllAudioClipsByNoteId(note.id.toString()).collect(){
+                audioClips.value = it
+            }
+            audioClips.value.forEach { audioClip ->
+                noteRepository.deleteAudioClip(audioClip)
             }
         }
     }
