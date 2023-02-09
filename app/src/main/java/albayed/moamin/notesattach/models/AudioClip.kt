@@ -10,7 +10,7 @@ import java.util.*
 @Entity (tableName = "audio_table")
 data class AudioClip(
     @PrimaryKey
-    val audioId: UUID = UUID.randomUUID(),
+    val audioClipId: UUID = UUID.randomUUID(),
     val noteId: String,
     val duration: Int,
     val uri: Uri,

@@ -59,7 +59,7 @@ fun AudioClipsScreen(
         mutableStateOf(false)
     }
 
-    var player by remember {
+    val player by remember {
         mutableStateOf(MediaPlayer())
     }
     var isPlaying by rememberSaveable() {
@@ -67,6 +67,10 @@ fun AudioClipsScreen(
     }
     var isPaused by rememberSaveable() {
         mutableStateOf(false)
+    }
+
+    var audioClipCurrentlyPlaying = remember {
+        mutableStateOf<File?>(null)
     }
 
     val requestPermissionLauncher =
@@ -95,7 +99,7 @@ fun AudioClipsScreen(
             requestPermissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
         }
     }
-    fun startPlaying(file: File, cardIdPlaying: MutableState<Boolean>) {
+    fun startPlaying(file: File) {
 //
 ////        try {
 ////            player.setDataSource(newFile.value.file.toString())
@@ -113,13 +117,12 @@ fun AudioClipsScreen(
                 setOnCompletionListener {
                     reset()
                     isPlaying = false
-                    cardIdPlaying.value = false
+                    audioClipCurrentlyPlaying.value = null
 ////                    release()
 ////                    player = null
                 }
                 prepare()
                 start()
-                cardIdPlaying.value = true
             } catch (e: IOException) {
                 Log.e("here", "startPlaying: ${e.localizedMessage}")
             }
@@ -139,10 +142,11 @@ fun AudioClipsScreen(
 
     }
 
-    fun stopPlaying(cardIdPlaying: MutableState<Boolean>) {
+    fun stopPlaying() {
         player.reset()
-        isPlaying = false
-        cardIdPlaying.value = false
+//        isPlaying = false
+//        cardIdPlaying.value = false
+//        audioClipCurrentlyPlaying.value = null
 //        player = null
 
 //        player?.release()
@@ -151,11 +155,12 @@ fun AudioClipsScreen(
     }
 
 
-    fun onPlay(file: File, cardIdPlaying: MutableState<Boolean>) {
-        if (isPlaying)
-            stopPlaying(cardIdPlaying)
-        else
-            startPlaying(file, cardIdPlaying)
+    fun onPlay(file: File) {
+        if (isPlaying) {
+            stopPlaying()
+            startPlaying(file)
+        } else
+            startPlaying(file)
     }
 
     fun resumePlaying() {
@@ -225,6 +230,7 @@ fun AudioClipsScreen(
                     audioClip = audioClip,
                     isDeleteMode = isDeleteMode,
                     isNewDeleteProcess = audioClipsToDelete.isEmpty(),
+                    audioClipCurrentlyPlaying = audioClipCurrentlyPlaying,
                     checkedDelete = { checkedDelete ->
                         if (checkedDelete.value) {
                             checkedDelete.value = !checkedDelete.value
@@ -234,13 +240,15 @@ fun AudioClipsScreen(
                             audioClipsToDelete.add(audioClip)
                         }
                     }
-                ) { file, cardIsPlaying ->
-                    if (!isPlaying) {
-                        if (audioClip.file == file) {
-                            onPlay(file, cardIsPlaying)
-                            isPlaying = true
-                            cardIsPlaying.value = true
-                        }
+                ) { file ->
+                    if (isPlaying && file == audioClipCurrentlyPlaying.value) {
+                        stopPlaying()
+                        isPlaying = false
+                        audioClipCurrentlyPlaying.value = null
+                    } else {
+                        onPlay(file)
+                        isPlaying = true
+                        audioClipCurrentlyPlaying.value = audioClip.file
                     }
                 }
             }

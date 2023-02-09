@@ -33,10 +33,12 @@ fun AudioClipCard(
     isDeleteMode: MutableState<Boolean>,
     isNewDeleteProcess: Boolean,
     checkedDelete: (MutableState<Boolean>) -> Unit,
-    onClick: (audioFile: File, cardIsPlaying: MutableState<Boolean>) -> Unit
+    audioClipCurrentlyPlaying: MutableState<File?>,
+    onClick: (audioFile: File) -> Unit
 ) {
     val audioFile = audioClip.file
     val isPlaying = remember { mutableStateOf(false) }
+    isPlaying.value = audioFile == audioClipCurrentlyPlaying.value
     val icon = if (isPlaying.value) R.drawable.stop_button else R.drawable.play_button
     val buttonContentDescription = if (isPlaying.value) "Stop Playing Button" else "Play Button"
 
@@ -78,7 +80,7 @@ fun AudioClipCard(
                 IconButton(
                     modifier = Modifier.align(Alignment.CenterVertically),
                     onClick = {
-                        onClick(audioFile, isPlaying)
+                        onClick(audioFile)
 //                    isPlaying.value = !isPlaying.value
                     }) {
                     Icon(
