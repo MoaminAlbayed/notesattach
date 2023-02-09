@@ -99,19 +99,20 @@ fun RecordAudioScreen(
                 stopRecording()
             } else if (!recorded) {
                 newFile.value.file.delete()
+                navController.popBackStack()
             }
-            navController.popBackStack()
+
 
         }
     }) {
-
+        Button(onClick = {
+            onRecord()
+        }) {
+            Text(text = if (isRecording.value) "Stop" else "Start")
+        }
     }
 
-    Button(onClick = {
-        onRecord()
-    }) {
-        Text(text = if (isRecording.value) "Stop" else "Start")
-    }
+
 
 
 }

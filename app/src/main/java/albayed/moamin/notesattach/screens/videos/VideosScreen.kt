@@ -148,7 +148,7 @@ fun VideosScreen(
                     .padding(start = 6.dp, end = 6.dp),
                 columns = GridCells.Adaptive(minSize = 128.dp)
             ) {
-                items(videosList) { video ->
+                items(videosList.asReversed()) { video ->
                     VideoElement(
                         isViewVideo = isViewVideo,
                         viewVideoUri = viewVideoUri,
@@ -199,40 +199,6 @@ fun VideosScreen(
             title = "Deleting Images",
             text = "Are you sure you want to delete ${videosToDelete.size} video(s)?"
         )
-//        AlertDialog(onDismissRequest = { isOpenDeleteDialog.value = false },
-//            buttons = {
-//                TextButton(onClick = {
-//                    videosToDelete.forEach { video ->
-//                        viewModel.deleteVideo(video)
-//                    }
-//                    viewModel.updateVideosCount(
-//                        videosCount = videosCount - videosToDelete.size,
-//                        noteId = noteId
-//                    )
-//                    videosToDelete.clear()
-//                    isOpenDeleteDialog.value = false
-//                    isDeleteMode.value = false
-//                }) {
-//                    Text(text = "Yes", style = MaterialTheme.typography.button)
-//                }
-//                TextButton(onClick = {
-//                    isOpenDeleteDialog.value = false
-//                    videosToDelete.clear()
-//                    isDeleteMode.value = false
-//                }) {
-//                    Text(text = "No", style = MaterialTheme.typography.button)
-//                }
-//            },
-//            title = {
-//                Text(text = "Deleting Images", style = MaterialTheme.typography.h6)
-//            },
-//            text = {
-//                Text(
-//                    text = "Are you sure you want to delete ${videosToDelete.size} video(s)?",
-//                    style = MaterialTheme.typography.body1
-//                )
-//            }
-//        )
     }
     fun backToMainScreen() {
         if (isDeleteMode.value) {

@@ -59,7 +59,6 @@ fun VideoElement(
                     onTap = {
                         if (isDeleteMode.value) {
                             checkedDelete(isSelected)
-                            Log.d("click", "ImageElement: ${isSelected.value}")
                         } else {
                             isViewVideo.value = true
                             viewVideoUri.value = video.uri
@@ -105,6 +104,7 @@ fun VideoElement(
                 top.linkTo(parent.top)
                 start.linkTo(parent.start)
             }, selected = isSelected.value) {
+                checkedDelete(isSelected)
             }
         }
     }

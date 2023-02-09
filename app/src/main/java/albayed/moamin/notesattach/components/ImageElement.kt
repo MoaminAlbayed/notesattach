@@ -90,6 +90,7 @@ fun ImageElement(
         )
         if (isDeleteMode.value) {
             CircleCheckbox(selected = isSelected.value) {
+                checkedDelete(isSelected)
             }
         }
     }

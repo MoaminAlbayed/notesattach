@@ -180,7 +180,7 @@ fun ImagesScreen(//right now using GlideImage with old GetContent() for getting 
                     .padding(start = 6.dp, end = 6.dp),
                 columns = GridCells.Adaptive(minSize = 128.dp)
             ) {
-                items(imagesList) { image ->
+                items(imagesList.asReversed()) { image ->
                     ImageElement(
                         isViewImage = isViewImage,
                         viewImageUri = viewImageUri,
