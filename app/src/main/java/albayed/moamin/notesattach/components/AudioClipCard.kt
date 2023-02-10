@@ -30,10 +30,13 @@ import java.io.File
 @Composable
 fun AudioClipCard(
     audioClip: AudioClip,
+    duration: Float?,
     isDeleteMode: MutableState<Boolean>,
     isNewDeleteProcess: Boolean,
     checkedDelete: (MutableState<Boolean>) -> Unit,
     audioClipCurrentlyPlaying: MutableState<File?>,
+    currentPosition: MutableState<Float?>,
+    seekTo: (Float) -> Unit,
     onClick: (audioFile: File) -> Unit
 ) {
     val audioFile = audioClip.file
@@ -70,7 +73,8 @@ fun AudioClipCard(
         }
     ) {
         val checkRef = createRef()
-        Card(modifier = Modifier.fillMaxWidth(),
+        Card(
+            modifier = Modifier.fillMaxWidth(),
             //.clickable { onClick.invoke() },
             shape = RoundedCornerShape(5.dp),
             border = BorderStroke(2.dp, color = MaterialTheme.colors.primary),
@@ -121,9 +125,12 @@ fun AudioClipCard(
                     ) {
                         Slider(
                             modifier = Modifier.fillMaxWidth(),
-                            value = 0f,
-                            onValueChange = {},
-                            valueRange = (0f..100f),
+//                            value = 1f,
+                            value = currentPosition.value!!,
+                            onValueChange = {
+                                seekTo(it)
+                            },
+                            valueRange = (0f..duration!!),
                             colors = SliderDefaults.colors(
                                 thumbColor = MaterialTheme.colors.primary,
                                 activeTrackColor = MaterialTheme.colors.primary

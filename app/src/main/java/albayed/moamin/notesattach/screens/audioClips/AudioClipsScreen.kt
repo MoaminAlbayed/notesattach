@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import kotlinx.coroutines.*
 import java.io.File
 import java.io.IOException
 
@@ -69,7 +70,17 @@ fun AudioClipsScreen(
         mutableStateOf(false)
     }
 
-    var audioClipCurrentlyPlaying = remember {
+    var duration by remember {
+        mutableStateOf(0f)
+    }
+
+    val scope = rememberCoroutineScope()
+
+    val currentPosition = remember {
+        mutableStateOf<Float?>(null)
+    }
+
+    val audioClipCurrentlyPlaying = remember {
         mutableStateOf<File?>(null)
     }
 
@@ -118,11 +129,22 @@ fun AudioClipsScreen(
                     reset()
                     isPlaying = false
                     audioClipCurrentlyPlaying.value = null
+                    duration = 0f
 ////                    release()
 ////                    player = null
+                    scope.coroutineContext.cancelChildren()
+
                 }
                 prepare()
                 start()
+                duration = player.duration.toFloat()
+                scope.launch {
+                    while (isActive) {
+                        currentPosition.value = player.currentPosition.toFloat()
+//                        Log.d("here", "startPlaying: ${currentPosition.value}")
+                        delay(15)
+                    }
+                }
             } catch (e: IOException) {
                 Log.e("here", "startPlaying: ${e.localizedMessage}")
             }
@@ -144,6 +166,7 @@ fun AudioClipsScreen(
 
     fun stopPlaying() {
         player.reset()
+        scope.coroutineContext.cancelChildren()
 //        isPlaying = false
 //        cardIdPlaying.value = false
 //        audioClipCurrentlyPlaying.value = null
@@ -228,9 +251,14 @@ fun AudioClipsScreen(
             items(audioClips.asReversed()) { audioClip ->
                 AudioClipCard(
                     audioClip = audioClip,
+                    duration = duration,
                     isDeleteMode = isDeleteMode,
                     isNewDeleteProcess = audioClipsToDelete.isEmpty(),
                     audioClipCurrentlyPlaying = audioClipCurrentlyPlaying,
+                    currentPosition = currentPosition,
+                    seekTo = {
+                             player.seekTo(it.toInt())
+                    },
                     checkedDelete = { checkedDelete ->
                         if (checkedDelete.value) {
                             checkedDelete.value = !checkedDelete.value
@@ -245,6 +273,7 @@ fun AudioClipsScreen(
                         stopPlaying()
                         isPlaying = false
                         audioClipCurrentlyPlaying.value = null
+
                     } else {
                         onPlay(file)
                         isPlaying = true
