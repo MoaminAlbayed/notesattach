@@ -35,14 +35,17 @@ fun AudioClipCard(
     isNewDeleteProcess: Boolean,
     checkedDelete: (MutableState<Boolean>) -> Unit,
     audioClipCurrentlyPlaying: MutableState<File?>,
+    isPaused: Boolean,
     currentPosition: MutableState<Float?>,
     seekTo: (Float) -> Unit,
-    onClick: (audioFile: File) -> Unit
+    stopPlaying: () -> Unit,
+    onClick: (audioFile: File) -> Unit,
 ) {
     val audioFile = audioClip.file
     val isPlaying = remember { mutableStateOf(false) }
     isPlaying.value = audioFile == audioClipCurrentlyPlaying.value
-    val icon = if (isPlaying.value) R.drawable.stop_button else R.drawable.play_button
+    val firstButton = if (isPlaying.value && !isPaused) R.drawable.pause_button else R.drawable.play_button
+    val secondButton = R.drawable.stop_button
     val buttonContentDescription = if (isPlaying.value) "Stop Playing Button" else "Play Button"
 
     val haptic = LocalHapticFeedback.current
@@ -80,15 +83,28 @@ fun AudioClipCard(
             border = BorderStroke(2.dp, color = MaterialTheme.colors.primary),
             elevation = 5.dp
         ) {
-            Row {
+            Row() {
                 IconButton(
                     modifier = Modifier.align(Alignment.CenterVertically),
                     onClick = {
                         onClick(audioFile)
-//                    isPlaying.value = !isPlaying.value
+                        Log.d("here", "isPlaying: ${isPlaying.value} isPaused: $isPaused")
                     }) {
                     Icon(
-                        painter = painterResource(id = icon),
+                        painter = painterResource(id = firstButton),
+                        contentDescription = buttonContentDescription
+                    )
+                }
+                IconButton(
+                    modifier = Modifier.align(Alignment.CenterVertically),
+                    onClick = {
+                        stopPlaying()
+                        Log.d("here", "isPlaying: ${isPlaying.value} isPaused: $isPaused")
+                    },
+                    enabled = isPlaying.value
+                ) {
+                    Icon(
+                        painter = painterResource(id = secondButton),
                         contentDescription = buttonContentDescription
                     )
                 }

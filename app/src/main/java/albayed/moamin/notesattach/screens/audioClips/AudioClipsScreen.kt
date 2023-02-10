@@ -8,7 +8,6 @@ import albayed.moamin.notesattach.components.TopBar
 import albayed.moamin.notesattach.models.AudioClip
 import albayed.moamin.notesattach.navigation.Screens
 import albayed.moamin.notesattach.utils.BackPressHandler
-import albayed.moamin.notesattach.utils.dateFormatter
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
@@ -18,20 +17,16 @@ import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.*
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -110,6 +105,24 @@ fun AudioClipsScreen(
             requestPermissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
         }
     }
+
+    fun resumePlaying() {
+        player.start()
+        isPaused = false
+    }
+
+    fun pausePlaying() {
+        player.pause()
+        isPaused = true
+    }
+
+    fun onPause() {
+        if (isPaused)
+            resumePlaying()
+        else
+            pausePlaying()
+    }
+
     fun startPlaying(file: File) {
 //
 ////        try {
@@ -167,14 +180,8 @@ fun AudioClipsScreen(
     fun stopPlaying() {
         player.reset()
         scope.coroutineContext.cancelChildren()
-//        isPlaying = false
-//        cardIdPlaying.value = false
-//        audioClipCurrentlyPlaying.value = null
-//        player = null
+        isPaused = false
 
-//        player?.release()
-//        player?.stop()
-//        player = MediaPlayer()
     }
 
 
@@ -186,22 +193,7 @@ fun AudioClipsScreen(
             startPlaying(file)
     }
 
-    fun resumePlaying() {
-        player.start()
-        isPaused = false
-    }
 
-    fun pausePlaying() {
-        player.pause()
-        isPaused = true
-    }
-
-    fun onPause() {
-        if (isPaused)
-            resumePlaying()
-        else
-            pausePlaying()
-    }
 
 
     Scaffold(
@@ -228,6 +220,10 @@ fun AudioClipsScreen(
                     isDeleteMode.value = false
                     audioClipsToDelete.clear()
                 } else {
+                    if (isPlaying){
+                        stopPlaying()
+                        player.release()
+                    }
                     navController.popBackStack()
                 }
             }
@@ -257,8 +253,14 @@ fun AudioClipsScreen(
                     audioClipCurrentlyPlaying = audioClipCurrentlyPlaying,
                     currentPosition = currentPosition,
                     seekTo = {
-                             player.seekTo(it.toInt())
+                        player.seekTo(it.toInt())
                     },
+                    stopPlaying = {
+                        stopPlaying()
+                        isPlaying = false
+                        audioClipCurrentlyPlaying.value = null
+                    },
+                    isPaused = isPaused,
                     checkedDelete = { checkedDelete ->
                         if (checkedDelete.value) {
                             checkedDelete.value = !checkedDelete.value
@@ -270,15 +272,24 @@ fun AudioClipsScreen(
                     }
                 ) { file ->
                     if (isPlaying && file == audioClipCurrentlyPlaying.value) {
-                        stopPlaying()
-                        isPlaying = false
-                        audioClipCurrentlyPlaying.value = null
-
+                        if (isPaused)
+                            resumePlaying()
+                        else
+                            pausePlaying()
                     } else {
                         onPlay(file)
                         isPlaying = true
                         audioClipCurrentlyPlaying.value = audioClip.file
                     }
+//                    if (isPlaying && file == audioClipCurrentlyPlaying.value) {
+//                        stopPlaying()
+//                        isPlaying = false
+//                        audioClipCurrentlyPlaying.value = null
+//                    } else {
+//                        onPlay(file)
+//                        isPlaying = true
+//                        audioClipCurrentlyPlaying.value = audioClip.file
+//                    }
                 }
             }
 
@@ -313,6 +324,10 @@ fun AudioClipsScreen(
             isDeleteMode.value = false
             audioClipsToDelete.clear()
         } else
+            if (isPlaying){
+                stopPlaying()
+                player.release()
+            }
             navController.popBackStack()
     }
     BackPressHandler() {

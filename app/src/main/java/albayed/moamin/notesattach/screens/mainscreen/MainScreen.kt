@@ -87,8 +87,8 @@ fun NoteCard(
             .padding(5.dp)
             .height(180.dp)
             .wrapContentHeight()
-            .fillMaxWidth()
-            .clickable { onClick.invoke() },
+            .fillMaxWidth(),
+        // .clickable { onClick.invoke() },
         shape = RoundedCornerShape(5.dp),
         border = BorderStroke(2.dp, color = MaterialTheme.colors.primary),
         elevation = 5.dp
@@ -135,7 +135,9 @@ fun NoteCard(
 
             )
 
-            Column(modifier = Modifier.weight(1f)) {
+            Column(modifier = Modifier
+                .weight(1f)
+                .clickable { onClick.invoke() }) {
                 if (note.title.isNotEmpty()) {
                     Text(
                         modifier = Modifier.padding(start = 5.dp, top = 5.dp),
@@ -161,7 +163,7 @@ fun NoteCard(
                     color = MaterialTheme.colors.primary
                 )
                 Text(
-                    modifier = Modifier.padding(5.dp),
+                    modifier = Modifier.padding(5.dp).fillMaxHeight(),
                     text = note.content,
                     fontSize = 16.sp,
                     overflow = TextOverflow.Ellipsis
@@ -212,10 +214,10 @@ fun NoteCard(
                 viewModel.deleteNote(note)//todo delete all attachments
                 isOpenDeleteDialog.value = false
             },
-            onClickNo = {isOpenDeleteDialog.value = false },
+            onClickNo = { isOpenDeleteDialog.value = false },
             title = "Deleting Note",
             text = "Are you sure you want to delete this note and all of its attachments?",
-            )
+        )
 
 
 //        AlertDialog(onDismissRequest = { isOpenDeleteDialog.value = false },
