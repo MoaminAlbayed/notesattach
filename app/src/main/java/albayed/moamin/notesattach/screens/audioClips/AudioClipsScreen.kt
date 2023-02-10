@@ -124,16 +124,7 @@ fun AudioClipsScreen(
     }
 
     fun startPlaying(file: File) {
-//
-////        try {
-////            player.setDataSource(newFile.value.file.toString())
-////            player.setOnCompletionListener { playing.value = false }
-////            player.prepare()
-////            player.start()
-////            playing.value = true
-////        }catch (e: IOException){
-////                Log.e("here", "startPlaying: ${e.localizedMessage}" )
-////            }
+
         player.apply {
             try {
                 isPlaying = true
@@ -143,8 +134,6 @@ fun AudioClipsScreen(
                     isPlaying = false
                     audioClipCurrentlyPlaying.value = null
                     duration = 0f
-////                    release()
-////                    player = null
                     scope.coroutineContext.cancelChildren()
 
                 }
@@ -154,7 +143,7 @@ fun AudioClipsScreen(
                 scope.launch {
                     while (isActive) {
                         currentPosition.value = player.currentPosition.toFloat()
-//                        Log.d("here", "startPlaying: ${currentPosition.value}")
+
                         delay(15)
                     }
                 }
@@ -162,26 +151,14 @@ fun AudioClipsScreen(
                 Log.e("here", "startPlaying: ${e.localizedMessage}")
             }
         }
-//        duration.value = player.duration
-////        player?.prepare()
-////        player?.start()
-//
-//
-////        currentPosition = produceState(initialValue = 0){
-////            value = player!!.currentPosition
-////        }.value
-//
-//
-//        //player.prepare()
-////        player.start()
-
     }
 
     fun stopPlaying() {
         player.reset()
         scope.coroutineContext.cancelChildren()
         isPaused = false
-
+        isPlaying = false
+        audioClipCurrentlyPlaying.value = null
     }
 
 
@@ -209,6 +186,8 @@ fun AudioClipsScreen(
                         isDeleteMode.value = true
                     } else {
                         if (audioClipsToDelete.isNotEmpty()) {
+                            if (isPlaying)
+                                stopPlaying()
                             isOpenDeleteDialog.value = true
                         } else {
                             isDeleteMode.value = false
@@ -233,6 +212,8 @@ fun AudioClipsScreen(
                 if (isDeleteMode.value) {
                     isDeleteMode.value = false
                 }
+                if (isPlaying)
+                    stopPlaying()
                 navController.navigate(Screens.RecordAudioScreen.name + "/${noteId}")
             }
         }

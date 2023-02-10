@@ -12,7 +12,7 @@ data class AudioClip(
     @PrimaryKey
     val audioClipId: UUID = UUID.randomUUID(),
     val noteId: String,
-    val duration: Int,
+    val duration: Long,
     val uri: Uri,
     val file: File,
     val date: Date = Date.from(Instant.now()),

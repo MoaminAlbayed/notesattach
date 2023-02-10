@@ -3,6 +3,7 @@ package albayed.moamin.notesattach.components
 import albayed.moamin.notesattach.R
 import albayed.moamin.notesattach.models.AudioClip
 import albayed.moamin.notesattach.utils.dateFormatter
+import albayed.moamin.notesattach.utils.formatTimer
 import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
@@ -126,7 +127,7 @@ fun AudioClipCard(
                         fontSize = 14.sp
                     )
                     Text(
-                        text = "Length: 4:02",
+                        text = formatTimer(audioClip.duration),
                         fontSize = 14.sp
                     )
                     AnimatedVisibility(//todo make text on top of slider move smoothly
