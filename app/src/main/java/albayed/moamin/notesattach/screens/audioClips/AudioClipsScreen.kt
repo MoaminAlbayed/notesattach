@@ -69,7 +69,8 @@ fun AudioClipsScreen(
         mutableStateOf(0f)
     }
 
-    val scope = rememberCoroutineScope()
+    val currentPositionScope = rememberCoroutineScope()
+    val permissionScope = rememberCoroutineScope()
 
     val currentPosition = remember {
         mutableStateOf<Float?>(null)
@@ -89,22 +90,27 @@ fun AudioClipsScreen(
             }
         }
 
-    if (ContextCompat.checkSelfPermission(
-            context,
-            Manifest.permission.RECORD_AUDIO
-        )
-        == PackageManager.PERMISSION_GRANTED
-    ) {
-        Log.d("permission", "audioClipsScreen: permission available")
-        //viewModel.createImage(Image(noteId = UUID.fromString(noteId), uri = imageUri!!))
 
-    } else {
-        Log.d("permission", "audioClipsScreen: requesting")
-        SideEffect {
+    fun checkPermission(onGranted: () -> Unit = {}) {
+        if (ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.RECORD_AUDIO
+            )
+            == PackageManager.PERMISSION_GRANTED
+        ) {
+            onGranted.invoke()
+            Log.d("permission", "audioClipsScreen: permission available")
+            //viewModel.createImage(Image(noteId = UUID.fromString(noteId), uri = imageUri!!))
 
-            requestPermissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
+        } else {
+            Log.d("permission", "audioClipsScreen: requesting")
+//            SideEffect {
+            permissionScope.launch {
+                requestPermissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
+            }
         }
     }
+    checkPermission()
 
     fun resumePlaying() {
         player.start()
@@ -134,13 +140,13 @@ fun AudioClipsScreen(
                     isPlaying = false
                     audioClipCurrentlyPlaying.value = null
                     duration = 0f
-                    scope.coroutineContext.cancelChildren()
+                    currentPositionScope.coroutineContext.cancelChildren()
 
                 }
                 prepare()
                 start()
                 duration = player.duration.toFloat()
-                scope.launch {
+                currentPositionScope.launch {
                     while (isActive) {
                         currentPosition.value = player.currentPosition.toFloat()
 
@@ -155,7 +161,7 @@ fun AudioClipsScreen(
 
     fun stopPlaying() {
         player.reset()
-        scope.coroutineContext.cancelChildren()
+        currentPositionScope.coroutineContext.cancelChildren()
         isPaused = false
         isPlaying = false
         audioClipCurrentlyPlaying.value = null
@@ -199,7 +205,7 @@ fun AudioClipsScreen(
                     isDeleteMode.value = false
                     audioClipsToDelete.clear()
                 } else {
-                    if (isPlaying){
+                    if (isPlaying) {
                         stopPlaying()
                         player.release()
                     }
@@ -209,12 +215,15 @@ fun AudioClipsScreen(
         },
         floatingActionButton = {
             FloatingButton(icon = R.drawable.mic, contentDescription = "Use Mic Button") {
-                if (isDeleteMode.value) {
-                    isDeleteMode.value = false
+                checkPermission() {//todo improve permission handling when rejecting
+                    if (isDeleteMode.value) {
+                        isDeleteMode.value = false
+                    }
+                    if (isPlaying)
+                        stopPlaying()
+
+                    navController.navigate(Screens.RecordAudioScreen.name + "/${noteId}")
                 }
-                if (isPlaying)
-                    stopPlaying()
-                navController.navigate(Screens.RecordAudioScreen.name + "/${noteId}")
             }
         }
     ) {
@@ -305,11 +314,11 @@ fun AudioClipsScreen(
             isDeleteMode.value = false
             audioClipsToDelete.clear()
         } else
-            if (isPlaying){
+            if (isPlaying) {
                 stopPlaying()
                 player.release()
             }
-            navController.popBackStack()
+        navController.popBackStack()
     }
     BackPressHandler() {
         backToMainScreen()

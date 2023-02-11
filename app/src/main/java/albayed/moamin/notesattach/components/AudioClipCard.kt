@@ -127,7 +127,7 @@ fun AudioClipCard(
                         fontSize = 14.sp
                     )
                     Text(
-                        text = formatTimer(audioClip.duration),
+                        text = formatTimer( if(audioClip.duration <1000L) 1000L else audioClip.duration),
                         fontSize = 14.sp
                     )
                     AnimatedVisibility(//todo make text on top of slider move smoothly
