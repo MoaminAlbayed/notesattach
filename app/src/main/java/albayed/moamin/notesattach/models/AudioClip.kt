@@ -11,7 +11,7 @@ import java.util.*
 data class AudioClip(
     @PrimaryKey
     val audioClipId: UUID = UUID.randomUUID(),
-    val noteId: String,
+    val noteId: UUID,
     val duration: Long,
     val uri: Uri,
     val file: File,

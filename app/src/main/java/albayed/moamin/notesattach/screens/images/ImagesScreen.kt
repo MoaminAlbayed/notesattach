@@ -1,7 +1,7 @@
 package albayed.moamin.notesattach.screens.images
 
 import albayed.moamin.notesattach.R
-import albayed.moamin.notesattach.components.DeleteAlert
+import albayed.moamin.notesattach.components.ConfirmMessage
 import albayed.moamin.notesattach.components.FloatingButton
 import albayed.moamin.notesattach.components.ImageElement
 import albayed.moamin.notesattach.components.TopBar
@@ -32,7 +32,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 //import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import java.io.File
 import java.util.*
@@ -206,8 +205,8 @@ fun ImagesScreen(
         }
     }
     if (isOpenDeleteDialog.value) {
-        DeleteAlert(
-            isOpenDeleteDialog = isOpenDeleteDialog,
+        ConfirmMessage(
+            isOpenDialog = isOpenDeleteDialog,
             onClickYes = {
                 imagesToDelete.forEach { image ->
                     viewModel.deleteImage(image)

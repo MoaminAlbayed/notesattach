@@ -2,7 +2,7 @@ package albayed.moamin.notesattach.screens.audioClips
 
 import albayed.moamin.notesattach.R
 import albayed.moamin.notesattach.components.AudioClipCard
-import albayed.moamin.notesattach.components.DeleteAlert
+import albayed.moamin.notesattach.components.ConfirmMessage
 import albayed.moamin.notesattach.components.FloatingButton
 import albayed.moamin.notesattach.components.TopBar
 import albayed.moamin.notesattach.models.AudioClip
@@ -286,8 +286,8 @@ fun AudioClipsScreen(
         }
     }
     if (isOpenDeleteDialog.value) {
-        DeleteAlert(
-            isOpenDeleteDialog = isOpenDeleteDialog,
+        ConfirmMessage(
+            isOpenDialog = isOpenDeleteDialog,
             onClickYes = {
                 audioClipsToDelete.forEach { audioClip ->
                     viewModel.deleteAudioClip(audioClip)

@@ -31,6 +31,7 @@ import androidx.navigation.NavController
 import kotlinx.coroutines.*
 import java.io.File
 import java.io.IOException
+import java.util.*
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
@@ -106,7 +107,7 @@ fun RecordAudioScreen(
         recorder = null
         viewModel.createAudioClip(
             AudioClip(
-                noteId = noteId,
+                noteId = UUID.fromString(noteId),
                 duration = duration,
                 uri = newFile.value.uri,
                 file = newFile.value.file

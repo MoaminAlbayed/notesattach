@@ -1,21 +1,15 @@
 package albayed.moamin.notesattach.screens.locations
 
 import albayed.moamin.notesattach.R
-import albayed.moamin.notesattach.components.DeleteAlert
+import albayed.moamin.notesattach.components.ConfirmMessage
 import albayed.moamin.notesattach.components.FloatingButton
 import albayed.moamin.notesattach.components.TopBar
 import albayed.moamin.notesattach.models.Location
 import albayed.moamin.notesattach.navigation.Screens
 import albayed.moamin.notesattach.utils.BackPressHandler
-import android.Manifest
 import android.annotation.SuppressLint
-import android.content.Context
-import android.content.pm.PackageManager
 import android.util.Log
 import android.widget.Toast
-import androidx.activity.compose.ManagedActivityResultLauncher
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -28,17 +22,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.google.android.gms.location.*
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.model.CameraPosition
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.tasks.CancellationToken
-import com.google.android.gms.tasks.CancellationTokenSource
-import com.google.android.gms.tasks.OnTokenCanceledListener
 import com.google.maps.android.compose.*
 
 
@@ -100,20 +86,19 @@ fun LocationsScreen(
     ) {
         LazyColumn(
             modifier = Modifier
-            .fillMaxSize()
-            .padding(start = 5.dp, end = 5.dp),
+                .fillMaxSize()
+                .padding(start = 5.dp, end = 5.dp),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally ){
             items(locationsList.asReversed()){location ->
-
+                Text(text = location.description)
             }
-
         }
     }
 
     if (isOpenDeleteDialog.value) {
-        DeleteAlert(
-            isOpenDeleteDialog = isOpenDeleteDialog,
+        ConfirmMessage(
+            isOpenDialog = isOpenDeleteDialog,
             onClickYes = {
                 locationsToDelete.forEach { location ->
                     viewModel.deleteLocation(location)

@@ -2,7 +2,7 @@ package albayed.moamin.notesattach.screens.mainscreen
 
 import albayed.moamin.notesattach.R
 import albayed.moamin.notesattach.components.AttachmentIcon
-import albayed.moamin.notesattach.components.DeleteAlert
+import albayed.moamin.notesattach.components.ConfirmMessage
 import albayed.moamin.notesattach.components.FloatingButton
 import albayed.moamin.notesattach.components.TopBar
 import albayed.moamin.notesattach.models.Note
@@ -266,8 +266,8 @@ fun NoteCard(
         }
     }
     if (isOpenDeleteDialog.value) {
-        DeleteAlert(
-            isOpenDeleteDialog = isOpenDeleteDialog,
+        ConfirmMessage(
+            isOpenDialog = isOpenDeleteDialog,
             onClickYes = {
                 viewModel.deleteNote(note)//todo delete all attachments
                 isOpenDeleteDialog.value = false

@@ -177,8 +177,8 @@ fun VideosScreen(
         }
     }
     if (isOpenDeleteDialog.value) {
-        DeleteAlert(
-            isOpenDeleteDialog = isOpenDeleteDialog,
+        ConfirmMessage(
+            isOpenDialog = isOpenDeleteDialog,
             onClickYes = {
                 videosToDelete.forEach { video ->
                     viewModel.deleteVideo(video)
