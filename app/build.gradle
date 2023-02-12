@@ -106,8 +106,14 @@ dependencies {
     //Glide
     implementation "com.github.bumptech.glide:compose:1.0.0-alpha.1"
 
-    //Accompanist for permissions
-    implementation "com.google.accompanist:accompanist-permissions:0.29.1-alpha"
+//    //Accompanist for permissions
+//    implementation "com.google.accompanist:accompanist-permissions:0.29.1-alpha"
+
+    //Google Maps
+    implementation 'com.google.maps.android:maps-compose:2.9.1'
+    implementation 'com.google.android.gms:play-services-maps:18.1.0'
+    implementation 'com.google.android.gms:play-services-location:21.0.1'
+
 }
 
 kapt {

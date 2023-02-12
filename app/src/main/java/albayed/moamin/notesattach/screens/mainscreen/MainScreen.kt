@@ -8,7 +8,15 @@ import albayed.moamin.notesattach.components.TopBar
 import albayed.moamin.notesattach.models.Note
 import albayed.moamin.notesattach.navigation.Screens
 import albayed.moamin.notesattach.utils.dateFormatter
+import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Context
+import android.content.pm.PackageManager
+import android.util.Log
+import android.widget.Toast
+import androidx.activity.compose.ManagedActivityResultLauncher
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -23,11 +31,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import java.util.*
@@ -78,6 +88,50 @@ fun NoteCard(
     navController: NavController,
     onClick: () -> Unit
 ) {
+
+    val context = LocalContext.current
+
+
+    val permissions = arrayOf(
+        Manifest.permission.ACCESS_COARSE_LOCATION,
+        Manifest.permission.ACCESS_FINE_LOCATION
+    )
+    val launcherMultiplePermissions = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissionsMap ->
+
+        val areGranted = permissionsMap.values.reduce { acc, next -> acc && next }
+        if (areGranted) {
+            navController.navigate(Screens.LocationsScreen.name + "/${note.id}")
+        } else {
+            Toast.makeText(context, "Location Access is Required", Toast.LENGTH_LONG).show()
+        }
+    }
+
+    fun checkAndRequestLocationPermissions(
+        context: Context,
+        permissions: Array<String>,
+        launcher: ManagedActivityResultLauncher<Array<String>, Map<String, Boolean>>
+    ) {
+        if (
+            permissions.all {
+                ContextCompat.checkSelfPermission(
+                    context,
+                    it
+                ) == PackageManager.PERMISSION_GRANTED
+            }
+        ) {
+            // Use location because permissions are already granted
+            Log.d("permission", "checkAndRequestLocationPermissions: already available")
+            navController.navigate(Screens.LocationsScreen.name + "/${note.id}")
+        } else {
+            // Request permissions
+            Log.d("permission", "checkAndRequestLocationPermissions: requesting")
+            launcher.launch(permissions)
+        }
+    }
+
+
     val isOpenDeleteDialog = remember {
         mutableStateOf(false)
     }
@@ -163,7 +217,9 @@ fun NoteCard(
                     color = MaterialTheme.colors.primary
                 )
                 Text(
-                    modifier = Modifier.padding(5.dp).fillMaxHeight(),
+                    modifier = Modifier
+                        .padding(5.dp)
+                        .fillMaxHeight(),
                     text = note.content,
                     fontSize = 16.sp,
                     overflow = TextOverflow.Ellipsis
@@ -188,7 +244,9 @@ fun NoteCard(
                     contentDescription = "Locations Button",
                     tint = MaterialTheme.colors.primary,
                     count = note.locationsCount
-                )
+                ){
+                    checkAndRequestLocationPermissions(context = context, permissions = permissions, launcher = launcherMultiplePermissions)
+                }
                 AttachmentIcon(
                     icon = R.drawable.alarm,
                     contentDescription = "Alarms Button",
@@ -243,5 +301,10 @@ fun NoteCard(
 //            }
 //        )
     }
+
+
+
+
+
 }
 

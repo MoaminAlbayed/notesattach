@@ -33,12 +33,12 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
+//import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import java.io.File
 import java.util.*
 
 
-@OptIn(ExperimentalGlideComposeApi::class, ExperimentalPermissionsApi::class)
+//@OptIn(ExperimentalGlideComposeApi::class, ExperimentalPermissionsApi::class)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun ImagesScreen(//right now using GlideImage with old GetContent() for getting images from gallery
