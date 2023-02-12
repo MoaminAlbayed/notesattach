@@ -41,7 +41,7 @@ import java.util.*
 //@OptIn(ExperimentalGlideComposeApi::class, ExperimentalPermissionsApi::class)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun ImagesScreen(//right now using GlideImage with old GetContent() for getting images from gallery
+fun ImagesScreen(
     navController: NavController,
     noteId: String,
     viewModel: ImagesScreenViewModel = hiltViewModel()

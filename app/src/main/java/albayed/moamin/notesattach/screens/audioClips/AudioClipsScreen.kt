@@ -313,12 +313,13 @@ fun AudioClipsScreen(
         if (isDeleteMode.value) {
             isDeleteMode.value = false
             audioClipsToDelete.clear()
-        } else
+        } else {
             if (isPlaying) {
                 stopPlaying()
                 player.release()
             }
-        navController.popBackStack()
+            navController.popBackStack()
+        }
     }
     BackPressHandler() {
         backToMainScreen()

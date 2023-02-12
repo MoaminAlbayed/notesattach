@@ -1,10 +1,8 @@
 package albayed.moamin.notesattach.repository
 
 import albayed.moamin.notesattach.database.NoteDatabaseDao
-import albayed.moamin.notesattach.models.AudioClip
-import albayed.moamin.notesattach.models.Image
-import albayed.moamin.notesattach.models.Note
-import albayed.moamin.notesattach.models.Video
+import albayed.moamin.notesattach.models.*
+import android.view.Display
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.conflate
@@ -45,6 +43,11 @@ class NoteRepository @Inject constructor(private val noteDatabaseDao: NoteDataba
         audioClip.file.delete()
         noteDatabaseDao.deleteAudioClip(audioClip)
     }
+
+    fun getAllLocationsByNoteId (noteId: String): Flow<List<Location>> =
+        noteDatabaseDao.getAllLocationsByNoteId(noteId).flowOn(Dispatchers.IO).conflate()
+    suspend fun createLocation (location: Location) = noteDatabaseDao.createLocation(location)
+    suspend fun deleteLocation (location: Location) = noteDatabaseDao.deleteLocation(location)
 
     suspend fun updateImagesCount(imagesCount: Int, noteId: String) =
         noteDatabaseDao.updateImagesCount(imagesCount, noteId)

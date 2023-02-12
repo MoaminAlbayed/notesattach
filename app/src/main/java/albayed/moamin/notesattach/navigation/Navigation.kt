@@ -5,6 +5,7 @@ import albayed.moamin.notesattach.screens.audioClips.AudioClipsScreen
 import albayed.moamin.notesattach.screens.audioClips.RecordAudioScreen
 import albayed.moamin.notesattach.screens.images.ImagesScreen
 import albayed.moamin.notesattach.screens.locations.LocationsScreen
+import albayed.moamin.notesattach.screens.locations.MapScreen
 import albayed.moamin.notesattach.screens.noteEditor.NoteEditor
 import albayed.moamin.notesattach.screens.videos.VideosScreen
 import android.util.Log
@@ -84,7 +85,6 @@ fun Navigation() {
         ) {navBackStack ->
             val noteId = navBackStack.arguments?.getString("noteId")
             RecordAudioScreen(navController = navController, noteId = noteId.toString())
-
         }
         composable(route = Screens.LocationsScreen.name + "/{noteId}",
             arguments = listOf(
@@ -95,6 +95,16 @@ fun Navigation() {
         ) { navBackStack ->
             val noteId = navBackStack.arguments?.getString("noteId")
             LocationsScreen(navController = navController, noteId = noteId.toString())
+        }
+        composable(route = Screens.MapScreen.name + "/{noteId}",
+            arguments = listOf(
+                navArgument(name = "noteId") {
+                    type = NavType.StringType
+                }
+            )
+        ) { navBackStack ->
+            val noteId = navBackStack.arguments?.getString("noteId")
+            MapScreen(navController = navController, noteId = noteId.toString())
         }
     }
 }

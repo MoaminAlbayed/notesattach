@@ -30,7 +30,6 @@ class ImagesScreenViewModel @Inject constructor(
             noteRepository.getAllImagesByNoteId(state.get<String>("noteId")!!).collect() {
                 _images.value = it
             }
-
         }
         viewModelScope.launch ( Dispatchers.IO ){
             noteRepository.getImagesCount(state.get<String>("noteId")!!).collect(){

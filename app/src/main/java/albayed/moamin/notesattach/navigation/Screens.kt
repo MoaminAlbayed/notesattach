@@ -8,4 +8,5 @@ enum class Screens {
     AudioClipsScreen,
     RecordAudioScreen,
     LocationsScreen,
+    MapScreen,
 }

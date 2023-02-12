@@ -1,9 +1,6 @@
 package albayed.moamin.notesattach.database
 
-import albayed.moamin.notesattach.models.AudioClip
-import albayed.moamin.notesattach.models.Image
-import albayed.moamin.notesattach.models.Note
-import albayed.moamin.notesattach.models.Video
+import albayed.moamin.notesattach.models.*
 import androidx.room.*
 import kotlinx.coroutines.flow.Flow
 
@@ -53,6 +50,16 @@ interface NoteDatabaseDao {
 
     @Delete
     suspend fun deleteAudioClip (audioClip: AudioClip)
+
+
+    @Query ("SELECT * from locations_table where noteId = :noteId")
+    fun getAllLocationsByNoteId (noteId: String): Flow<List<Location>>
+
+    @Insert
+    suspend fun createLocation(location: Location)
+
+    @Delete
+    suspend fun deleteLocation (location: Location)
 
 
 

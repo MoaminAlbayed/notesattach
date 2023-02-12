@@ -1,9 +1,6 @@
 package albayed.moamin.notesattach.screens.mainscreen
 
-import albayed.moamin.notesattach.models.AudioClip
-import albayed.moamin.notesattach.models.Image
-import albayed.moamin.notesattach.models.Note
-import albayed.moamin.notesattach.models.Video
+import albayed.moamin.notesattach.models.*
 import albayed.moamin.notesattach.repository.NoteRepository
 import androidx.compose.runtime.MutableState
 import androidx.lifecycle.ViewModel
@@ -38,6 +35,8 @@ class MainScreenViewModel @Inject constructor(private val noteRepository: NoteRe
             deleteAllVideos(note)
         if (note.audioClipsCount > 0)
             deleteAllAudioClips(note)
+        if (note.locationsCount > 0)
+            deleteAllLocations(note)
         noteRepository.deleteNote(note)
     }//TODO loop through all attachments to delete
 
@@ -74,6 +73,18 @@ class MainScreenViewModel @Inject constructor(private val noteRepository: NoteRe
             }
             audioClips.value.forEach { audioClip ->
                 noteRepository.deleteAudioClip(audioClip)
+            }
+        }
+    }
+
+    private fun deleteAllLocations(note: Note){
+        val locations = MutableStateFlow<List<Location>>(emptyList())
+        viewModelScope.launch(Dispatchers.IO) {
+            noteRepository.getAllLocationsByNoteId(note.id.toString()).collect(){
+                locations.value = it
+            }
+            locations.value.forEach { location ->
+                noteRepository.deleteLocation(location)
             }
         }
     }
