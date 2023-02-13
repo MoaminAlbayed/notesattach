@@ -3,6 +3,7 @@ package albayed.moamin.notesattach.screens.locations
 import albayed.moamin.notesattach.R
 import albayed.moamin.notesattach.components.ConfirmMessage
 import albayed.moamin.notesattach.components.FloatingButton
+import albayed.moamin.notesattach.components.LocationCard
 import albayed.moamin.notesattach.components.TopBar
 import albayed.moamin.notesattach.models.Location
 import albayed.moamin.notesattach.navigation.Screens
@@ -38,7 +39,7 @@ fun LocationsScreen(
     val context = LocalContext.current
     val locationsList = viewModel.location.collectAsState().value
     val locationsCount = viewModel.locationsCount.collectAsState().value
-    var isDeleteMode by remember {
+    var isDeleteMode = remember {
         mutableStateOf(false)
     }
     var isOpenDeleteDialog = remember {
@@ -54,21 +55,22 @@ fun LocationsScreen(
                 screen = Screens.LocationsScreen,
                 navController = navController,
                 firstAction = {
-                    if (locationsCount == 0){
-                        Toast.makeText(context, "No Locations to Delete!", Toast.LENGTH_SHORT).show()
-                    } else if (!isDeleteMode){
-                        isDeleteMode = true
+                    if (locationsCount == 0) {
+                        Toast.makeText(context, "No Locations to Delete!", Toast.LENGTH_SHORT)
+                            .show()
+                    } else if (!isDeleteMode.value) {
+                        isDeleteMode.value = true
                     } else {
-                        if (locationsToDelete.isNotEmpty()){
+                        if (locationsToDelete.isNotEmpty()) {
                             isOpenDeleteDialog.value = true
                         } else {
-                            isDeleteMode = false
+                            isDeleteMode.value = false
                         }
                     }
                 }
-                ) {
-                if (isDeleteMode){
-                    isDeleteMode = false
+            ) {
+                if (isDeleteMode.value) {
+                    isDeleteMode.value = false
                     locationsToDelete.clear()
                 } else {
                     navController.popBackStack()
@@ -77,10 +79,10 @@ fun LocationsScreen(
         },
         floatingActionButton = {
             FloatingButton(icon = R.drawable.location, contentDescription = "Add Location Button") {
-                if (isDeleteMode){
-                    isDeleteMode = false
+                if (isDeleteMode.value) {
+                    isDeleteMode.value = false
                 }
-                navController.navigate(Screens.MapScreen.name+"/$noteId")
+                navController.navigate(Screens.MapScreen.name + "/$noteId")
             }
         }
     ) {
@@ -89,9 +91,23 @@ fun LocationsScreen(
                 .fillMaxSize()
                 .padding(start = 5.dp, end = 5.dp),
             verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.CenterHorizontally ){
-            items(locationsList.asReversed()){location ->
-                Text(text = location.description)
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            items(locationsList.asReversed()) { location ->
+                LocationCard(
+                    location = location,
+                    isDeleteMode = isDeleteMode,
+                    isNewDeleteProcess = locationsToDelete.isEmpty(),
+                    checkedDelete = {checkedDelete ->
+                        if (checkedDelete.value) {
+                            checkedDelete.value = !checkedDelete.value
+                            locationsToDelete.remove(location)
+                        } else {
+                            checkedDelete.value = !checkedDelete.value
+                            locationsToDelete.add(location)
+                        }
+                    }
+                )
             }
         }
     }
@@ -109,23 +125,23 @@ fun LocationsScreen(
                 )
                 locationsToDelete.clear()
                 isOpenDeleteDialog.value = false
-                isDeleteMode = false
+                isDeleteMode.value = false
             },
             onClickNo = {
                 isOpenDeleteDialog.value = false
                 locationsToDelete.clear()
-                isDeleteMode = false
+                isDeleteMode.value = false
             },
             title = "Deleting Locations",
             text = "Are you sure you want to delete ${locationsToDelete.size} location(s)?"
         )
     }
     fun backToMainScreen() {
-        if (isDeleteMode) {
-            isDeleteMode = false
+        if (isDeleteMode.value) {
+            isDeleteMode.value = false
             locationsToDelete.clear()
         } else
-        navController.popBackStack()
+            navController.popBackStack()
     }
     BackPressHandler() {
         backToMainScreen()

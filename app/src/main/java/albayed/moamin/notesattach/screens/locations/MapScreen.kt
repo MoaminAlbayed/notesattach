@@ -25,12 +25,13 @@ import java.util.*
 @Composable
 fun MapScreen(
     navController: NavController,
-    noteId: String,
+    noteId: String,//todo create "mode and lat and long doubles" values sent from locations screen,
     viewModel: LocationsScreenViewModel = hiltViewModel()
 ) {
     val isOpenConfirmDialogue = remember {
         mutableStateOf(false)
     }
+    val locationsCount = viewModel.locationsCount.collectAsState().value
     var locationChosen = remember {
         mutableStateOf(
             Location(
@@ -101,6 +102,7 @@ fun MapScreen(
             isOpenDialog = isOpenConfirmDialogue,
             onClickYes = {
                 viewModel.createLocation(locationChosen.value)
+                viewModel.updateLocationsCount(locationsCount = locationsCount + 1, noteId = noteId)
                 navController.popBackStack()
             },
             onClickNo = { isOpenConfirmDialogue.value = false },
