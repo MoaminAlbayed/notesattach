@@ -34,6 +34,7 @@ fun LocationCard(
     location: Location,
     isDeleteMode: MutableState<Boolean>,
     isNewDeleteProcess: Boolean,
+    onClick: (Location)-> Unit,
     checkedDelete: (MutableState<Boolean>) -> Unit
 ) {
     val haptic = LocalHapticFeedback.current
@@ -55,7 +56,7 @@ fun LocationCard(
                         if (isDeleteMode.value) {
                             checkedDelete(isSelected)
                         } else {
-
+                            onClick(location)
                         }
                     },
                     onLongPress = {

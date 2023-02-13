@@ -9,8 +9,12 @@ import albayed.moamin.notesattach.models.Location
 import albayed.moamin.notesattach.navigation.Screens
 import albayed.moamin.notesattach.utils.BackPressHandler
 import android.annotation.SuppressLint
+import android.content.Intent
+import android.net.Uri
 import android.util.Log
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -45,8 +49,22 @@ fun LocationsScreen(
     var isOpenDeleteDialog = remember {
         mutableStateOf(false)
     }
+    var isOpenNavDialog = remember {
+        mutableStateOf(false)
+    }
+    var locationToNavigate = remember {
+        mutableStateOf<Location?>(null)
+    }
     val locationsToDelete = remember {
         mutableStateListOf<Location>()
+    }
+
+    val navigationLauncher =
+        rememberLauncherForActivityResult(contract = ActivityResultContracts.StartActivityForResult()) {
+        }
+
+    fun navigationUri(location: Location): String {
+        return "google.navigation:q=${location.latitude},${location.longitude}"
     }
 
     Scaffold(
@@ -82,7 +100,7 @@ fun LocationsScreen(
                 if (isDeleteMode.value) {
                     isDeleteMode.value = false
                 }
-                navController.navigate(Screens.MapScreen.name + "/$noteId")
+                navController.navigate(Screens.MapScreen.name + "/$noteId")//todo check for internet connection first
             }
         }
     ) {
@@ -98,7 +116,11 @@ fun LocationsScreen(
                     location = location,
                     isDeleteMode = isDeleteMode,
                     isNewDeleteProcess = locationsToDelete.isEmpty(),
-                    checkedDelete = {checkedDelete ->
+                    onClick = { location ->
+                        locationToNavigate.value = location
+                        isOpenNavDialog.value = true
+                    },
+                    checkedDelete = { checkedDelete ->
                         if (checkedDelete.value) {
                             checkedDelete.value = !checkedDelete.value
                             locationsToDelete.remove(location)
@@ -110,6 +132,21 @@ fun LocationsScreen(
                 )
             }
         }
+    }
+    if (isOpenNavDialog.value) {
+        ConfirmMessage(
+            isOpenDialog = isOpenNavDialog,
+            onClickYes = {
+                navigationLauncher.launch(
+                    Intent(Intent.ACTION_VIEW)
+                        .setData(Uri.parse(navigationUri(locationToNavigate.value!!)))
+                )
+                isOpenNavDialog.value = false
+            },
+            onClickNo = { isOpenNavDialog.value = false },
+            title = "Navigation",
+            text = "Start navigation to selected location?"
+        )
     }
 
     if (isOpenDeleteDialog.value) {
