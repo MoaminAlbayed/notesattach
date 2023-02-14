@@ -37,6 +37,8 @@ class MainScreenViewModel @Inject constructor(private val noteRepository: NoteRe
             deleteAllAudioClips(note)
         if (note.locationsCount > 0)
             deleteAllLocations(note)
+        if (note.alarmsCount > 0)
+            deleteAllAlarms(note)
         noteRepository.deleteNote(note)
     }//TODO loop through all attachments to delete
 
@@ -85,6 +87,18 @@ class MainScreenViewModel @Inject constructor(private val noteRepository: NoteRe
             }
             locations.value.forEach { location ->
                 noteRepository.deleteLocation(location)
+            }
+        }
+    }
+
+    private fun deleteAllAlarms(note: Note){
+        val alarms = MutableStateFlow<List<Alarm>>(emptyList())
+        viewModelScope.launch(Dispatchers.IO) {
+            noteRepository.getAllAlarmsByNoteId(note.id.toString()).collect(){
+                alarms.value = it
+            }
+            alarms.value.forEach { alarm ->
+                noteRepository.deleteAlarm(alarm)
             }
         }
     }

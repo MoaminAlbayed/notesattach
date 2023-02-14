@@ -62,6 +62,15 @@ interface NoteDatabaseDao {
     suspend fun deleteLocation (location: Location)
 
 
+    @Query("SELECT * from alarms_table where noteId= :noteId")
+    fun getAllAlarmsByNoteId (noteId: String): Flow<List<Alarm>>
+
+    @Insert
+    suspend fun createAlarm(alarm: Alarm)
+
+    @Delete
+    suspend fun deleteAlarm(alarm: Alarm)
+
 
 
     @Query("UPDATE notes_table SET imagesCount=:imagesCount WHERE id=:noteId")

@@ -91,18 +91,32 @@ fun NoteCard(
 
     val context = LocalContext.current
 
-
-    val permissions = arrayOf(
+    val locationPermissions = arrayOf(
         Manifest.permission.ACCESS_COARSE_LOCATION,
         Manifest.permission.ACCESS_FINE_LOCATION
     )
-    val launcherMultiplePermissions = rememberLauncherForActivityResult(
+    val alarmPermissions = arrayOf(
+        Manifest.permission.SET_ALARM,
+        Manifest.permission.POST_NOTIFICATIONS
+    )
+    val launcherLocationsMultiplePermissions = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
     ) { permissionsMap ->
 
         val areGranted = permissionsMap.values.reduce { acc, next -> acc && next }
         if (areGranted) {
             navController.navigate(Screens.LocationsScreen.name + "/${note.id}")
+        } else {
+            Toast.makeText(context, "Location Access is Required", Toast.LENGTH_LONG).show()
+        }
+    }
+    val launcherAlarmsMultiplePermissions = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissionsMap ->
+
+        val areGranted = permissionsMap.values.reduce { acc, next -> acc && next }
+        if (areGranted) {
+            navController.navigate(Screens.AlarmsScreen.name + "/${note.id}")
         } else {
             Toast.makeText(context, "Location Access is Required", Toast.LENGTH_LONG).show()
         }
@@ -124,6 +138,28 @@ fun NoteCard(
             // Use location because permissions are already granted
             Log.d("permission", "checkAndRequestLocationPermissions: already available")
             navController.navigate(Screens.LocationsScreen.name + "/${note.id}")
+        } else {
+            // Request permissions
+            Log.d("permission", "checkAndRequestLocationPermissions: requesting")
+            launcher.launch(permissions)
+        }
+    }
+    fun checkAndRequestAlarmsPermissions(
+        context: Context,
+        permissions: Array<String>,
+        launcher: ManagedActivityResultLauncher<Array<String>, Map<String, Boolean>>
+    ) {
+        if (
+            permissions.all {
+                ContextCompat.checkSelfPermission(
+                    context,
+                    it
+                ) == PackageManager.PERMISSION_GRANTED
+            }
+        ) {
+            // Use location because permissions are already granted
+            Log.d("permission", "checkAndRequestLocationPermissions: already available")
+            navController.navigate(Screens.AlarmsScreen.name + "/${note.id}")
         } else {
             // Request permissions
             Log.d("permission", "checkAndRequestLocationPermissions: requesting")
@@ -245,14 +281,18 @@ fun NoteCard(
                     tint = MaterialTheme.colors.primary,
                     count = note.locationsCount
                 ){
-                    checkAndRequestLocationPermissions(context = context, permissions = permissions, launcher = launcherMultiplePermissions)
+                    checkAndRequestLocationPermissions(context = context, permissions = locationPermissions, launcher = launcherLocationsMultiplePermissions)
                 }
                 AttachmentIcon(
                     icon = R.drawable.alarm,
                     contentDescription = "Alarms Button",
                     tint = MaterialTheme.colors.primary,
                     count = note.alarmsCount
-                )
+                ){
+//                    navController.navigate(Screens.AlarmsScreen.name+"/${note.id}")
+                    checkAndRequestAlarmsPermissions(context = context, permissions = alarmPermissions, launcher = launcherAlarmsMultiplePermissions)
+                }
+
                 AttachmentIcon(
                     icon = R.drawable.trash,
                     contentDescription = "Delete Button",

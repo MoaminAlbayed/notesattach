@@ -76,7 +76,7 @@ fun NoteEditor(
             note.content = content
             viewModel.updateNote(note)
             //navController.navigate(Screens.MainScreen.name)
-            navController.popBackStack()
+            navController.popBackStack()//todo navigateup when vieweing from a notification
         }
     }
     BackPressHandler() {

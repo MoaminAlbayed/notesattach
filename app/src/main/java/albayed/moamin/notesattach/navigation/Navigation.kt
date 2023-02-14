@@ -1,5 +1,6 @@
 package albayed.moamin.notesattach.navigation
 
+import albayed.moamin.notesattach.screens.alarms.AlarmsScreen
 import albayed.moamin.notesattach.screens.mainscreen.MainScreen
 import albayed.moamin.notesattach.screens.audioClips.AudioClipsScreen
 import albayed.moamin.notesattach.screens.audioClips.RecordAudioScreen
@@ -105,6 +106,16 @@ fun Navigation() {
         ) { navBackStack ->
             val noteId = navBackStack.arguments?.getString("noteId")
             MapScreen(navController = navController, noteId = noteId.toString())
+        }
+        composable(route = Screens.AlarmsScreen.name + "/{noteId}",
+            arguments = listOf(
+                navArgument(name = "noteId") {
+                    type = NavType.StringType
+                }
+            )
+        ) { navBackStack ->
+            val noteId = navBackStack.arguments?.getString("noteId")
+            AlarmsScreen(navController = navController, noteId = noteId.toString())
         }
     }
 }

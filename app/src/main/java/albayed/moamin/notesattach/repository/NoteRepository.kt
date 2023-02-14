@@ -49,6 +49,12 @@ class NoteRepository @Inject constructor(private val noteDatabaseDao: NoteDataba
     suspend fun createLocation (location: Location) = noteDatabaseDao.createLocation(location)
     suspend fun deleteLocation (location: Location) = noteDatabaseDao.deleteLocation(location)
 
+    fun getAllAlarmsByNoteId(noteId: String): Flow<List<Alarm>> =
+        noteDatabaseDao.getAllAlarmsByNoteId(noteId = noteId).flowOn(Dispatchers.IO).conflate()
+    suspend fun createAlarm (alarm: Alarm) = noteDatabaseDao.createAlarm(alarm)
+    suspend fun deleteAlarm (alarm: Alarm) = noteDatabaseDao.deleteAlarm(alarm)
+
+
     suspend fun updateImagesCount(imagesCount: Int, noteId: String) =
         noteDatabaseDao.updateImagesCount(imagesCount, noteId)
 

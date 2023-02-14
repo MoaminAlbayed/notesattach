@@ -174,7 +174,27 @@ fun TopBar(
                 },
             )
         }
-        else -> {}
+        Screens.AlarmsScreen -> {
+            TopAppBar(title = {
+                Text(text = "Alarms List")
+            },
+                navigationIcon = {
+                    IconButton(onClick = { onClick.invoke() }) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = "Back Button"
+                        )
+                    }
+                },
+                actions = {
+                    IconButton(onClick = { firstAction.invoke() }) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.trash),
+                            contentDescription = "Delete Button"
+                        )
+                    }
+                }
+            )
+        }
     }
-
 }

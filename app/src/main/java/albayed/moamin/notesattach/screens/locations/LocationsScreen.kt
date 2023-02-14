@@ -43,16 +43,16 @@ fun LocationsScreen(
     val context = LocalContext.current
     val locationsList = viewModel.location.collectAsState().value
     val locationsCount = viewModel.locationsCount.collectAsState().value
-    var isDeleteMode = remember {
+    val isDeleteMode = remember {
         mutableStateOf(false)
     }
-    var isOpenDeleteDialog = remember {
+    val isOpenDeleteDialog = remember {
         mutableStateOf(false)
     }
-    var isOpenNavDialog = remember {
+    val isOpenNavDialog = remember {
         mutableStateOf(false)
     }
-    var locationToNavigate = remember {
+    val locationToNavigate = remember {
         mutableStateOf<Location?>(null)
     }
     val locationsToDelete = remember {

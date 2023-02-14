@@ -32,7 +32,7 @@ fun fileDateFormatter(time: Long): String{
 fun videoLength(context: Context, videoUri: Uri) :String{
     val retriever = MediaMetadataRetriever()
     retriever.setDataSource(context, videoUri)
-    var videoTime = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)!!.toLong()
+    val videoTime = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)!!.toLong()
     return String.format("%02d:%02d",
         TimeUnit.MILLISECONDS.toMinutes(videoTime),
         TimeUnit.MILLISECONDS.toSeconds(videoTime) -
