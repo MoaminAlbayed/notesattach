@@ -133,6 +133,7 @@ fun VideosScreen(
             FloatingButton(icon = R.drawable.video, contentDescription = "Use Camera Button") {
                 if (isDeleteMode.value) {
                     isDeleteMode.value = false
+                    videosToDelete.clear()
                 }
 //                newFile.value = ImagesFileProvider.getImageUri(context, fileDateFormatter(Date.from(
 //                    Instant.now()).time))

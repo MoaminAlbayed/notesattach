@@ -164,6 +164,7 @@ fun ImagesScreen(
             FloatingButton(icon = R.drawable.camera, contentDescription = "Use Camera Button") {
                 if (isDeleteMode.value) {
                     isDeleteMode.value = false
+                    imagesToDelete.clear()
                 }
 //                newFile.value = ImagesFileProvider.getImageUri(context, fileDateFormatter(Date.from(
 //                    Instant.now()).time))

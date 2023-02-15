@@ -2,8 +2,11 @@ package albayed.moamin.notesattach.utils
 
 
 
+import albayed.moamin.notesattach.R
+import albayed.moamin.notesattach.models.Alarm
 import albayed.moamin.notesattach.models.FileInfo
 import albayed.moamin.notesattach.models.FileTypes
+import albayed.moamin.notesattach.models.Location
 import android.content.Context
 import android.media.MediaMetadataRetriever
 import android.media.MediaRecorder
@@ -14,6 +17,7 @@ import androidx.activity.OnBackPressedDispatcher
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -22,6 +26,14 @@ import java.util.concurrent.TimeUnit
 fun dateFormatter(time: Long): String{
     val formatter = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
     return formatter.format(Date(time))
+}
+
+fun alarmDateFormatter(alarm: Alarm): String{
+    return alarm.day.toString().padStart(2,'0') +
+            "/${(alarm.month+1).toString().padStart(2,'0')}" +
+            "/${alarm.year}" +
+            " ${alarm.hour.toString().padStart(2,'0')}" +
+            ":${alarm.minute.toString().padStart(2,'0')}"
 }
 
 fun fileDateFormatter(time: Long): String{
@@ -78,6 +90,18 @@ fun BackPressHandler(
             backCallback.remove()
         }
     }
+}
+
+@Composable
+fun fetchThumbnailUri(location: Location): String {
+    val baseUri = "https://maps.googleapis.com/maps/api/staticmap?"
+    val zoom = 15
+    val size = 200
+
+    return "${baseUri}center=${location.latitude},${location.longitude}" +
+            "&zoom=${zoom}&size=${size}x${size}&maptype=hybrid" +
+            "&markers=color:red|${location.latitude},${location.longitude}" +
+            "&key=${stringResource(id = R.string.maps_api_key)}"
 }
 
 

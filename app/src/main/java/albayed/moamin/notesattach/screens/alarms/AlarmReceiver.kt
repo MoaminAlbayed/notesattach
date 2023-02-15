@@ -39,7 +39,7 @@ class AlarmReceiver: BroadcastReceiver() {
             .setSound(ringtoneUri)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val name = "notesattach Alarm"
+            val name = "notes attach Alarm"
             val importance = NotificationManager.IMPORTANCE_DEFAULT
             val channel = NotificationChannel(channelId.toString(), name, importance).apply {
                 description = content

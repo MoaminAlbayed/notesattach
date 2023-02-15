@@ -1,6 +1,7 @@
 package albayed.moamin.notesattach.screens.alarms
 
 import albayed.moamin.notesattach.R
+import albayed.moamin.notesattach.components.AlarmCard
 import albayed.moamin.notesattach.components.ConfirmMessage
 import albayed.moamin.notesattach.components.FloatingButton
 import albayed.moamin.notesattach.components.TopBar
@@ -44,10 +45,10 @@ import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import kotlinx.coroutines.launch
-import java.util.Date
+import java.util.*
 import kotlin.random.Random
 
-@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter", "UnspecifiedImmutableFlag")
 @Composable
 fun AlarmsScreen(
     navController: NavController,
@@ -70,9 +71,11 @@ fun AlarmsScreen(
     }
 
     val alarmManager = context.getSystemService(ALARM_SERVICE) as AlarmManager
+    var alarmIntent = Intent(context, AlarmReceiver::class.java)
 
     val calendar = Calendar.getInstance()
     var nowCalendar: Calendar
+    nowCalendar = Calendar.getInstance()
     calendar.time = Date()
 
     val year = calendar.get(Calendar.YEAR)
@@ -104,10 +107,11 @@ fun AlarmsScreen(
                 Toast.makeText(context, "Reminders have to be in the future!", Toast.LENGTH_LONG)
                     .show()
             } else {
-//                val requestCode = Random.nextInt()
-                val requestCode = 0
+                val requestCode = Random.nextInt()
+//                val requestCode = 0
                 val channelId = Random.nextInt()
-                val alarmIntent = Intent(context, AlarmReceiver::class.java)
+//                val channelId = 705
+                alarmIntent = Intent(context, AlarmReceiver::class.java)
                 alarmIntent.putExtra("content", "Test Content")
                 alarmIntent.putExtra("channelId", channelId)
                 alarmIntent.putExtra("requestCode", requestCode)
@@ -117,9 +121,19 @@ fun AlarmsScreen(
                     alarmIntent,
                     PendingIntent.FLAG_IMMUTABLE
                 )
-                Log.d("here", "AlarmsScreen set: ${setCalendar.timeInMillis}")
-                Log.d("here", "AlarmsScreen now: ${nowCalendar.timeInMillis}")
-                alarmManager.set(AlarmManager.RTC_WAKEUP, setCalendar.timeInMillis, pendingIntent)
+                alarmManager.setExact(AlarmManager.RTC_WAKEUP, setCalendar.timeInMillis, pendingIntent)
+                viewModel.createAlarm(
+                    Alarm(
+                        noteId = UUID.fromString(noteId),
+                        year = setYear,
+                        month = setMonth,
+                        day = setDay,
+                        hour = hourOfDay,
+                        minute = minute,
+                        requestCode = requestCode
+                    )
+                )
+                viewModel.updateAlarmsCount(alarmsCount = alarmsCount + 1, noteId)
             }
         }, hour, minute, true)
 
@@ -166,6 +180,7 @@ fun AlarmsScreen(
             FloatingButton(icon = R.drawable.alarm, contentDescription = "Add Alarm Button") {
                 if (isDeleteMode.value) {
                     isDeleteMode.value = false
+                    alarmsToDelete.clear()
                 }
                 datePicker.show()
             }
@@ -178,7 +193,22 @@ fun AlarmsScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             items(alarmsList.asReversed()) { alarm ->
-
+                AlarmCard(
+                    alarm = alarm,
+                    nowCalendar = nowCalendar,
+                    isDeleteMode = isDeleteMode,
+                    isNewDeleteProcess = alarmsToDelete.isEmpty(),
+                    onClick = {/*todo modify alarm*/ },
+                    checkedDelete = { checkedDelete ->
+                        if (checkedDelete.value) {
+                            checkedDelete.value = !checkedDelete.value
+                            alarmsToDelete.remove(alarm)
+                        } else {
+                            checkedDelete.value = !checkedDelete.value
+                            alarmsToDelete.add(alarm)
+                        }
+                    }
+                )
             }
         }
     }
@@ -187,6 +217,13 @@ fun AlarmsScreen(
             isOpenDialog = isOpenDeleteDialog,
             onClickYes = {
                 alarmsToDelete.forEach { alarm ->
+                    val pendingIntent = PendingIntent.getBroadcast(
+                        context,
+                        alarm.requestCode,
+                        alarmIntent,
+                        PendingIntent.FLAG_IMMUTABLE
+                    )
+                    alarmManager.cancel(pendingIntent)
                     viewModel.deleteAlarm(alarm)
                 }
                 viewModel.updateAlarmsCount(
@@ -203,7 +240,7 @@ fun AlarmsScreen(
                 isDeleteMode.value = false
             },
             title = "Deleting Locations",
-            text = "Are you sure you want to delete ${alarmsToDelete.size} location(s)?"
+            text = "Are you sure you want to delete ${alarmsToDelete.size} alarm(s)?"
         )
     }
     fun backToMainScreen() {
