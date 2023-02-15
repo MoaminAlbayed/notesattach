@@ -53,13 +53,6 @@ fun AlarmCard(
     calendar.set(Calendar.HOUR_OF_DAY, alarm.hour)
     calendar.set(Calendar.MINUTE, alarm.minute)
 
-    Log.d("here", "AlarmCard nowCalendar: ${nowCalendar.time}")
-    Log.d("here", "AlarmCard calendar: ${calendar.time}")
-    if (calendar > nowCalendar){
-        Log.d("here", "AlarmCard : newer")
-    }else {
-        Log.d("here", "AlarmCard : older")
-    }
 
     val textColor = if (calendar > nowCalendar) MaterialTheme.colors.primary else Color.Gray
 

@@ -35,6 +35,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 fun NoteEditor(
     navController: NavController,
     isNewNote: Boolean,
+    isFromNotification: Boolean,
     noteId: String?,
     viewModel: NoteEditorViewModel = hiltViewModel()
 ) {
@@ -76,7 +77,10 @@ fun NoteEditor(
             note.content = content
             viewModel.updateNote(note)
             //navController.navigate(Screens.MainScreen.name)
-            navController.popBackStack()//todo navigateup when vieweing from a notification
+            if (isFromNotification)
+                navController.navigateUp()//todo confirm this works
+            else
+                navController.popBackStack()
         }
     }
     BackPressHandler() {

@@ -48,6 +48,11 @@ import java.util.*
 fun MainScreen(navController: NavController, viewModel: MainScreenViewModel = hiltViewModel()) {
     val notesList = viewModel.notesList.collectAsState().value
 
+//    Log.d("here", "MainScreen isFromNot: $isFromNotification")
+//    Log.d("here", "MainScreen: ${noteId.ifEmpty { "emptyNoteId" }}")
+//    if (isFromNotification)
+//        navController.navigate(Screens.NoteEditor.name + "/${false}/${false}/${noteId}")
+
     Scaffold(
         topBar = { TopBar(screen = Screens.MainScreen, navController = navController) },
         floatingActionButton = {
@@ -56,7 +61,7 @@ fun MainScreen(navController: NavController, viewModel: MainScreenViewModel = hi
 //                navController = navController
 //            )
             FloatingButton(icon = R.drawable.add, contentDescription = "New Note Button") {
-                navController.navigate(Screens.NoteEditor.name + "/${true}/${null}")
+                navController.navigate(Screens.NoteEditor.name + "/${true}/${false}/${null}")
             }
         }
     ) {
@@ -67,7 +72,7 @@ fun MainScreen(navController: NavController, viewModel: MainScreenViewModel = hi
         ) {
             items(notesList.asReversed()) { note ->
                 NoteCard(note, navController = navController) {
-                    navController.navigate(Screens.NoteEditor.name + "/${false}/${note.id}")
+                    navController.navigate(Screens.NoteEditor.name + "/${false}/${false}/${note.id}")
                 }
             }
         }
@@ -159,7 +164,7 @@ fun NoteCard(
         ) {
             // Use location because permissions are already granted
             Log.d("permission", "checkAndRequestLocationPermissions: already available")
-            navController.navigate(Screens.AlarmsScreen.name + "/${note.id}")
+            navController.navigate(Screens.AlarmsScreen.name + "/${note.id}/?${note.title}")
         } else {
             // Request permissions
             Log.d("permission", "checkAndRequestLocationPermissions: requesting")

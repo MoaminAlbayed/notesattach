@@ -16,34 +16,53 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import androidx.navigation.navDeepLink
 
 @Composable
 fun Navigation() {
     val navController = rememberNavController()
     NavHost(navController = navController, startDestination = Screens.MainScreen.name) {
-        composable(route = Screens.MainScreen.name) {
+        composable(route = Screens.MainScreen.name,
+//            deepLinks = listOf(
+//                navDeepLink { uriPattern = "myapp://notesattach/?{isFromNotification}/?{noteId}"}
+//            ),
+//            arguments = listOf(
+//                navArgument(name = "noteId") {
+//                    type = NavType.StringType
+//                    defaultValue = ""
+//                },
+//                navArgument(name = "isFromNotification") {
+//                    type = NavType.BoolType
+//                    defaultValue = false
+//                }
+//            )
+        ) {
             MainScreen(navController = navController)
         }
 
         //composable(route = Screens.NoteEditor.name + "?isNewNote={isNewNote}&noteId={noteId}",
-        composable(route = Screens.NoteEditor.name + "/{isNewNote}/{noteId}",
+        composable(route = Screens.NoteEditor.name + "/{isNewNote}/{isFromNotification}/{noteId}",
+            deepLinks = listOf(
+                navDeepLink { uriPattern = "myapp://notesattach/{isNewNote}/{isFromNotification}/{noteId}"}
+            ),
             arguments = listOf(
                 navArgument(name = "isNewNote") {
                     type = NavType.BoolType
                 },
                 navArgument(name = "noteId") {
                     type = NavType.StringType
+                },
+                navArgument(name = "isFromNotification") {
+                    type = NavType.BoolType
                 }
 
             )) { navBackStack ->
-//            navBackStack.arguments?.getString("noteId")
-//            navBackStack.arguments?.get
-//                ?.let { NoteEditor(navController = navController, it) }
             val isNewNote = navBackStack.arguments?.getBoolean("isNewNote")
+            val isFromNotification = navBackStack.arguments?.getBoolean("isFromNotification")
             val noteId = navBackStack.arguments?.getString("noteId")
             if (isNewNote != null) {
                 Log.d("isNewNote", "Navigation: $isNewNote")
-                NoteEditor(navController = navController, isNewNote = isNewNote, noteId = noteId)
+                NoteEditor(navController = navController, isNewNote = isNewNote, isFromNotification = isFromNotification!!, noteId = noteId)
             }
 
         }
@@ -107,15 +126,20 @@ fun Navigation() {
             val noteId = navBackStack.arguments?.getString("noteId")
             MapScreen(navController = navController, noteId = noteId.toString())
         }
-        composable(route = Screens.AlarmsScreen.name + "/{noteId}",
+        composable(route = Screens.AlarmsScreen.name + "/{noteId}/?{noteTitle}",
             arguments = listOf(
                 navArgument(name = "noteId") {
                     type = NavType.StringType
+                },
+                navArgument(name = "noteTitle"){
+                    type = NavType.StringType
+                    defaultValue = ""
                 }
             )
         ) { navBackStack ->
             val noteId = navBackStack.arguments?.getString("noteId")
-            AlarmsScreen(navController = navController, noteId = noteId.toString())
+            val noteTitle = navBackStack.arguments?.getString("noteTitle")
+            AlarmsScreen(navController = navController, noteId = noteId.toString(), noteTitle = noteTitle.toString())
         }
     }
 }

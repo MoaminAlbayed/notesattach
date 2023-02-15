@@ -53,6 +53,7 @@ import kotlin.random.Random
 fun AlarmsScreen(
     navController: NavController,
     noteId: String,
+    noteTitle: String,
     viewModel: AlarmsScreenViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
@@ -111,10 +112,12 @@ fun AlarmsScreen(
 //                val requestCode = 0
                 val channelId = Random.nextInt()
 //                val channelId = 705
+                val content = noteTitle.ifEmpty { "Click to view note" }
                 alarmIntent = Intent(context, AlarmReceiver::class.java)
-                alarmIntent.putExtra("content", requestCode.toString())
+                alarmIntent.putExtra("content", content)
                 alarmIntent.putExtra("channelId", channelId)
                 alarmIntent.putExtra("requestCode", requestCode)
+                alarmIntent.putExtra("noteId", noteId)
                 val pendingIntent = PendingIntent.getBroadcast(
                     context,
                     requestCode,
