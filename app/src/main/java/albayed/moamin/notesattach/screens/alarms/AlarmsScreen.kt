@@ -112,7 +112,7 @@ fun AlarmsScreen(
                 val channelId = Random.nextInt()
 //                val channelId = 705
                 alarmIntent = Intent(context, AlarmReceiver::class.java)
-                alarmIntent.putExtra("content", "Test Content")
+                alarmIntent.putExtra("content", requestCode.toString())
                 alarmIntent.putExtra("channelId", channelId)
                 alarmIntent.putExtra("requestCode", requestCode)
                 val pendingIntent = PendingIntent.getBroadcast(

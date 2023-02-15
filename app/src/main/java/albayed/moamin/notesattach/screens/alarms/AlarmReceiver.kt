@@ -54,7 +54,7 @@ class AlarmReceiver: BroadcastReceiver() {
 
         with (NotificationManagerCompat.from(context)){
 //            notify(channelId, notificationBuilder.build())
-            notify(0, notificationBuilder.build())
+            notify(channelId, notificationBuilder.build())
             Log.d("here", "onReceive: hereeeeeeeeeeeee")
         }
 
