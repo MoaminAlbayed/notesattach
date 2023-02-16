@@ -29,7 +29,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 
-@OptIn(ExperimentalComposeUiApi::class)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun NoteEditor(
@@ -42,10 +41,7 @@ fun NoteEditor(
     val titleFontSize = 18.sp
     val contentFontSize = 16.sp
 
-    val keyboardController = LocalSoftwareKeyboardController.current
-
-
-    var note = if (isNewNote) {
+    val note = if (isNewNote) {
         Note(title = "", content = "")
     } else {
         produceState(initialValue = Note(title = "", content = "")) {
@@ -69,14 +65,12 @@ fun NoteEditor(
                 note.title = title
                 note.content = content
                 viewModel.createNote(note)
-                //navController.navigate(Screens.MainScreen.name)
                 navController.popBackStack()
             }
         } else {
             note.title = title
             note.content = content
             viewModel.updateNote(note)
-            //navController.navigate(Screens.MainScreen.name)
             if (isFromNotification)
                 navController.navigateUp()
             else
@@ -87,15 +81,12 @@ fun NoteEditor(
         backToMainScreen()
     }
     Scaffold(
-        topBar = {
+        topBar = {//todo add access to attachments from note editor screen
             TopBar(screen = Screens.NoteEditor, navController = navController) {
                 backToMainScreen()
             }
         }
     ) {
-        if (note == null)
-            CircularProgressIndicator(modifier = Modifier.fillMaxSize())
-        else {
             Column() {
                 TextField(
                     modifier = Modifier.fillMaxWidth(),
@@ -110,12 +101,8 @@ fun NoteEditor(
                     textStyle = TextStyle(fontSize = titleFontSize),
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                     colors = TextFieldDefaults.textFieldColors(
-                        //textColor = Color.Gray,
-                        //disabledTextColor = Color.Transparent,
-                        //backgroundColor = Color.White,
                         focusedIndicatorColor = Color.Transparent,
                         unfocusedIndicatorColor = Color.Transparent,
-                        //disabledIndicatorColor = Color.Transparent
                     )
                 )
                 Divider(
@@ -136,22 +123,12 @@ fun NoteEditor(
                         Text(text = "Content", fontSize = contentFontSize)
                     },
                     textStyle = TextStyle(fontSize = contentFontSize),
-//                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-//                    keyboardActions = KeyboardActions(onDone = {
-//                        Log.d("keyboard", "NoteEditor: here")
-//                        keyboardController?.hide()
-//                    }),
                     colors = TextFieldDefaults.textFieldColors(
-                        //textColor = Color.Gray,
-                        //disabledTextColor = Color.Transparent,
-                        //backgroundColor = Color.White,
                         focusedIndicatorColor = Color.Transparent,
                         unfocusedIndicatorColor = Color.Transparent,
-                        //disabledIndicatorColor = Color.Transparent
                     )
                 )
             }
-        }
     }
 }
 
