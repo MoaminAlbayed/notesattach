@@ -78,7 +78,7 @@ fun NoteEditor(
             viewModel.updateNote(note)
             //navController.navigate(Screens.MainScreen.name)
             if (isFromNotification)
-                navController.navigateUp()//todo confirm this works
+                navController.navigateUp()
             else
                 navController.popBackStack()
         }

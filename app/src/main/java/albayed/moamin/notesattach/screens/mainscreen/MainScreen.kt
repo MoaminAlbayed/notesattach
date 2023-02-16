@@ -48,24 +48,16 @@ import java.util.*
 fun MainScreen(navController: NavController, viewModel: MainScreenViewModel = hiltViewModel()) {
     val notesList = viewModel.notesList.collectAsState().value
 
-//    Log.d("here", "MainScreen isFromNot: $isFromNotification")
-//    Log.d("here", "MainScreen: ${noteId.ifEmpty { "emptyNoteId" }}")
-//    if (isFromNotification)
-//        navController.navigate(Screens.NoteEditor.name + "/${false}/${false}/${noteId}")
 
     Scaffold(
         topBar = { TopBar(screen = Screens.MainScreen, navController = navController) },
         floatingActionButton = {
-//            FloatingButton(
-//                screen = Screens.MainScreen,
-//                navController = navController
-//            )
             FloatingButton(icon = R.drawable.add, contentDescription = "New Note Button") {
                 navController.navigate(Screens.NoteEditor.name + "/${true}/${false}/${null}")
             }
         }
     ) {
-        LazyColumn(
+        LazyColumn(//todo figure out delete animation
             modifier = Modifier
                 .fillMaxSize()
                 .padding(start = 5.dp, end = 5.dp)
@@ -286,7 +278,7 @@ fun NoteCard(
                     tint = MaterialTheme.colors.primary,
                     count = note.locationsCount
                 ){
-                    checkAndRequestLocationPermissions(context = context, permissions = locationPermissions, launcher = launcherLocationsMultiplePermissions)
+                    checkAndRequestLocationPermissions(context = context, permissions = locationPermissions, launcher = launcherLocationsMultiplePermissions)//todo check for internet connection first
                 }
                 AttachmentIcon(
                     icon = R.drawable.alarm,
@@ -294,7 +286,6 @@ fun NoteCard(
                     tint = MaterialTheme.colors.primary,
                     count = note.alarmsCount
                 ){
-//                    navController.navigate(Screens.AlarmsScreen.name+"/${note.id}")
                     checkAndRequestAlarmsPermissions(context = context, permissions = alarmPermissions, launcher = launcherAlarmsMultiplePermissions)
                 }
 
@@ -314,42 +305,13 @@ fun NoteCard(
         ConfirmMessage(
             isOpenDialog = isOpenDeleteDialog,
             onClickYes = {
-                viewModel.deleteNote(note)//todo delete all attachments
+                viewModel.deleteNote(note)
                 isOpenDeleteDialog.value = false
             },
             onClickNo = { isOpenDeleteDialog.value = false },
             title = "Deleting Note",
             text = "Are you sure you want to delete this note and all of its attachments?",
         )
-
-
-//        AlertDialog(onDismissRequest = { isOpenDeleteDialog.value = false },
-//            buttons = {
-//                TextButton(onClick = {
-//                    viewModel.deleteNote(note)//todo delete all attachments
-//                    isOpenDeleteDialog.value = false
-//                }) {
-//                    Text(text = "Yes", style = MaterialTheme.typography.button)
-//                }
-//                TextButton(onClick = { isOpenDeleteDialog.value = false }) {
-//                    Text(text = "No", style = MaterialTheme.typography.button)
-//                }
-//            },
-//            title = {
-//                Text(text = "Deleting Note", style = MaterialTheme.typography.h6)
-//            },
-//            text = {
-//                Text(
-//                    text = "Are you sure you want to delete this note and all of its attachments?",
-//                    style = MaterialTheme.typography.body1
-//                )
-//            }
-//        )
     }
-
-
-
-
-
 }
 

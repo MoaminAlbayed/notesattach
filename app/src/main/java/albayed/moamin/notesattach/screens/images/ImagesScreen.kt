@@ -48,9 +48,7 @@ fun ImagesScreen(
     val context = LocalContext.current
     val imagesList = viewModel.images.collectAsState().value
     val imagesCount = viewModel.imagesCount.collectAsState().value
-    var hasImage by remember {//todo remove this probably not needed
-        mutableStateOf(false)
-    }
+
     val isViewImage = remember {
         mutableStateOf(false)
     }
@@ -82,34 +80,10 @@ fun ImagesScreen(
         mutableStateOf(FileInfo(File(""), Uri.EMPTY))
     }
 
-
-//    val pickImage = rememberLauncherForActivityResult(
-//        contract = ActivityResultContracts.PickVisualMedia()
-//    ) { uri ->
-//        if (uri != null) {
-//            imageUri = uri
-//            viewModel.createImage(Image(noteId = UUID.fromString(noteId), uri = imageUri!!))
-//            viewModel.updateImagesCount(imagesCount = imagesCount + 1, noteId = noteId)
-//        } else {
-//            Toast.makeText(context, " No Image Was Selected", Toast.LENGTH_LONG).show()
-//        }
-//    }
-//
-//    val imagePicker = rememberLauncherForActivityResult(//older way of picking images
-//        contract = ActivityResultContracts.GetContent(),
-//        onResult = { uri ->
-//            hasImage = uri != null
-//            imageUri = uri
-//            viewModel.createImage(Image(noteId = UUID.fromString(noteId), uri = imageUri!!))
-//            viewModel.updateImagesCount(imagesCount = imagesCount + 1, noteId = noteId)
-//        }
-//    )
-
     val cameraLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.TakePicture(),
         onResult = { success ->
-            hasImage = success
-            if (hasImage) {
+            if (success) {
                 Log.d("here", "ImagesScreen: ${newFile.value}")
                 viewModel.createImage(
                     Image(
@@ -120,7 +94,7 @@ fun ImagesScreen(
                 )
                 viewModel.updateImagesCount(imagesCount = imagesCount + 1, noteId = noteId)
             }
-            if (!hasImage) {
+            if (!success) {
                 if (newFile.value.file!!.exists()) {
                     newFile.value.file!!.delete()
                 }

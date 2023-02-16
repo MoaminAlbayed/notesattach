@@ -29,7 +29,7 @@ fun TopBar(
             },
                 backgroundColor = Color.Black,
                 actions = {
-                    IconButton(onClick = { /*TODO*/ }) {
+                    IconButton(onClick = { /*TODO implement search in notes*/ }) {
                         Icon(
                             imageVector = Icons.Default.Search,
                             contentDescription = "Search Button"

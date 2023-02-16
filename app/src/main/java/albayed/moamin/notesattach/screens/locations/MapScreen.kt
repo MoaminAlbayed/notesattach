@@ -25,7 +25,7 @@ import java.util.*
 @Composable
 fun MapScreen(
     navController: NavController,
-    noteId: String,//todo create "mode and lat and long doubles" values sent from locations screen,
+    noteId: String,
     viewModel: LocationsScreenViewModel = hiltViewModel()
 ) {
     val isOpenConfirmDialogue = remember {

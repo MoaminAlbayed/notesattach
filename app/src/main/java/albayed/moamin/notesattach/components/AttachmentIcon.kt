@@ -3,6 +3,7 @@ package albayed.moamin.notesattach.components
 
 import albayed.moamin.notesattach.R
 import androidx.annotation.DrawableRes
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -50,16 +51,17 @@ fun AttachmentIcon(
                     end.linkTo(parent.end)
                     bottom.linkTo(parent.bottom)
                 },
-                count = count
+                count = count,
+                onClick = onClick
             )
         }
     }
 }
 
 @Composable
-fun Counter(modifier: Modifier = Modifier, count: Int) {
+fun Counter(modifier: Modifier = Modifier, count: Int ,onClick: () -> Unit) {
     Row(
-        modifier = modifier,
+        modifier = modifier.clickable { onClick.invoke() },
         verticalAlignment = Alignment.Bottom,
         horizontalArrangement = Arrangement.End
     ) {

@@ -13,6 +13,7 @@ import android.content.Context
 import android.content.Context.NOTIFICATION_SERVICE
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.media.RingtoneManager
 import android.os.Build
 import android.util.Log
@@ -49,7 +50,9 @@ class AlarmReceiver: BroadcastReceiver() {
         }
 
         val notificationBuilder = NotificationCompat.Builder(context, channelId.toString())
-            .setSmallIcon(R.mipmap.notesattach)
+            .setSmallIcon(R.drawable.notesattach_notification)
+//            .setSmallIcon(R.drawable.alarm)
+//            .setColor(Color.WHITE)
             .setContentTitle("Note Reminder")
             .setContentText(content)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)

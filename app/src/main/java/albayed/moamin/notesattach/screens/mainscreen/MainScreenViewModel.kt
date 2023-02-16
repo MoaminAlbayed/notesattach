@@ -40,8 +40,7 @@ class MainScreenViewModel @Inject constructor(private val noteRepository: NoteRe
         if (note.alarmsCount > 0)
             deleteAllAlarms(note)
         noteRepository.deleteNote(note)
-    }//TODO loop through all attachments to delete
-
+    }
 
     private fun deleteAllImages(note: Note) {
         val images = MutableStateFlow<List<Image>>(emptyList())

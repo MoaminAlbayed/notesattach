@@ -100,7 +100,7 @@ fun LocationsScreen(
                 if (isDeleteMode.value) {
                     isDeleteMode.value = false
                 }
-                navController.navigate(Screens.MapScreen.name + "/$noteId")//todo check for internet connection first
+                navController.navigate(Screens.MapScreen.name + "/$noteId")
             }
         }
     ) {
