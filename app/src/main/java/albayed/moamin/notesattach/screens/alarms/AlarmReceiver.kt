@@ -65,7 +65,7 @@ class AlarmReceiver: BroadcastReceiver() {
             val importance = NotificationManager.IMPORTANCE_DEFAULT
             val channel = NotificationChannel(channelId.toString(), name, importance).apply {
                 description = content
-//                enableVibration(true)//todo figure out vibration
+                enableVibration(true)
 //                vibrationPattern = longArrayOf(0, 1000, 500, 1000)
             }
             // Register the channel with the system
