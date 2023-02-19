@@ -35,7 +35,7 @@ import com.google.maps.android.compose.*
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun LocationsScreen(
+fun LocationsScreen(//todo figure out which API keys to use on release
     navController: NavController,
     noteId: String,
     viewModel: LocationsScreenViewModel = hiltViewModel()

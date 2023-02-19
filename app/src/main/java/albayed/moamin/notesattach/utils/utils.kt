@@ -1,51 +1,51 @@
 package albayed.moamin.notesattach.utils
 
 
-
 import albayed.moamin.notesattach.R
 import albayed.moamin.notesattach.models.Alarm
-import albayed.moamin.notesattach.models.FileInfo
-import albayed.moamin.notesattach.models.FileTypes
 import albayed.moamin.notesattach.models.Location
+import android.app.Activity
 import android.content.Context
+import android.content.ContextWrapper
 import android.media.MediaMetadataRetriever
-import android.media.MediaRecorder
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.net.Uri
-import android.util.Log
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.OnBackPressedDispatcher
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-fun dateFormatter(time: Long): String{
+fun dateFormatter(time: Long): String {
     val formatter = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
     return formatter.format(Date(time))
 }
 
-fun alarmDateFormatter(alarm: Alarm): String{
-    return alarm.day.toString().padStart(2,'0') +
-            "/${(alarm.month+1).toString().padStart(2,'0')}" +
+fun alarmDateFormatter(alarm: Alarm): String {
+    return alarm.day.toString().padStart(2, '0') +
+            "/${(alarm.month + 1).toString().padStart(2, '0')}" +
             "/${alarm.year}" +
-            " ${alarm.hour.toString().padStart(2,'0')}" +
-            ":${alarm.minute.toString().padStart(2,'0')}"
+            " ${alarm.hour.toString().padStart(2, '0')}" +
+            ":${alarm.minute.toString().padStart(2, '0')}"
 }
 
-fun fileDateFormatter(time: Long): String{
+fun fileDateFormatter(time: Long): String {
     val formatter = SimpleDateFormat("dd_MM_yyyy_HH_mm_ss", Locale.getDefault())
     return formatter.format(Date(time))
 }
 
-fun videoLength(context: Context, videoUri: Uri) :String{
+fun videoLength(context: Context, videoUri: Uri): String {
     val retriever = MediaMetadataRetriever()
     retriever.setDataSource(context, videoUri)
-    val videoTime = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)!!.toLong()
-    return String.format("%02d:%02d",
+    val videoTime =
+        retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)!!.toLong()
+    return String.format(
+        "%02d:%02d",
         TimeUnit.MILLISECONDS.toMinutes(videoTime),
         TimeUnit.MILLISECONDS.toSeconds(videoTime) -
                 TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(videoTime))
@@ -66,6 +66,7 @@ fun formatTimer(timestamp: Long): String {
         "$minutesFormatted:$secondsFormatted"
     }
 }
+
 fun Long.pad(desiredLength: Int) = this.toString().padStart(desiredLength, '0')
 
 @Composable
@@ -104,5 +105,39 @@ fun fetchThumbnailUri(location: Location): String {
             "&key=${stringResource(id = R.string.maps_api_key)}"
 }
 
+
+fun internetAvailable(context: Context): Boolean {
+    val connectionManager =
+        context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    val networkCapabilities =
+        connectionManager.getNetworkCapabilities(connectionManager.activeNetwork)
+    return if (networkCapabilities != null) {
+        (networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) &&
+                networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED) &&
+                networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_NOT_SUSPENDED)
+                )
+    } else
+        false
+}
+
+@Composable
+fun LockScreenOrientation( orientation: Int) {
+    val context = LocalContext.current
+    DisposableEffect(Unit) {
+        val activity = context.findActivity() ?: return@DisposableEffect onDispose {}
+        val originalOrientation = activity.requestedOrientation
+        activity.requestedOrientation = orientation
+        onDispose {
+            // restore original orientation when view disappears
+            activity.requestedOrientation = originalOrientation
+        }
+    }
+}
+
+fun Context.findActivity(): Activity? = when (this) {
+    is Activity -> this
+    is ContextWrapper -> baseContext.findActivity()
+    else -> null
+}
 
 

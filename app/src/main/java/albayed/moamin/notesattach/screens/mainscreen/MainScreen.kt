@@ -8,6 +8,7 @@ import albayed.moamin.notesattach.components.TopBar
 import albayed.moamin.notesattach.models.Note
 import albayed.moamin.notesattach.navigation.Screens
 import albayed.moamin.notesattach.utils.dateFormatter
+import albayed.moamin.notesattach.utils.internetAvailable
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
@@ -57,7 +58,7 @@ fun MainScreen(navController: NavController, viewModel: MainScreenViewModel = hi
             }
         }
     ) {
-        LazyColumn(//todo figure out delete animation
+        LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(start = 5.dp, end = 5.dp)
@@ -278,7 +279,10 @@ fun NoteCard(
                     tint = MaterialTheme.colors.primary,
                     count = note.locationsCount
                 ){
-                    checkAndRequestLocationPermissions(context = context, permissions = locationPermissions, launcher = launcherLocationsMultiplePermissions)//todo check for internet connection first
+                    if (internetAvailable(context))
+                        checkAndRequestLocationPermissions(context = context, permissions = locationPermissions, launcher = launcherLocationsMultiplePermissions)
+                    else
+                        Toast.makeText(context, "Internet connection is required to use Locations!", Toast.LENGTH_LONG).show()
                 }
                 AttachmentIcon(
                     icon = R.drawable.alarm,

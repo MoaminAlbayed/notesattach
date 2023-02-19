@@ -50,7 +50,7 @@ import kotlin.random.Random
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter", "UnspecifiedImmutableFlag")
 @Composable
-fun AlarmsScreen(
+fun AlarmsScreen(//todo rename to reminders
     navController: NavController,
     noteId: String,
     noteTitle: String,

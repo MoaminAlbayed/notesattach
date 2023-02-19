@@ -7,9 +7,11 @@ import albayed.moamin.notesattach.models.FileInfo
 import albayed.moamin.notesattach.models.FileTypes
 import albayed.moamin.notesattach.navigation.Screens
 import albayed.moamin.notesattach.utils.BackPressHandler
+import albayed.moamin.notesattach.utils.LockScreenOrientation
 import albayed.moamin.notesattach.utils.NewFileProvider
 import albayed.moamin.notesattach.utils.formatTimer
 import android.annotation.SuppressLint
+import android.content.pm.ActivityInfo
 import android.media.MediaRecorder
 import android.net.Uri
 import android.util.Log
@@ -41,6 +43,7 @@ fun RecordAudioScreen(
     viewModel: AudioClipsScreenViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
+    LockScreenOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
     val audioClipsCount = viewModel.audioClipsCount.collectAsState().value
     val fileSaver = run {
         val fileKey = "file"

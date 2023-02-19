@@ -8,8 +8,10 @@ import albayed.moamin.notesattach.components.TopBar
 import albayed.moamin.notesattach.models.AudioClip
 import albayed.moamin.notesattach.navigation.Screens
 import albayed.moamin.notesattach.utils.BackPressHandler
+import albayed.moamin.notesattach.utils.LockScreenOrientation
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.media.MediaPlayer
 import android.util.Log
@@ -42,20 +44,21 @@ fun AudioClipsScreen(
     viewModel: AudioClipsScreenViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
+//    LockScreenOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
     val audioClips = viewModel.audioClips.collectAsState().value
     val audioClipsCount = viewModel.audioClipsCount.collectAsState().value
 
-    val isDeleteMode = remember {
+    val isDeleteMode = rememberSaveable {
         mutableStateOf(false)
     }
     val audioClipsToDelete = remember {
         mutableStateListOf<AudioClip>()
     }
-    val isOpenDeleteDialog = remember {
+    val isOpenDeleteDialog = rememberSaveable {
         mutableStateOf(false)
     }
 
-    val player by remember {
+    val player by remember() {
         mutableStateOf(MediaPlayer())
     }
     var isPlaying by rememberSaveable() {
@@ -65,18 +68,18 @@ fun AudioClipsScreen(
         mutableStateOf(false)
     }
 
-    var duration by remember {
+    var duration by rememberSaveable {
         mutableStateOf(0f)
     }
 
     val currentPositionScope = rememberCoroutineScope()
     val permissionScope = rememberCoroutineScope()
 
-    val currentPosition = remember {
+    val currentPosition = rememberSaveable {
         mutableStateOf<Float?>(null)
     }
 
-    val audioClipCurrentlyPlaying = remember {
+    val audioClipCurrentlyPlaying = rememberSaveable {
         mutableStateOf<File?>(null)
     }
 
