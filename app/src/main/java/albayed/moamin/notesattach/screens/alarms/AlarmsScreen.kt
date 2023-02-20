@@ -156,7 +156,6 @@ fun AlarmsScreen(//todo rename to reminders
         topBar = {
             TopBar(
                 screen = Screens.AlarmsScreen,
-                navController = navController,
                 firstAction = {
                     if (alarmsCount == 0) {
                         Toast.makeText(context, "No Alarms to Delete!", Toast.LENGTH_SHORT)

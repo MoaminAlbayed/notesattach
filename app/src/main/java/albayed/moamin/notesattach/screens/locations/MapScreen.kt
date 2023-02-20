@@ -60,7 +60,7 @@ fun MapScreen(
     val geocoder = Geocoder(context, Locale.ENGLISH)
 
     Scaffold(topBar = {
-        TopBar(screen = Screens.MapScreen, navController = navController) {
+        TopBar(screen = Screens.MapScreen) {
             navController.popBackStack()
         }
     }) {

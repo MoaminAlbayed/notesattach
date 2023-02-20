@@ -109,7 +109,6 @@ fun ImagesScreen(
     Scaffold(topBar = {
         TopBar(
             screen = Screens.ImagesScreen,
-            navController = navController,
             firstAction = {
                 if (imagesCount == 0) {
                     Toast.makeText(context, "No Images to Delete!", Toast.LENGTH_SHORT).show()

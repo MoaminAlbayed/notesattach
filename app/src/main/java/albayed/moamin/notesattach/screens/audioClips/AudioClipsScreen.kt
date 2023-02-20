@@ -186,7 +186,6 @@ fun AudioClipsScreen(
         topBar = {
             TopBar(
                 screen = Screens.AudioClipsScreen,
-                navController = navController,
                 firstAction = {
                     if (audioClipsCount == 0) {
                         Toast.makeText(context, "No Audio Clips to Delete!", Toast.LENGTH_SHORT)

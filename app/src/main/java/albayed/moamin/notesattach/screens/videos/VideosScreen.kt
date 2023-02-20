@@ -104,7 +104,6 @@ fun VideosScreen(
     Scaffold(topBar = {
         TopBar(
             screen = Screens.VideosScreen,
-            navController = navController,
             firstAction = {
                 if (videosCount == 0) {
                     Toast.makeText(context, "No Images to Delete!", Toast.LENGTH_SHORT).show()

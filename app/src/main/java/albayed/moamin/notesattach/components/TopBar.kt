@@ -9,17 +9,14 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.navigation.NavController
 import albayed.moamin.notesattach.R
 
 
 @Composable
 fun TopBar(
     screen: Screens,
-    navController: NavController,
     firstAction: () -> Unit = {},
-    secondAction: () -> Unit = {},
-    thirdAction: ()-> Unit ={},
+    isNewNote: Boolean = false,
     onClick: () -> Unit = {}
 ) {
     when (screen) {//todo refactor to make shorter
@@ -45,8 +42,30 @@ fun TopBar(
             )
         }
         Screens.NoteEditor -> {
+            if (!isNewNote){
+                TopAppBar(title = {
+                    Text(text = "Note Editor")
+                },
+                    navigationIcon = {
+                        IconButton(onClick = { onClick.invoke() }) {
+                            Icon(
+                                imageVector = Icons.Default.ArrowBack,
+                                contentDescription = "Back Button"
+                            )
+                        }
+                    },
+                    actions = {
+                        IconButton(onClick = { firstAction.invoke() }) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.attachment_button),
+                                contentDescription = "Attachments Button"
+                            )
+                        }
+                    }
+                )
+            } else
             TopAppBar(title = {
-                Text(text = "Note Editor")
+                Text(text = "New Note")
             },
                 navigationIcon = {
                     IconButton(onClick = { onClick.invoke() }) {

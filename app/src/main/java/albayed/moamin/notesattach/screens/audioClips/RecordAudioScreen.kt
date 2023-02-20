@@ -128,7 +128,7 @@ fun RecordAudioScreen(
     }
 
     Scaffold(topBar = {
-        TopBar(screen = Screens.RecordAudioScreen, navController = navController) {
+        TopBar(screen = Screens.RecordAudioScreen) {
             if (isRecording.value) {
                 stopRecording()
             } else if (!recorded) {

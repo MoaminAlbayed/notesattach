@@ -71,7 +71,6 @@ fun LocationsScreen(//todo figure out which API keys to use on release
         topBar = {
             TopBar(
                 screen = Screens.LocationsScreen,
-                navController = navController,
                 firstAction = {
                     if (locationsCount == 0) {
                         Toast.makeText(context, "No Locations to Delete!", Toast.LENGTH_SHORT)

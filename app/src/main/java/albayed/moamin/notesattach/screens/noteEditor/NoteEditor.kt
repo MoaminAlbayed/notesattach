@@ -1,5 +1,6 @@
 package albayed.moamin.notesattach.screens.noteEditor
 
+import albayed.moamin.notesattach.components.AttachmentsDropDown
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.*
 import androidx.navigation.NavController
@@ -8,21 +9,14 @@ import albayed.moamin.notesattach.models.Note
 import albayed.moamin.notesattach.navigation.Screens
 import albayed.moamin.notesattach.utils.BackPressHandler
 import android.annotation.SuppressLint
-import android.util.Log
-import androidx.activity.OnBackPressedCallback
-import androidx.activity.OnBackPressedDispatcher
-import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
@@ -56,6 +50,14 @@ fun NoteEditor(
         mutableStateOf(note.content)
     }
 
+    val isAttachmentsDropDownVisible = remember { mutableStateOf(false) }
+    if (isAttachmentsDropDownVisible.value){
+        AttachmentsDropDown(
+            isVisible = isAttachmentsDropDownVisible,
+            attachmentCount = intArrayOf(1,2,3)
+        )
+    }
+
 
     fun backToMainScreen() {
         if (isNewNote) {
@@ -82,7 +84,11 @@ fun NoteEditor(
     }
     Scaffold(
         topBar = {//todo add access to attachments from note editor screen
-            TopBar(screen = Screens.NoteEditor, navController = navController) {
+            TopBar(
+                screen = Screens.NoteEditor,
+                isNewNote = isNewNote,
+                firstAction = {isAttachmentsDropDownVisible.value = true}
+            ) {
                 backToMainScreen()
             }
         }

@@ -51,7 +51,7 @@ fun MainScreen(navController: NavController, viewModel: MainScreenViewModel = hi
 
 
     Scaffold(
-        topBar = { TopBar(screen = Screens.MainScreen, navController = navController) },
+        topBar = { TopBar(screen = Screens.MainScreen) },
         floatingActionButton = {
             FloatingButton(icon = R.drawable.add, contentDescription = "New Note Button") {
                 navController.navigate(Screens.NoteEditor.name + "/${true}/${false}/${null}")
@@ -142,6 +142,7 @@ fun NoteCard(
             launcher.launch(permissions)
         }
     }
+
     fun checkAndRequestAlarmsPermissions(
         context: Context,
         permissions: Array<String>,
@@ -170,6 +171,8 @@ fun NoteCard(
         mutableStateOf(false)
     }
     val attachmentsColumnsWidth = 70.dp
+    val attachmentIconScale = 2.2f
+    val attachmentIconPadding = 5.dp
     Card(
         modifier = Modifier
             .padding(5.dp)
@@ -188,29 +191,47 @@ fun NoteCard(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.SpaceBetween,
             ) {
-                AttachmentIcon(
-                    icon = R.drawable.photo,
-                    contentDescription = "Photo Button",
-                    tint = MaterialTheme.colors.primary,
-                    count = note.imagesCount
-                ) {
+                Box(modifier = Modifier.clickable {
                     navController.navigate(Screens.ImagesScreen.name + "/${note.id}")
                 }
-                AttachmentIcon(
-                    icon = R.drawable.video,
-                    contentDescription = "Video Button",
-                    tint = MaterialTheme.colors.primary,
-                    count = note.videosCount
-                ) {
+                    .fillMaxSize()
+                    .weight(1f)) {
+                    AttachmentIcon(
+                        icon = R.drawable.photo,
+                        scale = attachmentIconScale,
+                        padding = attachmentIconPadding,
+                        contentDescription = "Photo Button",
+                        tint = MaterialTheme.colors.primary,
+                        count = note.imagesCount
+                    )
+                }
+                Box(modifier = Modifier.clickable {
                     navController.navigate(Screens.VideosScreen.name + "/${note.id}")
                 }
-                AttachmentIcon(
-                    icon = R.drawable.mic,
-                    contentDescription = "Microphone Button",
-                    tint = MaterialTheme.colors.primary,
-                    count = note.audioClipsCount
-                ) {
+                    .fillMaxSize()
+                    .weight(1f)) {
+                    AttachmentIcon(
+                        icon = R.drawable.video,
+                        scale = attachmentIconScale,
+                        padding = attachmentIconPadding,
+                        contentDescription = "Video Button",
+                        tint = MaterialTheme.colors.primary,
+                        count = note.videosCount
+                    )
+                }
+                Box(modifier = Modifier.clickable {
                     navController.navigate(Screens.AudioClipsScreen.name + "/${note.id}")
+                }
+                    .fillMaxSize()
+                    .weight(1f)) {
+                    AttachmentIcon(
+                        icon = R.drawable.mic,
+                        scale = attachmentIconScale,
+                        padding = attachmentIconPadding,
+                        contentDescription = "Microphone Button",
+                        tint = MaterialTheme.colors.primary,
+                        count = note.audioClipsCount
+                    )
                 }
             }
 
@@ -273,34 +294,62 @@ fun NoteCard(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
-                AttachmentIcon(
-                    icon = R.drawable.location,
-                    contentDescription = "Locations Button",
-                    tint = MaterialTheme.colors.primary,
-                    count = note.locationsCount
-                ){
+                Box(modifier = Modifier.clickable {
                     if (internetAvailable(context))
-                        checkAndRequestLocationPermissions(context = context, permissions = locationPermissions, launcher = launcherLocationsMultiplePermissions)
+                        checkAndRequestLocationPermissions(
+                            context = context,
+                            permissions = locationPermissions,
+                            launcher = launcherLocationsMultiplePermissions
+                        )
                     else
-                        Toast.makeText(context, "Internet connection is required to use Locations!", Toast.LENGTH_LONG).show()
+                        Toast.makeText(
+                            context,
+                            "Internet connection is required to use Locations!",
+                            Toast.LENGTH_LONG
+                        ).show()
                 }
-                AttachmentIcon(
-                    icon = R.drawable.alarm,
-                    contentDescription = "Alarms Button",
-                    tint = MaterialTheme.colors.primary,
-                    count = note.alarmsCount
-                ){
-                    checkAndRequestAlarmsPermissions(context = context, permissions = alarmPermissions, launcher = launcherAlarmsMultiplePermissions)
+                    .fillMaxSize()
+                    .weight(1f)) {
+                    AttachmentIcon(
+                        icon = R.drawable.location,
+                        scale = attachmentIconScale,
+                        padding = attachmentIconPadding,
+                        contentDescription = "Locations Button",
+                        tint = MaterialTheme.colors.primary,
+                        count = note.locationsCount
+                    )
                 }
-
-                AttachmentIcon(
-                    icon = R.drawable.trash,
-                    contentDescription = "Delete Button",
-                    tint = Color.Red.copy(alpha = 0.7f),
-                    isDelete = true
+                Box(modifier = Modifier.clickable {
+                    checkAndRequestAlarmsPermissions(
+                        context = context,
+                        permissions = alarmPermissions,
+                        launcher = launcherAlarmsMultiplePermissions
+                    )
+                }
+                    .fillMaxSize()
+                    .weight(1f),
+                    contentAlignment = Alignment.Center
                 ) {
-                    isOpenDeleteDialog.value = true
-
+                    AttachmentIcon(
+                        icon = R.drawable.alarm,
+                        scale = attachmentIconScale,
+                        padding = attachmentIconPadding,
+                        contentDescription = "Alarms Button",
+                        tint = MaterialTheme.colors.primary,
+                        count = note.alarmsCount
+                    )
+                }
+                Box(modifier = Modifier.clickable { isOpenDeleteDialog.value = true }
+                    .fillMaxSize()
+                    .weight(1f)) {
+                    AttachmentIcon(
+                        icon = R.drawable.trash,
+                        scale = attachmentIconScale,
+                        padding = attachmentIconPadding,
+                        contentDescription = "Delete Button",
+                        tint = Color.Red.copy(alpha = 0.7f),
+                        isDelete = true
+                    )
                 }
             }
         }
