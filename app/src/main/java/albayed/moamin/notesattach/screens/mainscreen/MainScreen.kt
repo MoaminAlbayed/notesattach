@@ -195,7 +195,8 @@ fun NoteCard(
                     navController.navigate(Screens.ImagesScreen.name + "/${note.id}")
                 }
                     .fillMaxSize()
-                    .weight(1f)) {
+                    .weight(1f)
+                    ) {
                     AttachmentIcon(
                         icon = R.drawable.photo,
                         scale = attachmentIconScale,
@@ -209,7 +210,8 @@ fun NoteCard(
                     navController.navigate(Screens.VideosScreen.name + "/${note.id}")
                 }
                     .fillMaxSize()
-                    .weight(1f)) {
+                    .weight(1f)
+                ) {
                     AttachmentIcon(
                         icon = R.drawable.video,
                         scale = attachmentIconScale,
@@ -223,7 +225,8 @@ fun NoteCard(
                     navController.navigate(Screens.AudioClipsScreen.name + "/${note.id}")
                 }
                     .fillMaxSize()
-                    .weight(1f)) {
+                    .weight(1f)
+                ) {
                     AttachmentIcon(
                         icon = R.drawable.mic,
                         scale = attachmentIconScale,
@@ -309,7 +312,8 @@ fun NoteCard(
                         ).show()
                 }
                     .fillMaxSize()
-                    .weight(1f)) {
+                    .weight(1f)
+                ) {
                     AttachmentIcon(
                         icon = R.drawable.location,
                         scale = attachmentIconScale,
@@ -327,8 +331,7 @@ fun NoteCard(
                     )
                 }
                     .fillMaxSize()
-                    .weight(1f),
-                    contentAlignment = Alignment.Center
+                    .weight(1f)
                 ) {
                     AttachmentIcon(
                         icon = R.drawable.alarm,
@@ -341,7 +344,8 @@ fun NoteCard(
                 }
                 Box(modifier = Modifier.clickable { isOpenDeleteDialog.value = true }
                     .fillMaxSize()
-                    .weight(1f)) {
+                    .weight(1f)
+                ) {
                     AttachmentIcon(
                         icon = R.drawable.trash,
                         scale = attachmentIconScale,

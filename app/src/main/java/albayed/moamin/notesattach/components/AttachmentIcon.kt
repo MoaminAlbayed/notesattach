@@ -3,7 +3,6 @@ package albayed.moamin.notesattach.components
 
 import albayed.moamin.notesattach.R
 import androidx.annotation.DrawableRes
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
@@ -16,24 +15,23 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.constraintlayout.compose.ConstraintLayout
 
 
 @Composable
 fun AttachmentIcon(
     modifier: Modifier = Modifier,
     @DrawableRes icon: Int = R.drawable.photo,
-    scale: Float,
-    padding: Dp,
+    scale: Float = 2.1f,
+    padding: Dp = 5.dp,
     contentDescription: String = "",
     tint: Color = Color.Unspecified,
-    count: Int = 0,
+    count: Int = 1,
     isDelete: Boolean = false,
     //onClick: () -> Unit = {}
 ) {
     Box(
-        modifier = modifier.padding(padding),
-        contentAlignment = Alignment.BottomEnd
+        modifier = modifier.fillMaxSize().padding(padding),
+//        contentAlignment = Alignment.BottomEnd
     ) {
 //        IconButton(modifier = modifier
 //            .scale(scale),
@@ -41,18 +39,35 @@ fun AttachmentIcon(
 //        ) {
         Icon(
             modifier = modifier
-                .scale(scale),
+                .scale(scale).align(Alignment.Center),
             painter = painterResource(id = icon),
             tint = tint,
             contentDescription = contentDescription
         )
 //        }
         if (!isDelete && count != 0) {
-            Counter(
-//                modifier = Modifier.wrapContentSize(Alignment.BottomEnd),
-                count = count,
-//                onClick = onClick
-            )
+            Box( //modifier = Modifier.align(Alignment.BottomEnd)
+                modifier = Modifier.align(Alignment.BottomEnd)
+                // modifier = modifier.clickable { onClick.invoke() },
+//        verticalAlignment = Alignment.Bottom,
+//        horizontalArrangement = Arrangement.End
+            ) {
+                Surface(
+                    modifier = Modifier.align(Alignment.Center),
+                    shape = CircleShape,
+                    color = MaterialTheme.colors.primary,
+                    contentColor = MaterialTheme.colors.onPrimary
+                ) {
+                    val countString = if (count < 10) count.toString() else "+9"
+                    Text(text = " $countString ")
+                }
+
+            }
+//            Counter(
+////                modifier = Modifier.wrapContentSize(Alignment.BottomEnd),
+//                count = count,
+////                onClick = onClick
+//            )
         }
 
     }
@@ -82,22 +97,25 @@ fun AttachmentIcon(
 //    }
 }
 
-@Composable
-fun Counter(modifier: Modifier = Modifier, count: Int /*onClick: () -> Unit*/) {
-    Row(
-        // modifier = modifier.clickable { onClick.invoke() },
-//        verticalAlignment = Alignment.Bottom,
-//        horizontalArrangement = Arrangement.End
-    ) {
-        Surface(
-            shape = CircleShape,
-            color = MaterialTheme.colors.primary,
-            contentColor = MaterialTheme.colors.onPrimary
-        ) {
-            val countString = if (count < 10) count.toString() else "+9"
-            Text(text = " $countString ")
-        }
-
-    }
-}
+//@Composable
+//fun Counter(modifier: Modifier = Modifier, count: Int /*onClick: () -> Unit*/) {
+//
+//
+////        Row( modifier = Modifier.align(Alignment.BottomEnd)
+//            // modifier = modifier.clickable { onClick.invoke() },
+////        verticalAlignment = Alignment.Bottom,
+////        horizontalArrangement = Arrangement.End
+//        ) {
+//            Surface(
+//                shape = CircleShape,
+//                color = MaterialTheme.colors.primary,
+//                contentColor = MaterialTheme.colors.onPrimary
+//            ) {
+//                val countString = if (count < 10) count.toString() else "+9"
+//                Text(text = " $countString ")
+//            }
+//
+//        }
+//
+//}
 
