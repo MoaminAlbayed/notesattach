@@ -31,6 +31,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -45,9 +46,37 @@ import java.util.*
 fun MainScreen(navController: NavController, viewModel: MainScreenViewModel = hiltViewModel()) {
     val notesList = viewModel.notesList.collectAsState().value
 
+    val isSearch = remember { mutableStateOf(false) }
+    //val searchState = remember { mutableStateOf("") }
+
+    val notesToShow = remember { mutableStateOf(listOf<Note>()) }
+
+    if (!isSearch.value) {
+        Log.d("here", "MainScreen: on if")
+        notesToShow.value = notesList
+    }
+//        if (searchState.value.isEmpty())
+////            notesToShow.value = emptyList()
+//            notesToShow.value = notesList.filter {note ->
+//                Log.d("here", "MainScreen: ${note.title}")
+//                note.title.contains(searchState.value) /*|| note.content.contains(searchState.value)*/
+//        }
+//    } else
+//        notesToShow.value = notesList
 
     Scaffold(
-        topBar = { TopBar(screen = Screens.MainScreen) },
+        topBar = {
+            TopBar(
+                screen = Screens.MainScreen,
+                isMainScreenSearch = isSearch,
+                firstAction = { isSearch.value = !isSearch.value },
+                onSearchValueChanged = { value ->
+                    notesToShow.value = notesList.filter { note ->
+                        note.title.contains(value) || note.content.contains(value)
+                    }
+                }
+            )
+        },
         floatingActionButton = {
             FloatingButton(icon = R.drawable.add, contentDescription = "New Note Button") {
                 navController.navigate(Screens.NoteEditor.name + "/${true}/${false}/${null}")
@@ -59,14 +88,14 @@ fun MainScreen(navController: NavController, viewModel: MainScreenViewModel = hi
                 .fillMaxSize()
                 .padding(start = 5.dp, end = 5.dp)
         ) {
-            items(notesList.asReversed()) { note ->
+//            items(notesList.asReversed()) { note ->
+            items(notesToShow.value.asReversed()) { note ->
                 NoteCard(note, navController = navController) {
                     navController.navigate(Screens.NoteEditor.name + "/${false}/${false}/${note.id}")
                 }
             }
         }
     }
-
 }
 
 //@Preview(showBackground = true)
@@ -97,7 +126,7 @@ fun NoteCard(
         Manifest.permission.RECORD_AUDIO
     )
     var route by remember { mutableStateOf("") }
-    val getPermissions = requestMyPermissions(route, context,navController)
+    val getPermissions = requestMyPermissions(route, context, navController)
 
     val isOpenDeleteDialog = remember {
         mutableStateOf(false)
@@ -249,7 +278,7 @@ fun NoteCard(
                                 route = Screens.LocationsScreen.name + "/${note.id}"
                                 getPermissions.launch(locationPermissions)
                             }
-                            else
+                        else
                             Toast
                                 .makeText(
                                     context,
