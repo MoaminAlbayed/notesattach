@@ -9,6 +9,7 @@ import albayed.moamin.notesattach.models.AudioClip
 import albayed.moamin.notesattach.navigation.Screens
 import albayed.moamin.notesattach.utils.BackPressHandler
 import albayed.moamin.notesattach.utils.LockScreenOrientation
+import albayed.moamin.notesattach.utils.checkPermissions
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.pm.ActivityInfo
@@ -44,7 +45,6 @@ fun AudioClipsScreen(
     viewModel: AudioClipsScreenViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
-//    LockScreenOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
     val audioClips = viewModel.audioClips.collectAsState().value
     val audioClipsCount = viewModel.audioClipsCount.collectAsState().value
 
@@ -83,37 +83,45 @@ fun AudioClipsScreen(
         mutableStateOf<File?>(null)
     }
 
-    val requestPermissionLauncher =
-        rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
-            if (!isGranted) {
-                Log.d("permission", "audioClipsScreen perm: permission denied")
-            } else {
-                Log.d("permission", "audioClipsScreen perm: permission granted")
-                //viewModel.createImage(Image(noteId = UUID.fromString(noteId), uri = imageUri!!))
-            }
-        }
+//    val requestPermissionLauncher =
+//        rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+//            if (!isGranted) {
+//                Log.d("permission", "audioClipsScreen perm: permission denied")
+//            } else {
+//                Log.d("permission", "audioClipsScreen perm: permission granted")
+//                //viewModel.createImage(Image(noteId = UUID.fromString(noteId), uri = imageUri!!))
+//            }
+//        }
+//
+//
+//
+//    fun checkPermission(onGranted: () -> Unit = {}) {
+//        if (ContextCompat.checkSelfPermission(
+//                context,
+//                Manifest.permission.RECORD_AUDIO
+//            )
+//            == PackageManager.PERMISSION_GRANTED
+//        ) {
+//            onGranted.invoke()
+//            Log.d("permission", "audioClipsScreen: permission available")
+//            //viewModel.createImage(Image(noteId = UUID.fromString(noteId), uri = imageUri!!))
+//
+//        } else {
+//            Log.d("permission", "audioClipsScreen: requesting")
+////            SideEffect {
+//            permissionScope.launch {
+//                requestPermissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
+//            }
+//        }
+//    }
+////    checkPermission()
+//    val recordPermission = arrayOf(
+//        Manifest.permission.RECORD_AUDIO
+//    )
+//
+////    if (!checkPermissions(recordPermission, context)){}
 
 
-    fun checkPermission(onGranted: () -> Unit = {}) {
-        if (ContextCompat.checkSelfPermission(
-                context,
-                Manifest.permission.RECORD_AUDIO
-            )
-            == PackageManager.PERMISSION_GRANTED
-        ) {
-            onGranted.invoke()
-            Log.d("permission", "audioClipsScreen: permission available")
-            //viewModel.createImage(Image(noteId = UUID.fromString(noteId), uri = imageUri!!))
-
-        } else {
-            Log.d("permission", "audioClipsScreen: requesting")
-//            SideEffect {
-            permissionScope.launch {
-                requestPermissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
-            }
-        }
-    }
-    checkPermission()
 
     fun resumePlaying() {
         player.start()
@@ -217,15 +225,12 @@ fun AudioClipsScreen(
         },
         floatingActionButton = {
             FloatingButton(icon = R.drawable.mic, contentDescription = "Use Mic Button") {
-                checkPermission() {//todo improve permission handling when rejecting
                     if (isDeleteMode.value) {
                         isDeleteMode.value = false
                     }
                     if (isPlaying)
                         stopPlaying()
-
                     navController.navigate(Screens.RecordAudioScreen.name + "/${noteId}")
-                }
             }
         }
     ) {

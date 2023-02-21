@@ -7,16 +7,24 @@ import albayed.moamin.notesattach.models.Location
 import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
+import android.content.pm.PackageManager
 import android.media.MediaMetadataRetriever
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.net.Uri
+import android.util.Log
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.OnBackPressedDispatcher
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
+import androidx.activity.compose.ManagedActivityResultLauncher
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.core.content.ContextCompat
+import androidx.navigation.NavController
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -138,6 +146,68 @@ fun Context.findActivity(): Activity? = when (this) {
     is Activity -> this
     is ContextWrapper -> baseContext.findActivity()
     else -> null
+}
+
+@Composable
+fun MultiplePermissionsx (permissions: Array<String>, route: String, context: Context, navController: NavController){
+    val launcher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissionsMap ->
+        Log.d("here", "MultiplePermissions: $permissionsMap")
+        val areGranted = permissionsMap.values.reduce { acc, next -> acc && next }
+
+        if (areGranted) {
+            Log.d("here", "MultiplePermissions: here3")
+            navController.navigate(route = route)
+        } else {
+            Toast.makeText(context, "Permission Required", Toast.LENGTH_LONG).show()
+        }
+    }
+    if (
+        permissions.all {
+            ContextCompat.checkSelfPermission(
+                context,
+                it
+            ) == PackageManager.PERMISSION_GRANTED
+        }
+    ) {
+        navController.navigate(route = route)
+    } else {
+            launcher.launch(permissions)
+    }
+}
+
+fun checkPermissions (permissions: Array<String>, context: Context): Boolean{
+    return permissions.all {
+        ContextCompat.checkSelfPermission(
+            context,
+            it
+        ) == PackageManager.PERMISSION_GRANTED
+    }
+}
+
+class GetContentActivityResult(
+    private val launcher: ManagedActivityResultLauncher<Array<String>, Map<String, Boolean>>,
+) {
+    fun launch(permissions: Array<String>) {
+        launcher.launch(permissions)
+    }
+}
+
+@Composable
+fun requestMyPermissions(route: String, context: Context, navController: NavController): GetContentActivityResult {
+    val launcher = rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions(), onResult = { permissionsMap->
+        val areGranted = permissionsMap.values.reduce { acc, next -> acc && next }
+        if (areGranted) {
+            Log.d("here", "MultiplePermissions: here3")
+            navController.navigate(route = route)
+        } else {
+            Toast.makeText(context, "Permission Required", Toast.LENGTH_LONG).show()
+        }
+    })
+    return remember(launcher) {
+        GetContentActivityResult(launcher)
+    }
 }
 
 

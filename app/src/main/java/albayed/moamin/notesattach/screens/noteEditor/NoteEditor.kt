@@ -17,6 +17,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
@@ -32,6 +33,7 @@ fun NoteEditor(
     noteId: String?,
     viewModel: NoteEditorViewModel = hiltViewModel()
 ) {
+    val context = LocalContext.current
     val titleFontSize = 18.sp
     val contentFontSize = 16.sp
 
@@ -55,7 +57,8 @@ fun NoteEditor(
         AttachmentsDropDown(
             isVisible = isAttachmentsDropDownVisible,
             note = note,
-            navController = navController
+            navController = navController,
+            context = context
         )
     }
 

@@ -3,14 +3,18 @@ package albayed.moamin.notesattach.components
 import albayed.moamin.notesattach.R
 import albayed.moamin.notesattach.models.Note
 import albayed.moamin.notesattach.navigation.Screens
+import albayed.moamin.notesattach.utils.checkPermissions
+import albayed.moamin.notesattach.utils.requestMyPermissions
+import android.Manifest
+import android.content.Context
 import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -20,10 +24,27 @@ import androidx.navigation.NavController
 fun AttachmentsDropDown(
     isVisible: MutableState<Boolean>,
     note: Note,
-    navController: NavController
+    navController: NavController,
+    context: Context
 ) {
     val attachmentIconScale = 2.2f
     val attachmentIconPadding = 2.dp
+
+    var route by remember { mutableStateOf("") }
+    val locationPermissions = arrayOf(
+        Manifest.permission.ACCESS_COARSE_LOCATION,
+        Manifest.permission.ACCESS_FINE_LOCATION
+    )
+    val alarmPermissions = arrayOf(
+        Manifest.permission.SET_ALARM,
+        Manifest.permission.POST_NOTIFICATIONS
+    )
+    val recordPermission = arrayOf(
+        Manifest.permission.RECORD_AUDIO
+    )
+
+    val getPermissions = requestMyPermissions(route, context, navController)
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -62,7 +83,12 @@ fun AttachmentsDropDown(
                     contentPadding = PaddingValues(0.dp),
                     onClick = {
                         isVisible.value = false
-                        navController.navigate(Screens.LocationsScreen.name + "/${note.id}")
+                        if (checkPermissions(locationPermissions, context))
+                            navController.navigate(Screens.LocationsScreen.name + "/${note.id}")
+                        else {
+                            route = Screens.LocationsScreen.name + "/${note.id}"
+                            getPermissions.launch(locationPermissions)
+                        }
                     }) {
                     AttachmentIcon(
                         icon = R.drawable.location,
@@ -104,7 +130,12 @@ fun AttachmentsDropDown(
                     contentPadding = PaddingValues(0.dp),
                     onClick = {
                         isVisible.value = false
-                        navController.navigate(Screens.AlarmsScreen.name + "/${note.id}/?${note.title}")
+                        if (checkPermissions(alarmPermissions, context))
+                            navController.navigate(Screens.AlarmsScreen.name + "/${note.id}/?${note.title}")
+                        else {
+                            route = Screens.AlarmsScreen.name + "/${note.id}/?${note.title}"
+                            getPermissions.launch(alarmPermissions)
+                        }
                     }) {
                     AttachmentIcon(
                         icon = R.drawable.alarm,
@@ -125,7 +156,12 @@ fun AttachmentsDropDown(
                     contentPadding = PaddingValues(0.dp),
                     onClick = {
                         isVisible.value = false
-                        navController.navigate(Screens.AudioClipsScreen.name + "/${note.id}")
+                        if (checkPermissions(recordPermission, context))
+                            navController.navigate(Screens.AudioClipsScreen.name + "/${note.id}")
+                        else {
+                            route = Screens.AudioClipsScreen.name + "/${note.id}"
+                            getPermissions.launch(recordPermission)
+                        }
                     }) {
                     AttachmentIcon(
                         icon = R.drawable.mic,

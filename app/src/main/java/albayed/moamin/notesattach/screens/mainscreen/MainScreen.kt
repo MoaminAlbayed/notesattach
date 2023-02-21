@@ -7,8 +7,7 @@ import albayed.moamin.notesattach.components.FloatingButton
 import albayed.moamin.notesattach.components.TopBar
 import albayed.moamin.notesattach.models.Note
 import albayed.moamin.notesattach.navigation.Screens
-import albayed.moamin.notesattach.utils.dateFormatter
-import albayed.moamin.notesattach.utils.internetAvailable
+import albayed.moamin.notesattach.utils.*
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
@@ -25,10 +24,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -97,10 +93,12 @@ fun NoteCard(
         Manifest.permission.SET_ALARM,
         Manifest.permission.POST_NOTIFICATIONS
     )
+    val recordPermission = arrayOf(
+        Manifest.permission.RECORD_AUDIO
+    )
     val launcherLocationsMultiplePermissions = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
     ) { permissionsMap ->
-
         val areGranted = permissionsMap.values.reduce { acc, next -> acc && next }
         if (areGranted) {
             navController.navigate(Screens.LocationsScreen.name + "/${note.id}")
@@ -114,7 +112,7 @@ fun NoteCard(
 
         val areGranted = permissionsMap.values.reduce { acc, next -> acc && next }
         if (areGranted) {
-            navController.navigate(Screens.AlarmsScreen.name + "/${note.id}")
+            navController.navigate(Screens.AlarmsScreen.name + "/${note.id}/?${note.title}")
         } else {
             Toast.makeText(context, "Location Access is Required", Toast.LENGTH_LONG).show()
         }
@@ -166,6 +164,27 @@ fun NoteCard(
         }
     }
 
+//    var permissionToRequest by remember { mutableStateOf("") }
+//
+//    if (permissionToRequest.isNotEmpty()) {
+//        if (permissionToRequest == "Locations") {
+//            MultiplePermissions(
+//                permissions = locationPermissions,
+//                route = Screens.LocationsScreen.name + "/${note.id}",
+//                context = context,
+//                navController = navController
+//            )
+//        } else {
+//            MultiplePermissions(
+//                permissions = alarmPermissions,
+//                route = Screens.AlarmsScreen.name + "/${note.id}/?${note.title}",
+//                context = context,
+//                navController = navController
+//            )
+//        }
+//        permissionToRequest = ""
+//    }
+
 
     val isOpenDeleteDialog = remember {
         mutableStateOf(false)
@@ -173,6 +192,10 @@ fun NoteCard(
     val attachmentsColumnsWidth = 70.dp
     val attachmentIconScale = 2.2f
     val attachmentIconPadding = 5.dp
+
+    var route by remember { mutableStateOf("") }
+    val getPermissions = requestMyPermissions(route, context,navController)
+
     Card(
         modifier = Modifier
             .padding(5.dp)
@@ -191,12 +214,13 @@ fun NoteCard(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.SpaceBetween,
             ) {
-                Box(modifier = Modifier.clickable {
-                    navController.navigate(Screens.ImagesScreen.name + "/${note.id}")
-                }
+                Box(modifier = Modifier
+                    .clickable {
+                        navController.navigate(Screens.ImagesScreen.name + "/${note.id}")
+                    }
                     .fillMaxSize()
                     .weight(1f)
-                    ) {
+                ) {
                     AttachmentIcon(
                         icon = R.drawable.photo,
                         scale = attachmentIconScale,
@@ -206,9 +230,10 @@ fun NoteCard(
                         count = note.imagesCount
                     )
                 }
-                Box(modifier = Modifier.clickable {
-                    navController.navigate(Screens.VideosScreen.name + "/${note.id}")
-                }
+                Box(modifier = Modifier
+                    .clickable {
+                        navController.navigate(Screens.VideosScreen.name + "/${note.id}")
+                    }
                     .fillMaxSize()
                     .weight(1f)
                 ) {
@@ -221,9 +246,15 @@ fun NoteCard(
                         count = note.videosCount
                     )
                 }
-                Box(modifier = Modifier.clickable {
-                    navController.navigate(Screens.AudioClipsScreen.name + "/${note.id}")
-                }
+                Box(modifier = Modifier
+                    .clickable {
+                        if (checkPermissions(recordPermission, context))
+                            navController.navigate(Screens.AudioClipsScreen.name + "/${note.id}")
+                        else {
+                            route = Screens.AudioClipsScreen.name + "/${note.id}"
+                            getPermissions.launch(recordPermission)
+                        }
+                    }
                     .fillMaxSize()
                     .weight(1f)
                 ) {
@@ -297,20 +328,31 @@ fun NoteCard(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
-                Box(modifier = Modifier.clickable {
-                    if (internetAvailable(context))
-                        checkAndRequestLocationPermissions(
-                            context = context,
-                            permissions = locationPermissions,
-                            launcher = launcherLocationsMultiplePermissions
-                        )
-                    else
-                        Toast.makeText(
-                            context,
-                            "Internet connection is required to use Locations!",
-                            Toast.LENGTH_LONG
-                        ).show()
-                }
+                Box(modifier = Modifier
+                    .clickable {
+                        if (internetAvailable(context))
+//                        checkAndRequestLocationPermissions(
+//                            context = context,
+//                            permissions = locationPermissions,
+//                            launcher = launcherLocationsMultiplePermissions
+//                        )
+//                            permissionToRequest = "Locations"
+                            if (checkPermissions(locationPermissions, context))
+                                navController.navigate(Screens.LocationsScreen.name + "/${note.id}")
+                            else {
+                                route = Screens.LocationsScreen.name + "/${note.id}"
+                                getPermissions.launch(locationPermissions)
+                            }
+
+                            else
+                            Toast
+                                .makeText(
+                                    context,
+                                    "Internet connection is required to use Locations!",
+                                    Toast.LENGTH_LONG
+                                )
+                                .show()
+                    }
                     .fillMaxSize()
                     .weight(1f)
                 ) {
@@ -323,13 +365,21 @@ fun NoteCard(
                         count = note.locationsCount
                     )
                 }
-                Box(modifier = Modifier.clickable {
-                    checkAndRequestAlarmsPermissions(
-                        context = context,
-                        permissions = alarmPermissions,
-                        launcher = launcherAlarmsMultiplePermissions
-                    )
-                }
+                Box(modifier = Modifier
+                    .clickable {
+//                        checkAndRequestAlarmsPermissions(
+//                            context = context,
+//                            permissions = alarmPermissions,
+//                            launcher = launcherAlarmsMultiplePermissions
+//                        )
+//                        permissionToRequest = "Alarms"
+                        if (checkPermissions(alarmPermissions, context))
+                            navController.navigate(Screens.AlarmsScreen.name + "/${note.id}/?${note.title}")
+                        else {
+                            route = Screens.AlarmsScreen.name + "/${note.id}/?${note.title}"
+                            getPermissions.launch(alarmPermissions)
+                        }
+                    }
                     .fillMaxSize()
                     .weight(1f)
                 ) {
@@ -342,7 +392,8 @@ fun NoteCard(
                         count = note.alarmsCount
                     )
                 }
-                Box(modifier = Modifier.clickable { isOpenDeleteDialog.value = true }
+                Box(modifier = Modifier
+                    .clickable { isOpenDeleteDialog.value = true }
                     .fillMaxSize()
                     .weight(1f)
                 ) {
