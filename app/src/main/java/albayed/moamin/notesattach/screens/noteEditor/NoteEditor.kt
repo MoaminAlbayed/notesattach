@@ -51,10 +51,11 @@ fun NoteEditor(
     }
 
     val isAttachmentsDropDownVisible = remember { mutableStateOf(false) }
-    if (isAttachmentsDropDownVisible.value){
+    if (isAttachmentsDropDownVisible.value && !isNewNote){
         AttachmentsDropDown(
             isVisible = isAttachmentsDropDownVisible,
-            attachmentCount = intArrayOf(1,2,3)
+            note = note,
+            navController = navController
         )
     }
 

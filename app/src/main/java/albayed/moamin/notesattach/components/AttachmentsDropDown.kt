@@ -1,6 +1,8 @@
 package albayed.moamin.notesattach.components
 
 import albayed.moamin.notesattach.R
+import albayed.moamin.notesattach.models.Note
+import albayed.moamin.notesattach.navigation.Screens
 import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -12,9 +14,14 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.navigation.NavController
 
 @Composable
-fun AttachmentsDropDown(isVisible: MutableState<Boolean>, vararg attachmentCount: Int) {
+fun AttachmentsDropDown(
+    isVisible: MutableState<Boolean>,
+    note: Note,
+    navController: NavController
+) {
     val attachmentIconScale = 2.2f
     val attachmentIconPadding = 2.dp
     Box(
@@ -28,109 +35,107 @@ fun AttachmentsDropDown(isVisible: MutableState<Boolean>, vararg attachmentCount
             onDismissRequest = { isVisible.value = false }
         ) {
             Row(modifier = Modifier.fillMaxSize()) {
-            DropdownMenuItem(
-                modifier = Modifier.weight(1f).aspectRatio(1f).padding(5.dp),
-                contentPadding = PaddingValues(0.dp),
-                onClick = {
-
-                }) {
-//                Box(
-//                    modifier = Modifier.fillMaxSize(),
-//                    //contentAlignment = Alignment.Center
-//                )
-//                {
+                DropdownMenuItem(
+                    modifier = Modifier
+                        .weight(1f)
+                        .aspectRatio(1f)
+                        .padding(5.dp),
+                    contentPadding = PaddingValues(0.dp),
+                    onClick = {
+                        isVisible.value = false
+                        navController.navigate(Screens.ImagesScreen.name + "/${note.id}")
+                    }) {
                     AttachmentIcon(
                         icon = R.drawable.photo,
                         scale = attachmentIconScale,
                         padding = attachmentIconPadding,
                         contentDescription = "Camera Button",
                         tint = MaterialTheme.colors.primary,
-                        count = attachmentCount[0]
+                        count = note.imagesCount
                     )
-//                }
-            }
-            DropdownMenuItem(
-                modifier = Modifier.weight(1f).aspectRatio(1f).padding(5.dp),
-                contentPadding = PaddingValues(0.dp),
-                onClick = {
-
-            }) {
-//                Box(
-//                    modifier = Modifier.fillMaxSize(),
-//                ) {
+                }
+                DropdownMenuItem(
+                    modifier = Modifier
+                        .weight(1f)
+                        .aspectRatio(1f)
+                        .padding(5.dp),
+                    contentPadding = PaddingValues(0.dp),
+                    onClick = {
+                        isVisible.value = false
+                        navController.navigate(Screens.LocationsScreen.name + "/${note.id}")
+                    }) {
                     AttachmentIcon(
                         icon = R.drawable.location,
                         scale = attachmentIconScale,
                         padding = attachmentIconPadding,
                         contentDescription = "Locations Button",
                         tint = MaterialTheme.colors.primary,
-                        count = attachmentCount[1]
+                        count = note.locationsCount
                     )
-//                }
+                }
             }
-        }
 
             Row(modifier = Modifier.fillMaxSize()) {
                 DropdownMenuItem(
-                    modifier = Modifier.weight(1f).aspectRatio(1f).padding(5.dp),
+                    modifier = Modifier
+                        .weight(1f)
+                        .aspectRatio(1f)
+                        .padding(5.dp),
                     contentPadding = PaddingValues(0.dp),
                     onClick = {
+                        isVisible.value = false
+                        navController.navigate(Screens.VideosScreen.name + "/${note.id}")
+                    }) {
+                    AttachmentIcon(
+                        icon = R.drawable.video,
+                        scale = attachmentIconScale,
+                        padding = attachmentIconPadding,
+                        contentDescription = "Video Button",
+                        tint = MaterialTheme.colors.primary,
+                        count = note.videosCount
+                    )
 
-                }) {
-//                    Box(
-//                        modifier = Modifier.fillMaxSize(),
-//                    ) {
-                        AttachmentIcon(
-                            icon = R.drawable.video,
-                            scale = attachmentIconScale,
-                            padding = attachmentIconPadding,
-                            contentDescription = "Video Button",
-                            tint = MaterialTheme.colors.primary,
-                            count = attachmentCount[2]
-                        )
-//                    }
                 }
                 DropdownMenuItem(
-                    modifier = Modifier.weight(1f).aspectRatio(1f).padding(5.dp),
+                    modifier = Modifier
+                        .weight(1f)
+                        .aspectRatio(1f)
+                        .padding(5.dp),
                     contentPadding = PaddingValues(0.dp),
                     onClick = {
-
+                        isVisible.value = false
+                        navController.navigate(Screens.AlarmsScreen.name + "/${note.id}/?${note.title}")
                     }) {
-//                    Box(
-//                        modifier = Modifier.fillMaxSize(),
-//                    ) {
-                        AttachmentIcon(
-                            icon = R.drawable.alarm,
-                            scale = attachmentIconScale,
-                            padding = attachmentIconPadding,
-                            contentDescription = "Alarms Button",
-                            tint = MaterialTheme.colors.primary,
-                            count = attachmentCount[2]
-                        )
-//                    }
+                    AttachmentIcon(
+                        icon = R.drawable.alarm,
+                        scale = attachmentIconScale,
+                        padding = attachmentIconPadding,
+                        contentDescription = "Alarms Button",
+                        tint = MaterialTheme.colors.primary,
+                        count = note.alarmsCount
+                    )
                 }
             }
             Row(modifier = Modifier.fillMaxSize(0.5f)) {
                 DropdownMenuItem(
-                    modifier = Modifier.weight(1f).aspectRatio(1f).padding(5.dp),
+                    modifier = Modifier
+                        .weight(1f)
+                        .aspectRatio(1f)
+                        .padding(5.dp),
                     contentPadding = PaddingValues(0.dp),
                     onClick = {
-
+                        isVisible.value = false
+                        navController.navigate(Screens.AudioClipsScreen.name + "/${note.id}")
                     }) {
-//                    Box(
-//                        modifier = Modifier.fillMaxSize(),
-//                    ) {
-                        AttachmentIcon(
-                            icon = R.drawable.mic,
-                            scale = attachmentIconScale,
-                            padding = attachmentIconPadding,
-                            contentDescription = "Mic Button",
-                            tint = MaterialTheme.colors.primary,
-                            count = attachmentCount[2]
-                        )
-//                    }
+                    AttachmentIcon(
+                        icon = R.drawable.mic,
+                        scale = attachmentIconScale,
+                        padding = attachmentIconPadding,
+                        contentDescription = "Mic Button",
+                        tint = MaterialTheme.colors.primary,
+                        count = note.audioClipsCount
+                    )
                 }
-
             }
         }
     }
