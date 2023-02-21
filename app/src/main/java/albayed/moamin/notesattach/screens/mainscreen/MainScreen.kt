@@ -96,95 +96,8 @@ fun NoteCard(
     val recordPermission = arrayOf(
         Manifest.permission.RECORD_AUDIO
     )
-    val launcherLocationsMultiplePermissions = rememberLauncherForActivityResult(
-        ActivityResultContracts.RequestMultiplePermissions()
-    ) { permissionsMap ->
-        val areGranted = permissionsMap.values.reduce { acc, next -> acc && next }
-        if (areGranted) {
-            navController.navigate(Screens.LocationsScreen.name + "/${note.id}")
-        } else {
-            Toast.makeText(context, "Location Access is Required", Toast.LENGTH_LONG).show()
-        }
-    }
-    val launcherAlarmsMultiplePermissions = rememberLauncherForActivityResult(
-        ActivityResultContracts.RequestMultiplePermissions()
-    ) { permissionsMap ->
-
-        val areGranted = permissionsMap.values.reduce { acc, next -> acc && next }
-        if (areGranted) {
-            navController.navigate(Screens.AlarmsScreen.name + "/${note.id}/?${note.title}")
-        } else {
-            Toast.makeText(context, "Location Access is Required", Toast.LENGTH_LONG).show()
-        }
-    }
-
-    fun checkAndRequestLocationPermissions(
-        context: Context,
-        permissions: Array<String>,
-        launcher: ManagedActivityResultLauncher<Array<String>, Map<String, Boolean>>
-    ) {
-        if (
-            permissions.all {
-                ContextCompat.checkSelfPermission(
-                    context,
-                    it
-                ) == PackageManager.PERMISSION_GRANTED
-            }
-        ) {
-            // Use location because permissions are already granted
-            Log.d("permission", "checkAndRequestLocationPermissions: already available")
-            navController.navigate(Screens.LocationsScreen.name + "/${note.id}")
-        } else {
-            // Request permissions
-            Log.d("permission", "checkAndRequestLocationPermissions: requesting")
-            launcher.launch(permissions)
-        }
-    }
-
-    fun checkAndRequestAlarmsPermissions(
-        context: Context,
-        permissions: Array<String>,
-        launcher: ManagedActivityResultLauncher<Array<String>, Map<String, Boolean>>
-    ) {
-        if (
-            permissions.all {
-                ContextCompat.checkSelfPermission(
-                    context,
-                    it
-                ) == PackageManager.PERMISSION_GRANTED
-            }
-        ) {
-            // Use location because permissions are already granted
-            Log.d("permission", "checkAndRequestLocationPermissions: already available")
-            navController.navigate(Screens.AlarmsScreen.name + "/${note.id}/?${note.title}")
-        } else {
-            // Request permissions
-            Log.d("permission", "checkAndRequestLocationPermissions: requesting")
-            launcher.launch(permissions)
-        }
-    }
-
-//    var permissionToRequest by remember { mutableStateOf("") }
-//
-//    if (permissionToRequest.isNotEmpty()) {
-//        if (permissionToRequest == "Locations") {
-//            MultiplePermissions(
-//                permissions = locationPermissions,
-//                route = Screens.LocationsScreen.name + "/${note.id}",
-//                context = context,
-//                navController = navController
-//            )
-//        } else {
-//            MultiplePermissions(
-//                permissions = alarmPermissions,
-//                route = Screens.AlarmsScreen.name + "/${note.id}/?${note.title}",
-//                context = context,
-//                navController = navController
-//            )
-//        }
-//        permissionToRequest = ""
-//    }
-
+    var route by remember { mutableStateOf("") }
+    val getPermissions = requestMyPermissions(route, context,navController)
 
     val isOpenDeleteDialog = remember {
         mutableStateOf(false)
@@ -193,8 +106,7 @@ fun NoteCard(
     val attachmentIconScale = 2.2f
     val attachmentIconPadding = 5.dp
 
-    var route by remember { mutableStateOf("") }
-    val getPermissions = requestMyPermissions(route, context,navController)
+
 
     Card(
         modifier = Modifier
@@ -331,24 +243,17 @@ fun NoteCard(
                 Box(modifier = Modifier
                     .clickable {
                         if (internetAvailable(context))
-//                        checkAndRequestLocationPermissions(
-//                            context = context,
-//                            permissions = locationPermissions,
-//                            launcher = launcherLocationsMultiplePermissions
-//                        )
-//                            permissionToRequest = "Locations"
                             if (checkPermissions(locationPermissions, context))
                                 navController.navigate(Screens.LocationsScreen.name + "/${note.id}")
                             else {
                                 route = Screens.LocationsScreen.name + "/${note.id}"
                                 getPermissions.launch(locationPermissions)
                             }
-
                             else
                             Toast
                                 .makeText(
                                     context,
-                                    "Internet connection is required to use Locations!",
+                                    "Internet connection is required to use Locations",
                                     Toast.LENGTH_LONG
                                 )
                                 .show()
@@ -367,12 +272,6 @@ fun NoteCard(
                 }
                 Box(modifier = Modifier
                     .clickable {
-//                        checkAndRequestAlarmsPermissions(
-//                            context = context,
-//                            permissions = alarmPermissions,
-//                            launcher = launcherAlarmsMultiplePermissions
-//                        )
-//                        permissionToRequest = "Alarms"
                         if (checkPermissions(alarmPermissions, context))
                             navController.navigate(Screens.AlarmsScreen.name + "/${note.id}/?${note.title}")
                         else {

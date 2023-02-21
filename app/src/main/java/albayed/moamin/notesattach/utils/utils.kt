@@ -148,34 +148,6 @@ fun Context.findActivity(): Activity? = when (this) {
     else -> null
 }
 
-@Composable
-fun MultiplePermissionsx (permissions: Array<String>, route: String, context: Context, navController: NavController){
-    val launcher = rememberLauncherForActivityResult(
-        ActivityResultContracts.RequestMultiplePermissions()
-    ) { permissionsMap ->
-        Log.d("here", "MultiplePermissions: $permissionsMap")
-        val areGranted = permissionsMap.values.reduce { acc, next -> acc && next }
-
-        if (areGranted) {
-            Log.d("here", "MultiplePermissions: here3")
-            navController.navigate(route = route)
-        } else {
-            Toast.makeText(context, "Permission Required", Toast.LENGTH_LONG).show()
-        }
-    }
-    if (
-        permissions.all {
-            ContextCompat.checkSelfPermission(
-                context,
-                it
-            ) == PackageManager.PERMISSION_GRANTED
-        }
-    ) {
-        navController.navigate(route = route)
-    } else {
-            launcher.launch(permissions)
-    }
-}
 
 fun checkPermissions (permissions: Array<String>, context: Context): Boolean{
     return permissions.all {
@@ -199,7 +171,6 @@ fun requestMyPermissions(route: String, context: Context, navController: NavCont
     val launcher = rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions(), onResult = { permissionsMap->
         val areGranted = permissionsMap.values.reduce { acc, next -> acc && next }
         if (areGranted) {
-            Log.d("here", "MultiplePermissions: here3")
             navController.navigate(route = route)
         } else {
             Toast.makeText(context, "Permission Required", Toast.LENGTH_LONG).show()

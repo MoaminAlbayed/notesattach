@@ -4,10 +4,12 @@ import albayed.moamin.notesattach.R
 import albayed.moamin.notesattach.models.Note
 import albayed.moamin.notesattach.navigation.Screens
 import albayed.moamin.notesattach.utils.checkPermissions
+import albayed.moamin.notesattach.utils.internetAvailable
 import albayed.moamin.notesattach.utils.requestMyPermissions
 import android.Manifest
 import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -42,7 +44,6 @@ fun AttachmentsDropDown(
     val recordPermission = arrayOf(
         Manifest.permission.RECORD_AUDIO
     )
-
     val getPermissions = requestMyPermissions(route, context, navController)
 
     Box(
@@ -83,11 +84,21 @@ fun AttachmentsDropDown(
                     contentPadding = PaddingValues(0.dp),
                     onClick = {
                         isVisible.value = false
-                        if (checkPermissions(locationPermissions, context))
-                            navController.navigate(Screens.LocationsScreen.name + "/${note.id}")
-                        else {
-                            route = Screens.LocationsScreen.name + "/${note.id}"
-                            getPermissions.launch(locationPermissions)
+                        if (internetAvailable(context)) {
+                            if (checkPermissions(locationPermissions, context))
+                                navController.navigate(Screens.LocationsScreen.name + "/${note.id}")
+                            else {
+                                route = Screens.LocationsScreen.name + "/${note.id}"
+                                getPermissions.launch(locationPermissions)
+                            }
+                        } else {
+                            Toast
+                                .makeText(
+                                    context,
+                                    "Internet connection is required to use Locations",
+                                    Toast.LENGTH_LONG
+                                )
+                                .show()
                         }
                     }) {
                     AttachmentIcon(
