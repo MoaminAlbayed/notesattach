@@ -7,6 +7,10 @@ import androidx.activity.compose.setContent
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import albayed.moamin.notesattach.ui.theme.NotesAttachTheme
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -44,8 +48,19 @@ class MainActivity : ComponentActivity() {
             NotesAttachTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
-                    // modifier = Modifier.fillMaxSize(),
+//                     modifier = Modifier.fillMaxSize().background(Brush.verticalGradient(
+//                         colors = listOf(
+//                             MaterialTheme.colors.primary,
+//                             MaterialTheme.colors.onPrimary
+//                         )
+//                     )),
                     color = MaterialTheme.colors.background
+//                color = Brush.verticalGradient(
+//                    colors = listOf(
+//                        MaterialTheme.colors.primary,
+//                        MaterialTheme.colors.onPrimary
+//                    )
+//                )
                 ) {
                     Navigation()
                 }

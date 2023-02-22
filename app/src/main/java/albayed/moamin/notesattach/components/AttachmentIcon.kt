@@ -15,6 +15,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 
 @Composable
@@ -55,11 +56,11 @@ fun AttachmentIcon(
                 Surface(
                     modifier = Modifier.align(Alignment.Center),
                     shape = CircleShape,
-                    color = MaterialTheme.colors.primary,
-                    contentColor = MaterialTheme.colors.onPrimary
+                    color = MaterialTheme.colors.onSurface,
+                    contentColor = MaterialTheme.colors.surface
                 ) {
                     val countString = if (count < 10) count.toString() else "+9"
-                    Text(text = " $countString ")
+                    Text(text = " $countString ", fontSize = 15.sp)
                 }
 
             }

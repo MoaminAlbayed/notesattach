@@ -114,7 +114,7 @@ fun AudioClipCard(
                         .width(2.dp)
                         .fillMaxHeight(0.9f)
                         .align(Alignment.CenterVertically),
-                    color = MaterialTheme.colors.primary
+                    color = MaterialTheme.colors.onSurface
                 )
                 Column(
                     modifier = Modifier
@@ -149,8 +149,8 @@ fun AudioClipCard(
                             },
                             valueRange = (0f..duration!!),
                             colors = SliderDefaults.colors(
-                                thumbColor = MaterialTheme.colors.primary,
-                                activeTrackColor = MaterialTheme.colors.primary
+                                thumbColor = MaterialTheme.colors.onSurface,
+                                activeTrackColor = MaterialTheme.colors.onSurface
                             )
                         )
                     }

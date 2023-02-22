@@ -54,7 +54,7 @@ fun AlarmCard(
     calendar.set(Calendar.MINUTE, alarm.minute)
 
 
-    val textColor = if (calendar > nowCalendar) MaterialTheme.colors.primary else Color.Gray
+    val textColor = if (calendar > nowCalendar) MaterialTheme.colors.onSurface else Color.DarkGray
 
     ConstraintLayout(
         modifier = modifier
@@ -82,6 +82,7 @@ fun AlarmCard(
         Card(
             shape = RoundedCornerShape(5.dp),
             border = BorderStroke(2.dp, color = MaterialTheme.colors.primary),
+            backgroundColor = MaterialTheme.colors.surface,
             elevation = 5.dp
         ) {
             Text(

@@ -117,6 +117,9 @@ dependencies {
     //Notification
 //    implementation "androidx.core:core:1.9.0"
 
+    //to change status bar color
+    implementation "com.google.accompanist:accompanist-systemuicontroller:0.29.1-alpha"
+
 }
 
 kapt {

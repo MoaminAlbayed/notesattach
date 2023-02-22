@@ -18,6 +18,7 @@ import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -27,6 +28,7 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
@@ -55,14 +57,7 @@ fun MainScreen(navController: NavController, viewModel: MainScreenViewModel = hi
         Log.d("here", "MainScreen: on if")
         notesToShow.value = notesList
     }
-//        if (searchState.value.isEmpty())
-////            notesToShow.value = emptyList()
-//            notesToShow.value = notesList.filter {note ->
-//                Log.d("here", "MainScreen: ${note.title}")
-//                note.title.contains(searchState.value) /*|| note.content.contains(searchState.value)*/
-//        }
-//    } else
-//        notesToShow.value = notesList
+
 
     Scaffold(
         topBar = {
@@ -86,7 +81,13 @@ fun MainScreen(navController: NavController, viewModel: MainScreenViewModel = hi
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(start = 5.dp, end = 5.dp)
+//                .padding(start = 5.dp, end = 5.dp)
+                .background(Brush.verticalGradient(
+                    colors = listOf(
+                        MaterialTheme.colors.primary,
+                        Color.Black
+                    )
+                )),
         ) {
 //            items(notesList.asReversed()) { note ->
             items(notesToShow.value.asReversed()) { note ->
@@ -136,17 +137,21 @@ fun NoteCard(
     val attachmentIconPadding = 5.dp
 
 
+    val attachmentIconColor = MaterialTheme.colors.onSurface
+    val textColor = MaterialTheme.colors.onSurface
+    val dividersColor = MaterialTheme.colors.onSurface
 
     Card(
         modifier = Modifier
-            .padding(5.dp)
+            .padding(start = 10.dp, end = 10.dp, top = 5.dp, bottom = 5.dp)
             .height(180.dp)
             .wrapContentHeight()
             .fillMaxWidth(),
         // .clickable { onClick.invoke() },
         shape = RoundedCornerShape(5.dp),
-        border = BorderStroke(2.dp, color = MaterialTheme.colors.primary),
-        elevation = 5.dp
+        border = BorderStroke(2.dp, color = MaterialTheme.colors.onSurface),
+        elevation = 5.dp,
+        backgroundColor = MaterialTheme.colors.surface
 
     ) {
         Row() {
@@ -167,7 +172,8 @@ fun NoteCard(
                         scale = attachmentIconScale,
                         padding = attachmentIconPadding,
                         contentDescription = "Photo Button",
-                        tint = MaterialTheme.colors.primary,
+//                        tint = MaterialTheme.colors.primary,
+                        tint = attachmentIconColor,
                         count = note.imagesCount
                     )
                 }
@@ -183,7 +189,7 @@ fun NoteCard(
                         scale = attachmentIconScale,
                         padding = attachmentIconPadding,
                         contentDescription = "Video Button",
-                        tint = MaterialTheme.colors.primary,
+                        tint = attachmentIconColor,
                         count = note.videosCount
                     )
                 }
@@ -204,7 +210,7 @@ fun NoteCard(
                         scale = attachmentIconScale,
                         padding = attachmentIconPadding,
                         contentDescription = "Microphone Button",
-                        tint = MaterialTheme.colors.primary,
+                        tint = attachmentIconColor,
                         count = note.audioClipsCount
                     )
                 }
@@ -215,7 +221,7 @@ fun NoteCard(
                     .width(2.dp)
                     .fillMaxHeight(0.9f)
                     .align(Alignment.CenterVertically),
-                color = MaterialTheme.colors.primary
+                color = dividersColor
 
             )
 
@@ -228,7 +234,8 @@ fun NoteCard(
                         text = note.title,
                         style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 18.sp),
                         overflow = TextOverflow.Ellipsis,
-                        maxLines = 1
+                        maxLines = 1,
+                        color = textColor
                     )
                 }
                 Text(
@@ -238,13 +245,14 @@ fun NoteCard(
                         top = if (note.title.isNotEmpty()) 0.dp else 2.dp
                     ),
                     text = "Created: ${dateFormatter(note.date.time)}",
-                    style = TextStyle(fontWeight = FontWeight.Thin, fontSize = 14.sp)
+                    style = TextStyle(fontWeight = FontWeight.Thin, fontSize = 14.sp),
+                    color = textColor
                 )
                 Divider(
                     modifier = Modifier
                         .fillMaxWidth(0.95f)
                         .align(Alignment.CenterHorizontally),
-                    color = MaterialTheme.colors.primary
+                    color = dividersColor
                 )
                 Text(
                     modifier = Modifier
@@ -252,7 +260,8 @@ fun NoteCard(
                         .fillMaxHeight(),
                     text = note.content,
                     fontSize = 16.sp,
-                    overflow = TextOverflow.Ellipsis
+                    overflow = TextOverflow.Ellipsis,
+                    color = textColor
                 )
             }
 
@@ -261,7 +270,7 @@ fun NoteCard(
                     .width(2.dp)
                     .fillMaxHeight(0.9f)
                     .align(Alignment.CenterVertically),
-                color = MaterialTheme.colors.primary
+                color = dividersColor
             )
 
             Column(
@@ -295,7 +304,7 @@ fun NoteCard(
                         scale = attachmentIconScale,
                         padding = attachmentIconPadding,
                         contentDescription = "Locations Button",
-                        tint = MaterialTheme.colors.primary,
+                        tint = attachmentIconColor,
                         count = note.locationsCount
                     )
                 }
@@ -316,7 +325,7 @@ fun NoteCard(
                         scale = attachmentIconScale,
                         padding = attachmentIconPadding,
                         contentDescription = "Alarms Button",
-                        tint = MaterialTheme.colors.primary,
+                        tint = attachmentIconColor,
                         count = note.alarmsCount
                     )
                 }

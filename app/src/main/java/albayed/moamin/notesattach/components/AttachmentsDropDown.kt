@@ -45,6 +45,7 @@ fun AttachmentsDropDown(
         Manifest.permission.RECORD_AUDIO
     )
     val getPermissions = requestMyPermissions(route, context, navController)
+    val attachmentIconColor = MaterialTheme.colors.onSurface
 
     Box(
         modifier = Modifier
@@ -72,7 +73,7 @@ fun AttachmentsDropDown(
                         scale = attachmentIconScale,
                         padding = attachmentIconPadding,
                         contentDescription = "Camera Button",
-                        tint = MaterialTheme.colors.primary,
+                        tint = attachmentIconColor,
                         count = note.imagesCount
                     )
                 }
@@ -106,7 +107,7 @@ fun AttachmentsDropDown(
                         scale = attachmentIconScale,
                         padding = attachmentIconPadding,
                         contentDescription = "Locations Button",
-                        tint = MaterialTheme.colors.primary,
+                        tint = attachmentIconColor,
                         count = note.locationsCount
                     )
                 }
@@ -128,7 +129,7 @@ fun AttachmentsDropDown(
                         scale = attachmentIconScale,
                         padding = attachmentIconPadding,
                         contentDescription = "Video Button",
-                        tint = MaterialTheme.colors.primary,
+                        tint = attachmentIconColor,
                         count = note.videosCount
                     )
 
@@ -153,7 +154,7 @@ fun AttachmentsDropDown(
                         scale = attachmentIconScale,
                         padding = attachmentIconPadding,
                         contentDescription = "Alarms Button",
-                        tint = MaterialTheme.colors.primary,
+                        tint = attachmentIconColor,
                         count = note.alarmsCount
                     )
                 }
@@ -179,7 +180,7 @@ fun AttachmentsDropDown(
                         scale = attachmentIconScale,
                         padding = attachmentIconPadding,
                         contentDescription = "Mic Button",
-                        tint = MaterialTheme.colors.primary,
+                        tint = attachmentIconColor,
                         count = note.audioClipsCount
                     )
                 }

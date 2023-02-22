@@ -142,13 +142,14 @@ fun RecordAudioScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Text(text = timerString, fontSize = 35.sp)
+            Text(text = timerString, fontSize = 35.sp, color = Color.White)
             Spacer(modifier = Modifier.size(50.dp))
             IconButton(onClick = { onRecord() }) {
                 if (isRecording.value) {
                     Icon(
                         modifier = Modifier.scale(2f),
                         painter = painterResource(id = R.drawable.stop_button),
+                        tint = Color.White,
                         contentDescription = "Stop Recording Button"
                     )
                 } else {

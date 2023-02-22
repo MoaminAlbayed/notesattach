@@ -72,6 +72,7 @@ fun LocationCard(
         Card(
             shape = RoundedCornerShape(5.dp),
             border = BorderStroke(2.dp, color = MaterialTheme.colors.primary),
+            backgroundColor = MaterialTheme.colors.surface,
             elevation = 5.dp
         ) {
             Row(
@@ -90,9 +91,9 @@ fun LocationCard(
                         .width(2.dp)
                         .fillMaxHeight(0.9f)
                         .align(Alignment.CenterVertically),
-                    color = MaterialTheme.colors.primary
+                    color = MaterialTheme.colors.onSurface
                 )
-                Text(modifier = Modifier.padding(5.dp), text = location.description)
+                Text(modifier = Modifier.padding(5.dp), text = location.description, color = MaterialTheme.colors.onSurface)
             }
         }
         if (isDeleteMode.value) {

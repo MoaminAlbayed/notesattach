@@ -19,15 +19,17 @@ fun ConfirmMessage(
 ) {
     AlertDialog(
         modifier = Modifier.fillMaxWidth(0.9f),
+        backgroundColor = MaterialTheme.colors.primary,
+        contentColor = MaterialTheme.colors.onPrimary,
         onDismissRequest = { isOpenDialog.value = false },
         buttons = {
             TextButton(onClick = {
                onClickYes.invoke()
             }) {
-                Text(text = "Yes", style = MaterialTheme.typography.button)
+                Text(text = "Yes", style = MaterialTheme.typography.button, color = MaterialTheme.colors.onPrimary)
             }
             TextButton(onClick = { onClickNo.invoke()}) {
-                Text(text = "No", style = MaterialTheme.typography.button)
+                Text(text = "No", style = MaterialTheme.typography.button, color = MaterialTheme.colors.onPrimary)
             }
         },
         title = {

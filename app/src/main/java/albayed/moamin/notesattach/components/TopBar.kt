@@ -4,28 +4,25 @@ import albayed.moamin.notesattach.navigation.Screens
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import albayed.moamin.notesattach.R
-import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun TopBar(
     screen: Screens,
@@ -36,8 +33,15 @@ fun TopBar(
     onSearchValueChanged: (String) -> Unit = {},
     onClick: () -> Unit = {}
 ) {
+    val topBarColor = MaterialTheme.colors.primary
+    val contentColor = MaterialTheme.colors.onPrimary
+
+//    val (focusRequester) = FocusRequester.createRefs()
+    val focusRequester = remember { FocusRequester() }
+    val scope = rememberCoroutineScope()
     when (screen) {//todo refactor to make shorter
         Screens.MainScreen -> {
+
             TopAppBar(title = {
                 if (isMainScreenSearch.value) {
                     val searchState = remember { mutableStateOf("") }
@@ -49,19 +53,27 @@ fun TopBar(
                         },
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(top = 2.dp, bottom = 2.dp),
+                            .padding(top = 2.dp, bottom = 2.dp)
+                            .focusRequester(focusRequester),
                         textStyle = TextStyle(color = MaterialTheme.colors.primary),
-                        placeholder = { Text(text = "Search...") },
+                        placeholder = {
+                            Text(
+                                text = "Search...",
+                                color = MaterialTheme.colors.primary
+                            )
+                        },
                         trailingIcon = {
                             if (searchState.value != ("")) {
                                 IconButton(
                                     onClick = {
-                                        searchState.value = "" // Remove text from TextField when you press the 'X' icon
+                                        searchState.value =
+                                            "" // Remove text from TextField when you press the 'X' icon
                                     }
                                 ) {
                                     Icon(
                                         Icons.Default.Close,
-                                        contentDescription = "",
+                                        tint = MaterialTheme.colors.primary,
+                                        contentDescription = "Clear Search Button",
                                         modifier = Modifier
                                             .padding(5.dp)
                                             .size(24.dp)
@@ -85,29 +97,43 @@ fun TopBar(
                 } else
                     Text(text = "My Notes")
             },
-//                backgroundColor = Color.Black,
-                backgroundColor = MaterialTheme.colors.primary,
+                navigationIcon = {
+                    if (isMainScreenSearch.value) {
+                        IconButton(onClick = { firstAction.invoke() }) {
+                            Icon(
+                                imageVector = Icons.Default.ArrowBack,
+                                contentDescription = "Back Button"
+                            )
+                        }
+                    }
+                },
+                backgroundColor = topBarColor,
+                contentColor = contentColor,
                 actions = {
-                    IconButton(onClick = { firstAction.invoke() }) {
+                    IconButton(onClick = {
+                        firstAction.invoke()
+                        if (isMainScreenSearch.value) {
+                            scope.launch {
+                                delay(100)
+                                focusRequester.requestFocus()
+                            }
+                        }
+
+                    }) {
                         Icon(
                             imageVector = Icons.Default.Search,
                             contentDescription = "Search Button"
                         )
                     }
-//                    IconButton(onClick = { /*TODO*/ }) {
-//                        Icon(
-//                            imageVector = Icons.Default.MoreVert,
-//                            contentDescription = "More Options"
-//                        )
-//                    }
                 }
             )
         }
         Screens.NoteEditor -> {
             if (!isNewNote) {
-                TopAppBar(title = {
-                    Text(text = "Note Editor")
-                },
+                TopAppBar(
+                    title = {
+                        Text(text = "Note Editor")
+                    },
                     navigationIcon = {
                         IconButton(onClick = { onClick.invoke() }) {
                             Icon(
@@ -123,12 +149,15 @@ fun TopBar(
                                 contentDescription = "Attachments Button"
                             )
                         }
-                    }
+                    },
+                    backgroundColor = topBarColor,
+                    contentColor = contentColor,
                 )
             } else
-                TopAppBar(title = {
-                    Text(text = "New Note")
-                },
+                TopAppBar(
+                    title = {
+                        Text(text = "New Note")
+                    },
                     navigationIcon = {
                         IconButton(onClick = { onClick.invoke() }) {
                             Icon(
@@ -136,13 +165,15 @@ fun TopBar(
                                 contentDescription = "Back Button"
                             )
                         }
-                    }
+                    },
+                    backgroundColor = topBarColor,
                 )
         }
         Screens.ImagesScreen -> {
-            TopAppBar(title = {
-                Text(text = "Images Viewer")
-            },
+            TopAppBar(
+                title = {
+                    Text(text = "Images Viewer")
+                },
                 navigationIcon = {
                     IconButton(onClick = { onClick.invoke() }) {
                         Icon(
@@ -158,13 +189,16 @@ fun TopBar(
                             contentDescription = "Delete Button"
                         )
                     }
-                }
+                },
+                backgroundColor = topBarColor,
+                contentColor = contentColor,
             )
         }
         Screens.VideosScreen -> {
-            TopAppBar(title = {
-                Text(text = "Videos Viewer")
-            },
+            TopAppBar(
+                title = {
+                    Text(text = "Videos Viewer")
+                },
                 navigationIcon = {
                     IconButton(onClick = { onClick.invoke() }) {
                         Icon(
@@ -180,13 +214,16 @@ fun TopBar(
                             contentDescription = "Delete Button"
                         )
                     }
-                }
+                },
+                backgroundColor = topBarColor,
+                contentColor = contentColor,
             )
         }
         Screens.AudioClipsScreen -> {
-            TopAppBar(title = {
-                Text(text = "Audio Clips Viewer")
-            },
+            TopAppBar(
+                title = {
+                    Text(text = "Audio Clips Viewer")
+                },
                 navigationIcon = {
                     IconButton(onClick = { onClick.invoke() }) {
                         Icon(
@@ -202,7 +239,9 @@ fun TopBar(
                             contentDescription = "Delete Button"
                         )
                     }
-                }
+                },
+                backgroundColor = topBarColor,
+                contentColor = contentColor,
             )
         }
         Screens.RecordAudioScreen -> {
@@ -218,12 +257,15 @@ fun TopBar(
                         )
                     }
                 },
+                backgroundColor = topBarColor,
+                contentColor = contentColor,
             )
         }
         Screens.LocationsScreen -> {
-            TopAppBar(title = {
-                Text(text = "Locations List")
-            },
+            TopAppBar(
+                title = {
+                    Text(text = "Locations List")
+                },
                 navigationIcon = {
                     IconButton(onClick = { onClick.invoke() }) {
                         Icon(
@@ -239,7 +281,9 @@ fun TopBar(
                             contentDescription = "Delete Button"
                         )
                     }
-                }
+                },
+                backgroundColor = topBarColor,
+                contentColor = contentColor,
             )
         }
         Screens.MapScreen -> {
@@ -255,12 +299,15 @@ fun TopBar(
                         )
                     }
                 },
+                backgroundColor = topBarColor,
+                contentColor = contentColor,
             )
         }
         Screens.AlarmsScreen -> {
-            TopAppBar(title = {
-                Text(text = "Alarms List")
-            },
+            TopAppBar(
+                title = {
+                    Text(text = "Alarms List")
+                },
                 navigationIcon = {
                     IconButton(onClick = { onClick.invoke() }) {
                         Icon(
@@ -276,7 +323,9 @@ fun TopBar(
                             contentDescription = "Delete Button"
                         )
                     }
-                }
+                },
+                backgroundColor = topBarColor,
+                contentColor = contentColor,
             )
         }
     }

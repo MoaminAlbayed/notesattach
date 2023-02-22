@@ -87,7 +87,7 @@ fun NoteEditor(
         backToMainScreen()
     }
     Scaffold(
-        topBar = {//todo add access to attachments from note editor screen
+        topBar = {
             TopBar(
                 screen = Screens.NoteEditor,
                 isNewNote = isNewNote,
@@ -111,6 +111,7 @@ fun NoteEditor(
                     textStyle = TextStyle(fontSize = titleFontSize),
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                     colors = TextFieldDefaults.textFieldColors(
+                        textColor = MaterialTheme.colors.onSurface,
                         focusedIndicatorColor = Color.Transparent,
                         unfocusedIndicatorColor = Color.Transparent,
                     )
@@ -134,6 +135,7 @@ fun NoteEditor(
                     },
                     textStyle = TextStyle(fontSize = contentFontSize),
                     colors = TextFieldDefaults.textFieldColors(
+                        textColor = MaterialTheme.colors.onSurface,
                         focusedIndicatorColor = Color.Transparent,
                         unfocusedIndicatorColor = Color.Transparent,
                     )
