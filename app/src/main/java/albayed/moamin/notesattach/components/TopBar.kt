@@ -41,7 +41,6 @@ fun TopBar(
     val scope = rememberCoroutineScope()
     when (screen) {//todo refactor to make shorter
         Screens.MainScreen -> {
-
             TopAppBar(title = {
                 if (isMainScreenSearch.value) {
                     val searchState = remember { mutableStateOf("") }

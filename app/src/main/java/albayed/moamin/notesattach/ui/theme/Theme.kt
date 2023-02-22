@@ -12,10 +12,15 @@ private val DarkColorPalette = darkColors(
 //    primary = Purple200,
 //    primaryVariant = Purple700,
 //    secondary = Teal200,
-    primary = Color.LightGray,
-    onPrimary = Color.Black,
-    primaryVariant = Purple700,
-    secondary = Teal200,
+//    primary = Color.LightGray,
+//    onPrimary = Color.Black,
+//    primaryVariant = Purple700,
+//    secondary = Teal200,
+    primary = primary,
+    onPrimary = onPrimary,
+    background = background,
+    surface = surface,
+    onSurface = onSurface
 )
 
 private val LightColorPalette = lightColors(
@@ -62,7 +67,7 @@ fun NotesAttachTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Compo
         color = Color.Black
     )
 
-    val colors = LightColorPalette
+    val colors = DarkColorPalette
 
     MaterialTheme(
         colors = colors,

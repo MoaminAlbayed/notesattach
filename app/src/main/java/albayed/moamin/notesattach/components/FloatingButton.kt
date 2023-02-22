@@ -44,8 +44,8 @@ fun FloatingButton(
             }
         ),
         onClick = { action.invoke() },
-        backgroundColor = MaterialTheme.colors.primary,
-        contentColor = MaterialTheme.colors.onPrimary,
+        backgroundColor = MaterialTheme.colors.onPrimary,
+        contentColor = MaterialTheme.colors.primary,
         shape = CircleShape
     ) {
         Icon(painter = painterResource(id = icon), contentDescription = contentDescription)

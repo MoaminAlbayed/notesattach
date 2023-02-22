@@ -120,6 +120,9 @@ dependencies {
     //to change status bar color
     implementation "com.google.accompanist:accompanist-systemuicontroller:0.29.1-alpha"
 
+    //for splash screen
+//    implementation("androidx.core:core-splashscreen:1.0.0")
+
 }
 
 kapt {
