@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="MyDatePickerDialogTheme" parent="android:Theme.Material.Dialog">
+        <item name="android:datePickerStyle">@style/MyDatePickerStyle</item>
+    </style>
+    <style name="MyDatePickerStyle" parent="@android:style/Widget.Material.DatePicker">
+        <item name="android:headerBackground">#FF3D0107</item>
+        <item name="android:background">#000000</item>
+        <item name="android:textColorPrimary">#ffffff</item>
+        <item name="android:buttonBarPositiveButtonStyle">@style/TextButton</item>
+<!--        <item name="android:colorAccent">#FF3D0107</item>-->
+<!--        <item name="android:color">#FF3D0107</item>-->
+
+    </style>
+
+    <style name="MyTimePickerDialogTheme" parent="android:Theme.Material.Dialog">
+        <item name="android:timePickerStyle">@style/MyTimePickerStyle</item>
+    </style>
+    <style name="MyTimePickerStyle" parent="@android:style/Widget.Material.TimePicker">
+        <item name="android:timePickerMode">spinner</item>
+        <item name="android:background">#FF3D0107</item>
+        <!--item name="android:background">#000000</item-->
+    </style>
+    @android:style/Widget.Material.Button.TextButton.Dialog
+
+    <style name="TextButton" parent="@android:style/Widget.Material">
+        <item name="android:textColor">@color/black</item>
+<!--        <item name="backgroundTint">@color/...</item>-->
+    </style>
+
+<!--    <style name="ThemeOverlay.MyApp.Dialog" parent="@android:style/ThemeOverlay.MaterialComponents.Dialog">-->
+<!--        <item name="colorSecondary">@color/red500_light</item>-->
+<!--        <item name="colorPrimary">@color/blu500_dark</item> &lt;!&ndash; button text color &ndash;&gt;-->
+<!--    </style>-->
+
+
+</resources>

@@ -42,7 +42,7 @@ fun TopBar(
     when (screen) {//todo refactor to make shorter
         Screens.MainScreen -> {
             TopAppBar(title = {
-                if (isMainScreenSearch.value) {
+                if (isMainScreenSearch.value) {//todo figure out animations for search bar
                     val searchState = remember { mutableStateOf("") }
                     TextField(
                         value = searchState.value,
@@ -305,7 +305,7 @@ fun TopBar(
         Screens.AlarmsScreen -> {
             TopAppBar(
                 title = {
-                    Text(text = "Alarms List")
+                    Text(text = "Reminders List")
                 },
                 navigationIcon = {
                     IconButton(onClick = { onClick.invoke() }) {

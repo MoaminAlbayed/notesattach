@@ -95,7 +95,7 @@ fun AlarmsScreen(//todo rename to reminders
     var time by remember { mutableStateOf("") }
 
 
-    val timePicker =
+    val timePicker =//todo figure out colors
         TimePickerDialog(context, { _, hourOfDay: Int, minute: Int ->
             time = "${hourOfDay.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}"
             setCalendar.set(Calendar.YEAR, setYear)
@@ -200,7 +200,6 @@ fun AlarmsScreen(//todo rename to reminders
                     nowCalendar = nowCalendar,
                     isDeleteMode = isDeleteMode,
                     isNewDeleteProcess = alarmsToDelete.isEmpty(),
-                    onClick = {/*todo modify alarm*/ },
                     checkedDelete = { checkedDelete ->
                         if (checkedDelete.value) {
                             checkedDelete.value = !checkedDelete.value
@@ -242,7 +241,7 @@ fun AlarmsScreen(//todo rename to reminders
                 isDeleteMode.value = false
             },
             title = "Deleting Locations",
-            text = "Are you sure you want to delete ${alarmsToDelete.size} alarm(s)?"
+            text = "Are you sure you want to delete ${alarmsToDelete.size} reminder(s)?"
         )
     }
     fun backToMainScreen() {

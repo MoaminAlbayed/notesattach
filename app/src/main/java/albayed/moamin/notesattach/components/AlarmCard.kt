@@ -35,7 +35,7 @@ fun AlarmCard(
     nowCalendar: Calendar,
     isDeleteMode: MutableState<Boolean>,
     isNewDeleteProcess: Boolean,
-    onClick: (Alarm) -> Unit,
+    onClick: (Alarm) -> Unit = {},
     checkedDelete: (MutableState<Boolean>) -> Unit
 ) {
     val haptic = LocalHapticFeedback.current

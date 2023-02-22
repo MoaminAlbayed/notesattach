@@ -5,5 +5,7 @@
         <item name="android:statusBarColor">@color/purple_700</item>
         <item name="android:windowSplashScreenBackground">@color/black</item>
         <item name="android:windowSplashScreenIconBackgroundColor">@color/primary</item>
+        <item name="android:datePickerDialogTheme">@style/MyDatePickerDialogTheme</item>
+        <item name="android:timePickerDialogTheme">@style/MyTimePickerDialogTheme</item>
     </style>
 </resources>
