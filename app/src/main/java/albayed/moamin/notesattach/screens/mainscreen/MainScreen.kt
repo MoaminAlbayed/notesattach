@@ -35,6 +35,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.toLowerCase
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
@@ -67,7 +68,7 @@ fun MainScreen(navController: NavController, viewModel: MainScreenViewModel = hi
                 firstAction = { isSearch.value = !isSearch.value },
                 onSearchValueChanged = { value ->
                     notesToShow.value = notesList.filter { note ->
-                        note.title.contains(value) || note.content.contains(value)
+                        note.title.lowercase().contains(value.lowercase()) || note.content.lowercase().contains(value.lowercase())
                     }
                 }
             )
