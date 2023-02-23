@@ -30,6 +30,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -87,7 +88,8 @@ fun MainScreen(navController: NavController, viewModel: MainScreenViewModel = hi
                     colors = listOf(
                         MaterialTheme.colors.primary,
                         Color.Black
-                    )
+                    ),
+                    tileMode = TileMode.Repeated
                 )),
         ) {
 //            items(notesList.asReversed()) { note ->
