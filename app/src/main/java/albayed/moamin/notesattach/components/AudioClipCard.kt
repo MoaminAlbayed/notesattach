@@ -120,16 +120,18 @@ fun AudioClipCard(
                 )
                 Column(
                     modifier = Modifier
-                        .padding(5.dp)
+                        .padding(0.dp)
                         .fillMaxHeight(),
                     verticalArrangement = Arrangement.Center
                 ) {
                     Text(
+                        modifier = Modifier.padding(start = 15.dp),
                         text = "Created: ${dateFormatter(audioClip.date.time)}",
                         fontSize = 14.sp
                     )
                     Text(
-                        text = formatTimer( if(audioClip.duration <1000L) 1000L else audioClip.duration),
+                        modifier = Modifier.padding(start = 15.dp),
+                        text = "Duration: " + formatTimer( if(audioClip.duration <1000L) 1000L else audioClip.duration),
                         fontSize = 14.sp
                     )
                     AnimatedVisibility(
@@ -137,8 +139,7 @@ fun AudioClipCard(
 
                     ) {
                         Slider(
-                            modifier = Modifier.fillMaxWidth(),
-//                            value = 1f,
+                            modifier = Modifier.fillMaxWidth().padding(start = 5.dp, end = 5.dp),
                             value = currentPosition.value!!,
                             onValueChange = {
                                 seekTo(it)
