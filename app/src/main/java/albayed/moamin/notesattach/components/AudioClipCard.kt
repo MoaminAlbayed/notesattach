@@ -6,6 +6,7 @@ import albayed.moamin.notesattach.utils.dateFormatter
 import albayed.moamin.notesattach.utils.formatTimer
 import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.BorderStroke
@@ -57,7 +58,8 @@ fun AudioClipCard(
         isSelected.value = false
     }
 
-    ConstraintLayout(modifier = Modifier
+    //ConstraintLayout(modifier = Modifier
+    Box(modifier = Modifier
         .padding(5.dp)
         .height(100.dp)
         .fillMaxWidth()
@@ -76,7 +78,7 @@ fun AudioClipCard(
             )
         }
     ) {
-        val checkRef = createRef()
+        //val checkRef = createRef()
         Card(
             modifier = Modifier.fillMaxWidth(),
             //.clickable { onClick.invoke() },
@@ -84,7 +86,7 @@ fun AudioClipCard(
             border = BorderStroke(2.dp, color = MaterialTheme.colors.primary),
             elevation = 5.dp
         ) {
-            Row() {
+            Row(modifier = Modifier.fillMaxHeight()) {
                 IconButton(
                     modifier = Modifier.align(Alignment.CenterVertically),
                     onClick = {
@@ -130,15 +132,9 @@ fun AudioClipCard(
                         text = formatTimer( if(audioClip.duration <1000L) 1000L else audioClip.duration),
                         fontSize = 14.sp
                     )
-                    AnimatedVisibility(//todo make text on top of slider move smoothly
+                    AnimatedVisibility(
                         visible = isPlaying.value,
-                        enter =
-                        slideInVertically(initialOffsetY = { it }),
-                        //expandVertically(expandFrom = Alignment.Bottom) +
 
-                        exit =
-                        //fadeOut() +
-                        slideOutVertically(targetOffsetY = { it })
                     ) {
                         Slider(
                             modifier = Modifier.fillMaxWidth(),
@@ -159,10 +155,12 @@ fun AudioClipCard(
             }
         }
         if (isDeleteMode.value) {
-            CircleCheckbox(modifier = Modifier.constrainAs(checkRef) {
-                top.linkTo(parent.top)
-                start.linkTo(parent.start)
-            }, selected = isSelected.value) {
+            //CircleCheckbox(modifier = Modifier.constrainAs(checkRef) {
+            CircleCheckbox(modifier = Modifier.align(Alignment.TopStart), //{
+//                top.linkTo(parent.top)
+//                start.linkTo(parent.start)
+//            },
+        selected = isSelected.value) {
                 checkedDelete(isSelected)
             }
         }
