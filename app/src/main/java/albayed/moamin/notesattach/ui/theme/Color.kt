@@ -36,7 +36,6 @@ val Timberwolf = Color (0xffCCC5B9)
 
 val primary = Color(0xFF3D0107)
 val onPrimary = Color(0xFFBEBEB4)
-//val background = Color(0xff0D1B2A)
 val background = Color.Black
 val surface = Color(0xFF330106)
 val onSurface = Color(0xFFB8B1B4)

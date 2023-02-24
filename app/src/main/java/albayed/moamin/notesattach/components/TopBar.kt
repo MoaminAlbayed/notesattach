@@ -44,7 +44,7 @@ fun TopBar(
 
     val animationTime = 500
 
-    when (screen) {//todo refactor to make shorter
+    when (screen) {
         Screens.MainScreen -> {
             AnimatedContent(
                 targetState = isMainScreenSearch.value,
@@ -65,7 +65,6 @@ fun TopBar(
             ) {
                 if (it){
                     TopAppBar(title = {
-                        // if (isMainScreenSearch.value) {//todo figure out animations for search bar
                         val searchState = remember { mutableStateOf("") }
                             TextField(
                                 value = searchState.value,
@@ -88,8 +87,7 @@ fun TopBar(
                                     if (searchState.value != ("")) {
                                         IconButton(
                                             onClick = {
-                                                searchState.value =
-                                                    "" // Remove text from TextField when you press the 'X' icon
+                                                searchState.value = ""
                                             }
                                         ) {
                                             Icon(

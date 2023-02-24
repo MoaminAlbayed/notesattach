@@ -50,7 +50,7 @@ import kotlin.random.Random
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter", "UnspecifiedImmutableFlag")
 @Composable
-fun AlarmsScreen(//todo rename to reminders
+fun AlarmsScreen(
     navController: NavController,
     noteId: String,
     noteTitle: String,
@@ -95,7 +95,7 @@ fun AlarmsScreen(//todo rename to reminders
     var time by remember { mutableStateOf("") }
 
 
-    val timePicker =//todo figure out colors
+    val timePicker =
         TimePickerDialog(context, { _, hourOfDay: Int, minute: Int ->
             time = "${hourOfDay.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}"
             setCalendar.set(Calendar.YEAR, setYear)
