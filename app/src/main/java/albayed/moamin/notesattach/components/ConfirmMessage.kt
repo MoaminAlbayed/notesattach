@@ -10,7 +10,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
 
 @Composable
-fun ConfirmMessage(//TODO try finding a different message type
+fun ConfirmMessage(//TODO improve the look of the message and the buttons looks and locations use buttons instead of textbutton
     isOpenDialog: MutableState<Boolean>,
     onClickYes: () -> Unit,
     onClickNo: () -> Unit,
