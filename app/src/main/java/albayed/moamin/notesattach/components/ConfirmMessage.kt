@@ -10,7 +10,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
 
 @Composable
-fun ConfirmMessage(
+fun ConfirmMessage(//TODO try finding a different message type
     isOpenDialog: MutableState<Boolean>,
     onClickYes: () -> Unit,
     onClickNo: () -> Unit,

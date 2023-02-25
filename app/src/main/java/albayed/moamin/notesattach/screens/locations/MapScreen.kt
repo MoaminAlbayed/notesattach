@@ -86,7 +86,7 @@ fun MapScreen(
             modifier = Modifier.fillMaxSize(),
             cameraPositionState = cameraPositionState,
             properties = properties,
-            onMapClick = {//todo be able to add current location to list of locations
+            onMapClick = {
                 geocoder.getFromLocation(
                     it.latitude,
                     it.longitude,
@@ -130,6 +130,37 @@ fun MapScreen(
             Marker(
                 state = MarkerState(position = currentLatLng),
                 title = "Current Location",
+                onClick = {
+                    geocoder.getFromLocation(
+                        currentLatLng.latitude,
+                        currentLatLng.longitude,
+                        1,
+                        object : Geocoder.GeocodeListener {
+                            override fun onGeocode(addresses: MutableList<Address>) {
+                                Log.d("here", "onGeocode: $addresses")
+                                locationChosen.value = Location(
+                                    noteId = UUID.fromString(noteId),
+                                    longitude = currentLatLng.longitude,
+                                    latitude = currentLatLng.latitude,
+                                    description = addresses[0].getAddressLine(0)
+                                )
+
+                                isOpenConfirmDialogue.value = true
+                            }
+                            override fun onError(errorMessage: String?) {
+                                super.onError(errorMessage)
+                                Log.d("here", "onError: $errorMessage")
+                                locationChosen.value = Location(
+                                    noteId = UUID.fromString(noteId),
+                                    longitude = currentLatLng.longitude,
+                                    latitude = currentLatLng.latitude,
+                                    description = "Latitude: ${currentLatLng.latitude}\nLongitude: ${currentLatLng.longitude}"
+                                )
+                                isOpenConfirmDialogue.value = true
+                            }
+                        })
+                    return@Marker true
+                }
             )
         }
     }
