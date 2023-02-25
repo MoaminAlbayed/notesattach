@@ -39,7 +39,7 @@ fun MapScreen(
         mutableStateOf(false)
     }
     val locationsCount = viewModel.locationsCount.collectAsState().value
-    var locationChosen = remember {
+    val locationChosen = remember {
         mutableStateOf(
             Location(
                 noteId = UUID.fromString(noteId),
@@ -51,6 +51,8 @@ fun MapScreen(
     }
 
     var currentLatLng by remember { mutableStateOf(LatLng(0.0, 0.0)) }
+    val markerState = rememberMarkerState(null, currentLatLng)
+
 
     val properties by remember {
         mutableStateOf(MapProperties(mapType = MapType.HYBRID))
@@ -71,53 +73,57 @@ fun MapScreen(
 
                 currentLatLng = LatLng(it.latitude, it.longitude)
                 cameraPositionState.move(CameraUpdateFactory.newLatLng(currentLatLng))
+                markerState.position = currentLatLng
             }
 
         }
 
     val geocoder = Geocoder(context, Locale.ENGLISH)
+    fun getLocationFromGeocoder(location: LatLng){
+        geocoder.getFromLocation(
+            location.latitude,
+            location.longitude,
+            1,
+            object : Geocoder.GeocodeListener {
+                override fun onGeocode(addresses: MutableList<Address>) {
+                    locationChosen.value = Location(
+                        noteId = UUID.fromString(noteId),
+                        longitude = location.longitude,
+                        latitude = location.latitude,
+                        description = addresses[0].getAddressLine(0)
+                    )
+
+                    isOpenConfirmDialogue.value = true
+                }
+                override fun onError(errorMessage: String?) {
+                    super.onError(errorMessage)
+                    locationChosen.value = Location(
+                        noteId = UUID.fromString(noteId),
+                        longitude = location.longitude,
+                        latitude = location.latitude,
+                        description = "Latitude: ${location.latitude}\nLongitude: ${location.longitude}"
+                    )
+                    isOpenConfirmDialogue.value = true
+                }
+            })
+    }
 
     Scaffold(topBar = {
         TopBar(screen = Screens.MapScreen) {
             navController.popBackStack()
         }
     }) {
+        LaunchedEffect(key1 = Unit){
+            Toast.makeText(context, "Press on any location to add", Toast.LENGTH_LONG).show()
+        }
         GoogleMap(
             modifier = Modifier.fillMaxSize(),
             cameraPositionState = cameraPositionState,
             properties = properties,
             onMapClick = {
-                geocoder.getFromLocation(
-                    it.latitude,
-                    it.longitude,
-                    1,
-                    object : Geocoder.GeocodeListener {
-                        override fun onGeocode(addresses: MutableList<Address>) {
-                            Log.d("here", "onGeocode: $addresses")
-                            locationChosen.value = Location(
-                                noteId = UUID.fromString(noteId),
-                                longitude = it.longitude,
-                                latitude = it.latitude,
-                                description = addresses[0].getAddressLine(0)
-                            )
-
-                            isOpenConfirmDialogue.value = true
-                        }
-                        override fun onError(errorMessage: String?) {
-                            super.onError(errorMessage)
-                            Log.d("here", "onError: $errorMessage")
-                            locationChosen.value = Location(
-                                noteId = UUID.fromString(noteId),
-                                longitude = it.longitude,
-                                latitude = it.latitude,
-                                description = "Latitude: ${it.latitude}\nLongitude: ${it.longitude}"
-                            )
-                            isOpenConfirmDialogue.value = true
-                        }
-                    })
+                         getLocationFromGeocoder(it)
             },
             onPOIClick = {
-                Log.d("here", "MapScreen POI: ${it.name}")
                 locationChosen.value = Location(
                     noteId = UUID.fromString(noteId),
                     longitude = it.latLng.longitude,
@@ -128,42 +134,18 @@ fun MapScreen(
             }
         ) {
             Marker(
-                state = MarkerState(position = currentLatLng),
+                state = markerState,
                 title = "Current Location",
                 onClick = {
-                    geocoder.getFromLocation(
-                        currentLatLng.latitude,
-                        currentLatLng.longitude,
-                        1,
-                        object : Geocoder.GeocodeListener {
-                            override fun onGeocode(addresses: MutableList<Address>) {
-                                Log.d("here", "onGeocode: $addresses")
-                                locationChosen.value = Location(
-                                    noteId = UUID.fromString(noteId),
-                                    longitude = currentLatLng.longitude,
-                                    latitude = currentLatLng.latitude,
-                                    description = addresses[0].getAddressLine(0)
-                                )
-
-                                isOpenConfirmDialogue.value = true
-                            }
-                            override fun onError(errorMessage: String?) {
-                                super.onError(errorMessage)
-                                Log.d("here", "onError: $errorMessage")
-                                locationChosen.value = Location(
-                                    noteId = UUID.fromString(noteId),
-                                    longitude = currentLatLng.longitude,
-                                    latitude = currentLatLng.latitude,
-                                    description = "Latitude: ${currentLatLng.latitude}\nLongitude: ${currentLatLng.longitude}"
-                                )
-                                isOpenConfirmDialogue.value = true
-                            }
-                        })
+                    getLocationFromGeocoder(currentLatLng)
                     return@Marker true
                 }
             )
+            markerState.showInfoWindow()
         }
+
     }
+
 
     if (isOpenConfirmDialogue.value) {
         ConfirmMessage(

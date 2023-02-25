@@ -51,12 +51,8 @@ fun MainScreen(navController: NavController, viewModel: MainScreenViewModel = hi
     val notesList = viewModel.notesList.collectAsState().value
 
     val isSearch = remember { mutableStateOf(false) }
-    //val searchState = remember { mutableStateOf("") }
-
     val notesToShow = remember { mutableStateOf(listOf<Note>()) }
-
     if (!isSearch.value) {
-        Log.d("here", "MainScreen: on if")
         notesToShow.value = notesList
     }
 
@@ -102,12 +98,7 @@ fun MainScreen(navController: NavController, viewModel: MainScreenViewModel = hi
     }
 }
 
-//@Preview(showBackground = true)
-//@Preview(
-//    showBackground = true,
-//    uiMode = Configuration.UI_MODE_NIGHT_YES,
-//    name = "NoteCard Dark Theme"
-//)
+
 @Composable
 fun NoteCard(
     note: Note,
@@ -150,7 +141,6 @@ fun NoteCard(
             .height(180.dp)
             .wrapContentHeight()
             .fillMaxWidth(),
-        // .clickable { onClick.invoke() },
         shape = RoundedCornerShape(5.dp),
         border = BorderStroke(2.dp, color = MaterialTheme.colors.onSurface),
         elevation = 5.dp,
@@ -175,7 +165,6 @@ fun NoteCard(
                         scale = attachmentIconScale,
                         padding = attachmentIconPadding,
                         contentDescription = "Photo Button",
-//                        tint = MaterialTheme.colors.primary,
                         tint = attachmentIconColor,
                         count = note.imagesCount
                     )

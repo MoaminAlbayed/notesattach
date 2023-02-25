@@ -84,7 +84,7 @@ fun LocationCard(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Log.d("here", "LocationCard: ${fetchThumbnailUri(location)}")
+//                Log.d("here", "LocationCard: ${fetchThumbnailUri(location)}")
                 AsyncImage(
                     modifier = Modifier
                         .aspectRatio(1f)
