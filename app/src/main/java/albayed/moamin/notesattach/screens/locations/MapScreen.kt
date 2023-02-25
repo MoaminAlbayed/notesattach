@@ -86,7 +86,7 @@ fun MapScreen(
             modifier = Modifier.fillMaxSize(),
             cameraPositionState = cameraPositionState,
             properties = properties,
-            onMapClick = {
+            onMapClick = {//todo be able to add current location to list of locations
                 geocoder.getFromLocation(
                     it.latitude,
                     it.longitude,
