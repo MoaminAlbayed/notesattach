@@ -110,7 +110,7 @@ fun fetchThumbnailUri(location: Location): String {
     return "${baseUri}center=${location.latitude},${location.longitude}" +
             "&zoom=${zoom}&size=${size}x${size}&maptype=hybrid" +
             "&markers=color:red|${location.latitude},${location.longitude}" +
-            "&key=${stringResource(id = R.string.maps_api_key)}"
+            "&key=${stringResource(id = R.string.maps_api_key_release)}"
 }
 
 

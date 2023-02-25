@@ -5,8 +5,11 @@ import albayed.moamin.notesattach.components.TopBar
 import albayed.moamin.notesattach.models.Location
 import albayed.moamin.notesattach.navigation.Screens
 import android.annotation.SuppressLint
+import android.location.Address
 import android.location.Geocoder
+import android.location.LocationRequest
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.*
@@ -18,6 +21,9 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.tasks.CancellationToken
+import com.google.android.gms.tasks.CancellationTokenSource
+import com.google.android.gms.tasks.OnTokenCanceledListener
 import com.google.maps.android.compose.*
 import java.util.*
 
@@ -28,6 +34,7 @@ fun MapScreen(
     noteId: String,
     viewModel: LocationsScreenViewModel = hiltViewModel()
 ) {
+    val context = LocalContext.current
     val isOpenConfirmDialogue = remember {
         mutableStateOf(false)
     }
@@ -43,7 +50,6 @@ fun MapScreen(
         )
     }
 
-    val context = LocalContext.current
     var currentLatLng by remember { mutableStateOf(LatLng(0.0, 0.0)) }
 
     val properties by remember {
@@ -53,10 +59,22 @@ fun MapScreen(
         position = CameraPosition.fromLatLngZoom(currentLatLng, 15f)
     }
     val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
-    fusedLocationClient.lastLocation.addOnSuccessListener { location ->
-        currentLatLng = LatLng(location.latitude, location.longitude)
-        cameraPositionState.move(CameraUpdateFactory.newLatLng(currentLatLng))
-    }
+    fusedLocationClient.getCurrentLocation(LocationRequest.QUALITY_HIGH_ACCURACY, object : CancellationToken() {
+        override fun onCanceledRequested(p0: OnTokenCanceledListener) = CancellationTokenSource().token
+
+        override fun isCancellationRequested() = false
+    })
+        .addOnSuccessListener {
+            if (it == null)
+                Toast.makeText(context, "Cannot get location.", Toast.LENGTH_SHORT).show()
+            else {
+
+                currentLatLng = LatLng(it.latitude, it.longitude)
+                cameraPositionState.move(CameraUpdateFactory.newLatLng(currentLatLng))
+            }
+
+        }
+
     val geocoder = Geocoder(context, Locale.ENGLISH)
 
     Scaffold(topBar = {
@@ -69,15 +87,34 @@ fun MapScreen(
             cameraPositionState = cameraPositionState,
             properties = properties,
             onMapClick = {
-                val details = geocoder.getFromLocation(it.latitude, it.longitude, 1)
-                Log.d("here", "MapScreen: ${details!![0].getAddressLine(0)}")
-                locationChosen.value = Location(
-                    noteId = UUID.fromString(noteId),
-                    longitude = it.longitude,
-                    latitude = it.latitude,
-                    description = details[0].getAddressLine(0)
-                )
-                isOpenConfirmDialogue.value = true
+                geocoder.getFromLocation(
+                    it.latitude,
+                    it.longitude,
+                    1,
+                    object : Geocoder.GeocodeListener {
+                        override fun onGeocode(addresses: MutableList<Address>) {
+                            Log.d("here", "onGeocode: $addresses")
+                            locationChosen.value = Location(
+                                noteId = UUID.fromString(noteId),
+                                longitude = it.longitude,
+                                latitude = it.latitude,
+                                description = addresses[0].getAddressLine(0)
+                            )
+
+                            isOpenConfirmDialogue.value = true
+                        }
+                        override fun onError(errorMessage: String?) {
+                            super.onError(errorMessage)
+                            Log.d("here", "onError: $errorMessage")
+                            locationChosen.value = Location(
+                                noteId = UUID.fromString(noteId),
+                                longitude = it.longitude,
+                                latitude = it.latitude,
+                                description = "Latitude: ${it.latitude}\nLongitude: ${it.longitude}"
+                            )
+                            isOpenConfirmDialogue.value = true
+                        }
+                    })
             },
             onPOIClick = {
                 Log.d("here", "MapScreen POI: ${it.name}")
@@ -85,7 +122,7 @@ fun MapScreen(
                     noteId = UUID.fromString(noteId),
                     longitude = it.latLng.longitude,
                     latitude = it.latLng.latitude,
-                    description = it.name.replace("\n"," ")
+                    description = it.name.replace("\n", " ")
                 )
                 isOpenConfirmDialogue.value = true
             }
@@ -110,6 +147,5 @@ fun MapScreen(
             text = locationChosen.value.description
         )
     }
-
 
 }
