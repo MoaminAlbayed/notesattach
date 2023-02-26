@@ -66,7 +66,7 @@ fun VideosScreen(
         val fileKey = "file"
         val uriKey = "uri"
         mapSaver(
-            save = { mapOf(fileKey to it.file!!.absolutePath, uriKey to it.uri.toString()) },
+            save = { mapOf(fileKey to it.file.absolutePath, uriKey to it.uri.toString()) },
             restore = { FileInfo(File(it[fileKey].toString()), Uri.parse(it[uriKey].toString())) }
         )
     }
@@ -83,15 +83,15 @@ fun VideosScreen(
                 viewModel.createVideo(
                     Video(
                         noteId = UUID.fromString(noteId),
-                        uri = newFile.value.uri!!,
-                        file = newFile.value.file!!
+                        uri = newFile.value.uri,
+                        file = newFile.value.file
                     )
                 )
                 viewModel.updateVideosCount(videosCount = videosCount + 1, noteId = noteId)
             }
             if (!hasVideo) {
-                if (newFile.value.file!!.exists()) {
-                    newFile.value.file!!.delete()
+                if (newFile.value.file.exists()) {
+                    newFile.value.file.delete()
                 }
             }
         }
@@ -134,11 +134,8 @@ fun VideosScreen(
                     isDeleteMode.value = false
                     videosToDelete.clear()
                 }
-//                newFile.value = ImagesFileProvider.getImageUri(context, fileDateFormatter(Date.from(
-//                    Instant.now()).time))
-//                newFile.value = ImagesFileProvider.getImageUri(context)
                 newFile.value = NewFileProvider.getFileUri(context, FileTypes.VideoFile)
-                cameraLauncher.launch(newFile.value!!.uri)
+                cameraLauncher.launch(newFile.value.uri)
             }
         }) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {

@@ -5,8 +5,8 @@ import androidx.room.TypeConverter
 
 class UriConverter (){
     @TypeConverter
-    fun UriToString(uri: Uri): String = uri.toString()
+    fun uriToString(uri: Uri): String = uri.toString()
 
     @TypeConverter
-    fun StringToUri(string: String): Uri = Uri.parse(string)
+    fun stringToUri(string: String): Uri = Uri.parse(string)
 }

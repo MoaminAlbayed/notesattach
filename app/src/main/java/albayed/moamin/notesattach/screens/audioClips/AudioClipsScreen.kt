@@ -8,17 +8,10 @@ import albayed.moamin.notesattach.components.TopBar
 import albayed.moamin.notesattach.models.AudioClip
 import albayed.moamin.notesattach.navigation.Screens
 import albayed.moamin.notesattach.utils.BackPressHandler
-import albayed.moamin.notesattach.utils.LockScreenOrientation
-import albayed.moamin.notesattach.utils.checkPermissions
-import android.Manifest
 import android.annotation.SuppressLint
-import android.content.pm.ActivityInfo
-import android.content.pm.PackageManager
 import android.media.MediaPlayer
 import android.util.Log
 import android.widget.Toast
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -30,7 +23,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import kotlinx.coroutines.*
@@ -73,7 +65,7 @@ fun AudioClipsScreen(
     }
 
     val currentPositionScope = rememberCoroutineScope()
-    val permissionScope = rememberCoroutineScope()
+
 
     val currentPosition = rememberSaveable {
         mutableStateOf<Float?>(null)
@@ -82,45 +74,6 @@ fun AudioClipsScreen(
     val audioClipCurrentlyPlaying = rememberSaveable {
         mutableStateOf<File?>(null)
     }
-
-//    val requestPermissionLauncher =
-//        rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
-//            if (!isGranted) {
-//                Log.d("permission", "audioClipsScreen perm: permission denied")
-//            } else {
-//                Log.d("permission", "audioClipsScreen perm: permission granted")
-//                //viewModel.createImage(Image(noteId = UUID.fromString(noteId), uri = imageUri!!))
-//            }
-//        }
-//
-//
-//
-//    fun checkPermission(onGranted: () -> Unit = {}) {
-//        if (ContextCompat.checkSelfPermission(
-//                context,
-//                Manifest.permission.RECORD_AUDIO
-//            )
-//            == PackageManager.PERMISSION_GRANTED
-//        ) {
-//            onGranted.invoke()
-//            Log.d("permission", "audioClipsScreen: permission available")
-//            //viewModel.createImage(Image(noteId = UUID.fromString(noteId), uri = imageUri!!))
-//
-//        } else {
-//            Log.d("permission", "audioClipsScreen: requesting")
-////            SideEffect {
-//            permissionScope.launch {
-//                requestPermissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
-//            }
-//        }
-//    }
-////    checkPermission()
-//    val recordPermission = arrayOf(
-//        Manifest.permission.RECORD_AUDIO
-//    )
-//
-////    if (!checkPermissions(recordPermission, context)){}
-
 
 
     fun resumePlaying() {
@@ -133,12 +86,6 @@ fun AudioClipsScreen(
         isPaused = true
     }
 
-    fun onPause() {
-        if (isPaused)
-            resumePlaying()
-        else
-            pausePlaying()
-    }
 
     fun startPlaying(file: File) {
 
@@ -186,9 +133,6 @@ fun AudioClipsScreen(
         } else
             startPlaying(file)
     }
-
-
-
 
     Scaffold(
         topBar = {
@@ -278,15 +222,6 @@ fun AudioClipsScreen(
                         isPlaying = true
                         audioClipCurrentlyPlaying.value = audioClip.file
                     }
-//                    if (isPlaying && file == audioClipCurrentlyPlaying.value) {
-//                        stopPlaying()
-//                        isPlaying = false
-//                        audioClipCurrentlyPlaying.value = null
-//                    } else {
-//                        onPlay(file)
-//                        isPlaying = true
-//                        audioClipCurrentlyPlaying.value = audioClip.file
-//                    }
                 }
             }
 
@@ -333,78 +268,4 @@ fun AudioClipsScreen(
     }
 
 }
-
-
-//    var player: MediaPlayer? = null
-
-
-//    val currentPosition = rememberSaveable() {
-//        mutableStateOf<Int?>(0)
-//    }
-//    val duration = rememberSaveable() {
-//        mutableStateOf<Int?>(0)
-//    }
-//
-//    val currentPositionState = produceState(initialValue = 0f) {
-//        value = player.currentPosition.toFloat()
-//    }.value
-//
-//
-//
-//    var currentPositionRemember = remember(player) {
-//        mutableStateOf(player.currentPosition)
-//    }
-
-
-//    val sliderValue by remember {
-//        mutableStateOf(0f)
-//    }
-
-//var currentPositionLaunched by remember {
-//    mutableStateOf(0)
-//}
-//LaunchedEffect(key1 = Unit) {
-//    while (true) {
-//        currentPositionLaunched = player.currentPosition
-//        Log.d("here", "AudioClipsScreen Launched: ${player.currentPosition}")
-//        delay(1000)
-//    }
-//}
-
-
-//newFile.value = NewFileProvider.getFileUri(context, FileTypes.AudioFile)
-
-
-//        Button(onClick = {
-//            onPlay()
-//        }) {
-//            Text(text = if (playing.value) "Stop Playing" else "Start Playing")
-//        }
-//
-//
-//
-//        if (playing.value) {
-//            Button(onClick = { onPause() }) {
-//                Text(text = if (paused.value) "Resume" else "Pause")
-//            }
-//
-//            Button(onClick = {
-//                currentPosition.value = player?.currentPosition
-//            }) {
-//                Text(text = currentPosition.value.toString())
-//            }
-////            Text(text = currentPositionLaunched.toString())
-////            Text(text = currentPositionState.toString())
-//            Text(text = "remember: ${currentPositionRemember.value}")
-//            Slider(
-//                modifier = Modifier.fillMaxWidth(),
-//                value = currentPositionLaunched.toFloat(),
-//                onValueChange = {
-//
-//                },
-//                valueRange = (0f..player.duration.toFloat())
-//            )
-//        }
-
-
 

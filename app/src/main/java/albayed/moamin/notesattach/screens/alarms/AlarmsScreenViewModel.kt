@@ -1,7 +1,6 @@
 package albayed.moamin.notesattach.screens.alarms
 
 import albayed.moamin.notesattach.models.Alarm
-import albayed.moamin.notesattach.models.Location
 import albayed.moamin.notesattach.repository.NoteRepository
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel

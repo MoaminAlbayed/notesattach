@@ -1,6 +1,5 @@
 package albayed.moamin.notesattach.screens.videos
 
-import albayed.moamin.notesattach.models.Image
 import albayed.moamin.notesattach.models.Video
 import albayed.moamin.notesattach.repository.NoteRepository
 import androidx.lifecycle.SavedStateHandle

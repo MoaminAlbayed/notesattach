@@ -9,7 +9,6 @@ import albayed.moamin.notesattach.screens.locations.LocationsScreen
 import albayed.moamin.notesattach.screens.locations.MapScreen
 import albayed.moamin.notesattach.screens.noteEditor.NoteEditor
 import albayed.moamin.notesattach.screens.videos.VideosScreen
-import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -23,24 +22,10 @@ fun Navigation() {
     val navController = rememberNavController()
     NavHost(navController = navController, startDestination = Screens.MainScreen.name) {
         composable(route = Screens.MainScreen.name,
-//            deepLinks = listOf(
-//                navDeepLink { uriPattern = "myapp://notesattach/?{isFromNotification}/?{noteId}"}
-//            ),
-//            arguments = listOf(
-//                navArgument(name = "noteId") {
-//                    type = NavType.StringType
-//                    defaultValue = ""
-//                },
-//                navArgument(name = "isFromNotification") {
-//                    type = NavType.BoolType
-//                    defaultValue = false
-//                }
-//            )
         ) {
             MainScreen(navController = navController)
         }
 
-        //composable(route = Screens.NoteEditor.name + "?isNewNote={isNewNote}&noteId={noteId}",
         composable(route = Screens.NoteEditor.name + "/{isNewNote}/{isFromNotification}/{noteId}",
             deepLinks = listOf(
                 navDeepLink { uriPattern = "myapp://notesattach/{isNewNote}/{isFromNotification}/{noteId}"}
@@ -61,7 +46,6 @@ fun Navigation() {
             val isFromNotification = navBackStack.arguments?.getBoolean("isFromNotification")
             val noteId = navBackStack.arguments?.getString("noteId")
             if (isNewNote != null) {
-                Log.d("isNewNote", "Navigation: $isNewNote")
                 NoteEditor(navController = navController, isNewNote = isNewNote, isFromNotification = isFromNotification!!, noteId = noteId)
             }
 

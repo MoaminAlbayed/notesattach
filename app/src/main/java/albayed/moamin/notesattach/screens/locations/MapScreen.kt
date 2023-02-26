@@ -8,7 +8,6 @@ import android.annotation.SuppressLint
 import android.location.Address
 import android.location.Geocoder
 import android.location.LocationRequest
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Scaffold

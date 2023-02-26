@@ -12,7 +12,6 @@ import android.media.MediaMetadataRetriever
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.net.Uri
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.OnBackPressedDispatcher
@@ -52,6 +51,7 @@ fun videoLength(context: Context, videoUri: Uri): String {
     retriever.setDataSource(context, videoUri)
     val videoTime =
         retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)!!.toLong()
+    retriever.release()
     return String.format(
         "%02d:%02d",
         TimeUnit.MILLISECONDS.toMinutes(videoTime),
@@ -61,7 +61,6 @@ fun videoLength(context: Context, videoUri: Uri): String {
 }
 
 fun formatTimer(timestamp: Long): String {
-    val millisecondsFormatted = (timestamp % 1000).pad(3)
     val seconds = timestamp / 1000
     val secondsFormatted = (seconds % 60).pad(2)
     val minutes = seconds / 60

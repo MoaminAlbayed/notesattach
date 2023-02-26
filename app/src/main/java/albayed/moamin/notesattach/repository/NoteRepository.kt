@@ -2,7 +2,6 @@ package albayed.moamin.notesattach.repository
 
 import albayed.moamin.notesattach.database.NoteDatabaseDao
 import albayed.moamin.notesattach.models.*
-import android.view.Display
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.conflate
@@ -70,11 +69,11 @@ class NoteRepository @Inject constructor(private val noteDatabaseDao: NoteDataba
     suspend fun updateAlarmsCount(alarmsCount: Int, noteId: String) =
         noteDatabaseDao.updateAlarmsCount(alarmsCount, noteId)
 
-    suspend fun getImagesCount(noteId: String) = noteDatabaseDao.getImagesCount(noteId)
-    suspend fun getVideosCount(noteId: String) = noteDatabaseDao.getVideosCount(noteId)
-    suspend fun getAudioClipsCount(noteId: String) = noteDatabaseDao.getAudioClipsCount(noteId)
-    suspend fun getLocationsCount(noteId: String) = noteDatabaseDao.getLocationsCount(noteId)
-    suspend fun getAlarmsCount(noteId: String) = noteDatabaseDao.getAlarmsCount(noteId)
+    fun getImagesCount(noteId: String) = noteDatabaseDao.getImagesCount(noteId)
+    fun getVideosCount(noteId: String) = noteDatabaseDao.getVideosCount(noteId)
+    fun getAudioClipsCount(noteId: String) = noteDatabaseDao.getAudioClipsCount(noteId)
+    fun getLocationsCount(noteId: String) = noteDatabaseDao.getLocationsCount(noteId)
+    fun getAlarmsCount(noteId: String) = noteDatabaseDao.getAlarmsCount(noteId)
 
 
 }

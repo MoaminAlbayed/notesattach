@@ -10,13 +10,7 @@ import albayed.moamin.notesattach.navigation.Screens
 import albayed.moamin.notesattach.utils.*
 import android.Manifest
 import android.annotation.SuppressLint
-import android.content.Context
-import android.content.pm.PackageManager
-import android.util.Log
 import android.widget.Toast
-import androidx.activity.compose.ManagedActivityResultLauncher
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -34,12 +28,9 @@ import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.text.toLowerCase
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import java.util.*
@@ -79,7 +70,6 @@ fun MainScreen(navController: NavController, viewModel: MainScreenViewModel = hi
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-//                .padding(start = 5.dp, end = 5.dp)
                 .background(Brush.verticalGradient(
                     colors = listOf(
                         MaterialTheme.colors.primary,
@@ -88,7 +78,6 @@ fun MainScreen(navController: NavController, viewModel: MainScreenViewModel = hi
                     tileMode = TileMode.Repeated
                 )),
         ) {
-//            items(notesList.asReversed()) { note ->
             items(notesToShow.value.asReversed()) { note ->
                 NoteCard(note, navController = navController) {
                     navController.navigate(Screens.NoteEditor.name + "/${false}/${false}/${note.id}")

@@ -3,7 +3,6 @@ package albayed.moamin.notesattach.components
 import albayed.moamin.notesattach.models.Video
 import albayed.moamin.notesattach.utils.videoLength
 import android.net.Uri
-import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -29,6 +28,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import coil.ImageLoader
 import coil.compose.AsyncImage
 import coil.decode.VideoFrameDecoder
+import coil.request.ImageRequest
 
 @Composable
 fun VideoElement(
@@ -81,7 +81,11 @@ fun VideoElement(
             }.crossfade(true)
             .build()
         AsyncImage(
-            model = video.uri,
+//            model = video.uri,
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(video.uri)
+                .crossfade(true)
+                .build(),
             contentScale = ContentScale.Crop,
             contentDescription = "Attached Video",
             imageLoader = imageLoader

@@ -9,15 +9,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import albayed.moamin.notesattach.R
 import androidx.compose.animation.*
-import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.*
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.text.TextStyle
@@ -102,7 +99,7 @@ fun TopBar(
                                     }
                                 },
                                 singleLine = true,
-                                shape = RoundedCornerShape(5.dp), // The TextFiled has rounded corners top left and right by default
+                                shape = RoundedCornerShape(5.dp),
                                 colors = TextFieldDefaults.textFieldColors(
                                     textColor = MaterialTheme.colors.primary,
                                     cursorColor = MaterialTheme.colors.primary,

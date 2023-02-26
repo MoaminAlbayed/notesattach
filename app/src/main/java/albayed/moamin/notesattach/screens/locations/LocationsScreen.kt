@@ -180,6 +180,4 @@ fun LocationsScreen(
     BackPressHandler {
         backToMainScreen()
     }
-
-
 }

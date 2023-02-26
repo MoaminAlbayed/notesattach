@@ -4,11 +4,7 @@ import albayed.moamin.notesattach.R
 import albayed.moamin.notesattach.models.AudioClip
 import albayed.moamin.notesattach.utils.dateFormatter
 import albayed.moamin.notesattach.utils.formatTimer
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
@@ -26,7 +22,6 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.constraintlayout.compose.ConstraintLayout
 import java.io.File
 
 @Composable
@@ -58,7 +53,7 @@ fun AudioClipCard(
         isSelected.value = false
     }
 
-    //ConstraintLayout(modifier = Modifier
+
     Box(modifier = Modifier
         .padding(5.dp)
         .height(100.dp)
@@ -78,10 +73,8 @@ fun AudioClipCard(
             )
         }
     ) {
-        //val checkRef = createRef()
         Card(
             modifier = Modifier.fillMaxWidth(),
-            //.clickable { onClick.invoke() },
             shape = RoundedCornerShape(5.dp),
             border = BorderStroke(2.dp, color = MaterialTheme.colors.primary),
             elevation = 5.dp
@@ -91,7 +84,6 @@ fun AudioClipCard(
                     modifier = Modifier.align(Alignment.CenterVertically),
                     onClick = {
                         onClick(audioFile)
-                        Log.d("here", "isPlaying: ${isPlaying.value} isPaused: $isPaused")
                     }) {
                     Icon(
                         painter = painterResource(id = firstButton),
@@ -102,7 +94,6 @@ fun AudioClipCard(
                     modifier = Modifier.align(Alignment.CenterVertically),
                     onClick = {
                         stopPlaying()
-                        Log.d("here", "isPlaying: ${isPlaying.value} isPaused: $isPaused")
                     },
                     enabled = isPlaying.value
                 ) {
@@ -156,11 +147,7 @@ fun AudioClipCard(
             }
         }
         if (isDeleteMode.value) {
-            //CircleCheckbox(modifier = Modifier.constrainAs(checkRef) {
-            CircleCheckbox(modifier = Modifier.align(Alignment.TopStart), //{
-//                top.linkTo(parent.top)
-//                start.linkTo(parent.start)
-//            },
+            CircleCheckbox(modifier = Modifier.align(Alignment.TopStart),
         selected = isSelected.value) {
                 checkedDelete(isSelected)
             }

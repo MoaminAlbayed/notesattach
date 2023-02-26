@@ -6,45 +6,31 @@ import albayed.moamin.notesattach.components.ConfirmMessage
 import albayed.moamin.notesattach.components.FloatingButton
 import albayed.moamin.notesattach.components.TopBar
 import albayed.moamin.notesattach.models.Alarm
-import albayed.moamin.notesattach.models.Location
 import albayed.moamin.notesattach.navigation.Screens
 import albayed.moamin.notesattach.utils.BackPressHandler
-import android.Manifest
 import android.annotation.SuppressLint
 import android.app.AlarmManager
 import android.app.DatePickerDialog
 import android.app.PendingIntent
 import android.app.TimePickerDialog
-import android.content.Context
 import android.content.Context.ALARM_SERVICE
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.icu.util.Calendar
-import android.util.Log
 import android.widget.DatePicker
 import android.widget.Toast
-import androidx.activity.compose.ManagedActivityResultLauncher
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.Button
 import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import kotlinx.coroutines.launch
 import java.util.*
 import kotlin.random.Random
 
@@ -96,22 +82,20 @@ fun AlarmsScreen(
 
 
     val timePicker =
-        TimePickerDialog(context, { _, hourOfDay: Int, minute: Int ->
-            time = "${hourOfDay.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}"
+        TimePickerDialog(context, { _, chosenHourOfDay: Int, chosenMinute: Int ->
+            time = "${chosenHourOfDay.toString().padStart(2, '0')}:${chosenMinute.toString().padStart(2, '0')}"
             setCalendar.set(Calendar.YEAR, setYear)
             setCalendar.set(Calendar.MONTH, setMonth)
             setCalendar.set(Calendar.DAY_OF_MONTH, setDay)
-            setCalendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
-            setCalendar.set(Calendar.MINUTE, minute)
+            setCalendar.set(Calendar.HOUR_OF_DAY, chosenHourOfDay)
+            setCalendar.set(Calendar.MINUTE, chosenMinute)
             nowCalendar = Calendar.getInstance()
             if (setCalendar <= nowCalendar) {
                 Toast.makeText(context, "Reminders have to be in the future!", Toast.LENGTH_LONG)
                     .show()
             } else {
                 val requestCode = Random.nextInt()
-//                val requestCode = 0
                 val channelId = Random.nextInt()
-//                val channelId = 705
                 val content = noteTitle.ifEmpty { "Click to view note" }
                 alarmIntent = Intent(context, AlarmReceiver::class.java)
                 alarmIntent.putExtra("content", content)
@@ -131,8 +115,8 @@ fun AlarmsScreen(
                         year = setYear,
                         month = setMonth,
                         day = setDay,
-                        hour = hourOfDay,
-                        minute = minute,
+                        hour = chosenHourOfDay,
+                        minute = chosenMinute,
                         requestCode = requestCode
                     )
                 )
@@ -141,13 +125,13 @@ fun AlarmsScreen(
         }, hour, minute, true)
 
     val datePicker =
-        DatePickerDialog(context, { _: DatePicker, year: Int, month: Int, dayOfMonth: Int ->
-            date = "${dayOfMonth.toString().padStart(2, '0')}/${
-                (month + 1).toString().padStart(2, '0')
-            }/$year"
-            setDay = dayOfMonth
-            setMonth = month
-            setYear = year
+        DatePickerDialog(context, { _: DatePicker, chosenYear: Int, chosenMonth: Int, chosenDayOfMonth: Int ->
+            date = "${chosenDayOfMonth.toString().padStart(2, '0')}/${
+                (chosenMonth + 1).toString().padStart(2, '0')
+            }/$chosenYear"
+            setDay = chosenDayOfMonth
+            setMonth = chosenMonth
+            setYear = chosenYear
             timePicker.show()
         }, year, month, day)
 
