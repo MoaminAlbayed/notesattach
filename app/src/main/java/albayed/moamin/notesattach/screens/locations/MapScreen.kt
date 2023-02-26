@@ -114,7 +114,7 @@ fun MapScreen(
         }
     }) {
         LaunchedEffect(key1 = Unit){
-            Toast.makeText(context, "Press on any location to add", Toast.LENGTH_LONG).show()
+            Toast.makeText(context, "Tap on any location to add", Toast.LENGTH_LONG).show()
         }
         GoogleMap(
             modifier = Modifier.fillMaxSize(),
