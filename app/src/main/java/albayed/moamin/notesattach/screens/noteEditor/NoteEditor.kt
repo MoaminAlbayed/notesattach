@@ -31,7 +31,7 @@ import kotlinx.coroutines.delay
 @Composable
 fun NoteEditor(
     navController: NavController,
-    isNewNote: Boolean,//todo request focus to title when new note
+    isNewNote: Boolean,
     isFromNotification: Boolean,
     noteId: String?,
     viewModel: NoteEditorViewModel = hiltViewModel()
