@@ -11,7 +11,6 @@ import albayed.moamin.notesattach.utils.BackPressHandler
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -21,7 +20,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,7 +33,7 @@ import com.google.maps.android.compose.*
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun LocationsScreen(//todo figure out which API keys to use on release
+fun LocationsScreen(
     navController: NavController,
     noteId: String,
     viewModel: LocationsScreenViewModel = hiltViewModel()
@@ -115,8 +113,8 @@ fun LocationsScreen(//todo figure out which API keys to use on release
                     location = location,
                     isDeleteMode = isDeleteMode,
                     isNewDeleteProcess = locationsToDelete.isEmpty(),
-                    onClick = { location ->
-                        locationToNavigate.value = location
+                    onClick = { clickedLocation ->
+                        locationToNavigate.value = clickedLocation
                         isOpenNavDialog.value = true
                     },
                     checkedDelete = { checkedDelete ->
@@ -179,7 +177,7 @@ fun LocationsScreen(//todo figure out which API keys to use on release
         } else
             navController.popBackStack()
     }
-    BackPressHandler() {
+    BackPressHandler {
         backToMainScreen()
     }
 

@@ -1,8 +1,6 @@
 package albayed.moamin.notesattach.screens.alarms
 
-import albayed.moamin.notesattach.MainActivity
 import albayed.moamin.notesattach.R
-import android.Manifest
 import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -12,19 +10,11 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Context.NOTIFICATION_SERVICE
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.graphics.Color
 import android.media.RingtoneManager
-import android.os.Build
 import android.util.Log
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.net.toUri
-import androidx.navigation.NavDeepLinkBuilder
-import okhttp3.internal.notify
 
 
 class AlarmReceiver: BroadcastReceiver() {
@@ -60,7 +50,7 @@ class AlarmReceiver: BroadcastReceiver() {
             .setAutoCancel(true)
             .setSound(ringtoneUri)
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val name = "notes attach Alarm"
             val importance = NotificationManager.IMPORTANCE_DEFAULT
             val channel = NotificationChannel(channelId.toString(), name, importance).apply {
@@ -72,7 +62,7 @@ class AlarmReceiver: BroadcastReceiver() {
             val notificationManager =
                 context.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(channel)
-        }
+//        }
 
         with (NotificationManagerCompat.from(context)){
             notify(channelId, notificationBuilder.build())

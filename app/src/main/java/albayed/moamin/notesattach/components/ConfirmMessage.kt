@@ -1,6 +1,5 @@
 package albayed.moamin.notesattach.components
 
-import albayed.moamin.notesattach.ui.theme.NotesAttachTheme
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -11,24 +10,14 @@ import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-@Preview(showBackground = true)
-@Composable
-fun messagePreview() {
-    NotesAttachTheme {
-        ConfirmMessage()
-    }
-}
 
 @Composable
 fun ConfirmMessage(
-//TODO improve the look of the message and the buttons looks and locations use buttons instead of textbutton
     isOpenDialog: MutableState<Boolean> = mutableStateOf(false),
     onClickYes: () -> Unit = {},
     onClickNo: () -> Unit = {},
@@ -50,7 +39,7 @@ fun ConfirmMessage(
                 Text(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(end = 10.dp),
+                        .padding(end = 13.dp),
                     text = "Yes",
                     style = MaterialTheme.typography.button,
                     fontSize = 19.sp,
@@ -64,7 +53,7 @@ fun ConfirmMessage(
                 Text(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(end = 10.dp),
+                        .padding(end = 13.dp),
                     text = "No",
                     style = MaterialTheme.typography.button,
                     fontSize = 19.sp,
