@@ -27,7 +27,9 @@ import androidx.compose.runtime.saveable.mapSaver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -43,6 +45,7 @@ fun ImagesScreen(
     viewModel: ImagesScreenViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
+    val haptic = LocalHapticFeedback.current
     val imagesList = viewModel.images.collectAsState().value
     val imagesCount = viewModel.imagesCount.collectAsState().value
 
@@ -110,6 +113,7 @@ fun ImagesScreen(
                     Toast.makeText(context, "No Images to Delete!", Toast.LENGTH_SHORT).show()
                 } else if (!isDeleteMode.value) {
                     isDeleteMode.value = true
+                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                 } else {
                     if (imagesToDelete.isNotEmpty()) {
                         isOpenDeleteDialog.value = true
@@ -146,20 +150,20 @@ fun ImagesScreen(
                     .padding(start = 6.dp, end = 6.dp),
                 columns = GridCells.Adaptive(minSize = 128.dp)
             ) {
-                items(imagesList.asReversed()) { image ->
+                items(imagesList) { image ->
                     ImageElement(
                         isViewImage = isViewImage,
                         viewImageUri = viewImageUri,
                         isDeleteMode = isDeleteMode,
                         isNewDeleteProcess = (imagesToDelete.isEmpty()),
                         image = image
-                    ) { checkedDelete ->
+                    ) { checkedDelete, selectedImage ->
                         if (checkedDelete.value) {
                             checkedDelete.value = !checkedDelete.value
-                            imagesToDelete.remove(image)
+                            imagesToDelete.remove(selectedImage)
                         } else {
                             checkedDelete.value = !checkedDelete.value
-                            imagesToDelete.add(image)
+                            imagesToDelete.add(selectedImage)
                         }
                     }
                 }

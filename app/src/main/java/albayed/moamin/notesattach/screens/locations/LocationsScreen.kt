@@ -23,7 +23,9 @@ import androidx.compose.material.Scaffold
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -39,6 +41,7 @@ fun LocationsScreen(
     viewModel: LocationsScreenViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
+    val haptic = LocalHapticFeedback.current
     val locationsList = viewModel.location.collectAsState().value
     val locationsCount = viewModel.locationsCount.collectAsState().value
     val isDeleteMode = remember {
@@ -75,6 +78,7 @@ fun LocationsScreen(
                             .show()
                     } else if (!isDeleteMode.value) {
                         isDeleteMode.value = true
+                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                     } else {
                         if (locationsToDelete.isNotEmpty()) {
                             isOpenDeleteDialog.value = true
@@ -108,7 +112,7 @@ fun LocationsScreen(
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            items(locationsList.asReversed()) { location ->
+            items(locationsList) { location ->
                 LocationCard(
                     location = location,
                     isDeleteMode = isDeleteMode,

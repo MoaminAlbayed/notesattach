@@ -21,7 +21,9 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -37,6 +39,7 @@ fun AudioClipsScreen(
     viewModel: AudioClipsScreenViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
+    val haptic = LocalHapticFeedback.current
     val audioClips = viewModel.audioClips.collectAsState().value
     val audioClipsCount = viewModel.audioClipsCount.collectAsState().value
 
@@ -144,6 +147,8 @@ fun AudioClipsScreen(
                             .show()
                     } else if (!isDeleteMode.value) {
                         isDeleteMode.value = true
+                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+
                     } else {
                         if (audioClipsToDelete.isNotEmpty()) {
                             if (isPlaying)
@@ -185,7 +190,7 @@ fun AudioClipsScreen(
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            items(audioClips.asReversed()) { audioClip ->
+            items(audioClips) { audioClip ->
                 AudioClipCard(
                     audioClip = audioClip,
                     duration = duration,

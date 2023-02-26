@@ -1,7 +1,6 @@
 package albayed.moamin.notesattach.components
 
 import albayed.moamin.notesattach.models.Video
-import albayed.moamin.notesattach.utils.videoLength
 import android.net.Uri
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
@@ -81,7 +80,6 @@ fun VideoElement(
             }.crossfade(true)
             .build()
         AsyncImage(
-//            model = video.uri,
             model = ImageRequest.Builder(LocalContext.current)
                 .data(video.uri)
                 .crossfade(true)
@@ -100,7 +98,7 @@ fun VideoElement(
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(modifier = Modifier.size(20.dp), imageVector = Icons.Default.PlayArrow, tint = Color.White, contentDescription = "")
-                Text(modifier = Modifier.padding(end = 3.dp), text = videoLength(context, video.uri), style = MaterialTheme.typography.caption, color = Color.White)
+                Text(modifier = Modifier.padding(end = 3.dp), text = video.length, style = MaterialTheme.typography.caption, color = Color.White)
             }
         }
         if (isDeleteMode.value) {

@@ -12,5 +12,6 @@ data class Video(
     val videoId: UUID = UUID.randomUUID(),
     val noteId: UUID,
     val uri: Uri,
-    val file: File
+    val file: File,
+    val length: String
 )

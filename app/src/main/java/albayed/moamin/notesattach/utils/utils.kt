@@ -51,7 +51,7 @@ fun videoLength(context: Context, videoUri: Uri): String {
     retriever.setDataSource(context, videoUri)
     val videoTime =
         retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)!!.toLong()
-    retriever.release()
+    retriever.close()
     return String.format(
         "%02d:%02d",
         TimeUnit.MILLISECONDS.toMinutes(videoTime),

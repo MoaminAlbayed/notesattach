@@ -32,7 +32,7 @@ fun ImageElement(
     isDeleteMode: MutableState<Boolean>,
     image: Image,
     isNewDeleteProcess: Boolean,
-    checkedDelete: (MutableState<Boolean>) -> Unit
+    checkedDelete: (MutableState<Boolean>, Image) -> Unit
 ) {
     val haptic = LocalHapticFeedback.current
     val isSelected = remember {
@@ -50,7 +50,7 @@ fun ImageElement(
                 detectTapGestures(
                     onTap = {
                         if (isDeleteMode.value) {
-                            checkedDelete(isSelected)
+                            checkedDelete(isSelected, image)
                         } else {
                             isViewImage.value = true
                             viewImageUri.value = image.uri
@@ -58,7 +58,7 @@ fun ImageElement(
                     },
                     onLongPress = {
                         isDeleteMode.value = true
-                        checkedDelete(isSelected)
+                        checkedDelete(isSelected, image)
                         haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                     }
                 )
@@ -74,7 +74,7 @@ fun ImageElement(
         )
         if (isDeleteMode.value) {
             CircleCheckbox(selected = isSelected.value) {
-                checkedDelete(isSelected)
+                checkedDelete(isSelected, image)
             }
         }
     }

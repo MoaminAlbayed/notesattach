@@ -8,6 +8,7 @@ import albayed.moamin.notesattach.models.Video
 import albayed.moamin.notesattach.navigation.Screens
 import albayed.moamin.notesattach.utils.BackPressHandler
 import albayed.moamin.notesattach.utils.NewFileProvider
+import albayed.moamin.notesattach.utils.videoLength
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
@@ -26,7 +27,9 @@ import androidx.compose.runtime.saveable.mapSaver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -41,6 +44,7 @@ fun VideosScreen(
     viewModel: VideosScreenViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
+    val haptic = LocalHapticFeedback.current
     val videosList = viewModel.videos.collectAsState().value
     val videosCount = viewModel.videosCount.collectAsState().value
 
@@ -84,7 +88,8 @@ fun VideosScreen(
                     Video(
                         noteId = UUID.fromString(noteId),
                         uri = newFile.value.uri,
-                        file = newFile.value.file
+                        file = newFile.value.file,
+                        length = videoLength(context, newFile.value.uri)
                     )
                 )
                 viewModel.updateVideosCount(videosCount = videosCount + 1, noteId = noteId)
@@ -109,6 +114,7 @@ fun VideosScreen(
                     Toast.makeText(context, "No Images to Delete!", Toast.LENGTH_SHORT).show()
                 } else if (!isDeleteMode.value) {
                     isDeleteMode.value = true
+                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                 } else {
                     if (videosToDelete.isNotEmpty()) {
                         isOpenDeleteDialog.value = true
@@ -145,7 +151,7 @@ fun VideosScreen(
                     .padding(start = 6.dp, end = 6.dp),
                 columns = GridCells.Adaptive(minSize = 128.dp)
             ) {
-                items(videosList.asReversed()) { video ->
+                items(videosList) { video ->
                     VideoElement(
                         isViewVideo = isViewVideo,
                         viewVideoUri = viewVideoUri,

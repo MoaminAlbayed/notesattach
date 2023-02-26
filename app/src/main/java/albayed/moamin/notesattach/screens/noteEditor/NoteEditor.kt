@@ -16,6 +16,8 @@ import androidx.compose.material.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
@@ -23,17 +25,26 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import kotlinx.coroutines.delay
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun NoteEditor(
     navController: NavController,
-    isNewNote: Boolean,
+    isNewNote: Boolean,//todo request focus to title when new note
     isFromNotification: Boolean,
     noteId: String?,
     viewModel: NoteEditorViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
+    val focusRequester = remember { FocusRequester() }
+    if (isNewNote){
+        LaunchedEffect(key1 = Unit) {
+            delay(100)
+            focusRequester.requestFocus()
+        }
+    }
+
     val titleFontSize = 18.sp
     val contentFontSize = 16.sp
 
@@ -99,7 +110,9 @@ fun NoteEditor(
     ) {
             Column() {
                 TextField(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .focusRequester(focusRequester),
                     value = title,
                     onValueChange = {
                         title = it
@@ -112,6 +125,7 @@ fun NoteEditor(
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                     colors = TextFieldDefaults.textFieldColors(
                         textColor = MaterialTheme.colors.onSurface,
+                        cursorColor = MaterialTheme.colors.onSurface,
                         focusedIndicatorColor = Color.Transparent,
                         unfocusedIndicatorColor = Color.Transparent,
                     )

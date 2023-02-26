@@ -27,7 +27,9 @@ import androidx.compose.material.Scaffold
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -43,6 +45,7 @@ fun AlarmsScreen(
     viewModel: AlarmsScreenViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
+    val haptic = LocalHapticFeedback.current
     val alarmsList = viewModel.alarms.collectAsState().value
     val alarmsCount = viewModel.alarmsCount.collectAsState().value
 
@@ -146,6 +149,7 @@ fun AlarmsScreen(
                             .show()
                     } else if (!isDeleteMode.value) {
                         isDeleteMode.value = true
+                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                     } else {
                         if (alarmsToDelete.isNotEmpty()) {
                             isOpenDeleteDialog.value = true
@@ -178,7 +182,7 @@ fun AlarmsScreen(
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            items(alarmsList.asReversed()) { alarm ->
+            items(alarmsList) { alarm ->
                 AlarmCard(
                     alarm = alarm,
                     nowCalendar = nowCalendar,
@@ -191,6 +195,7 @@ fun AlarmsScreen(
                         } else {
                             checkedDelete.value = !checkedDelete.value
                             alarmsToDelete.add(alarm)
+
                         }
                     }
                 )
