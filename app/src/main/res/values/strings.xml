@@ -1,5 +1,3 @@
 <resources>
     <string name="app_name">Notes Attach</string>
-    <string name="maps_api_key_debug">AIzaSyDiWoiiLBw1J3P74OGijFdYDDEV-8wETBU</string>
-    <string name="maps_api_key_release">AIzaSyCkB3t2aC8-OlTxrijyBxZkkkk5G3HWWA0</string>
 </resources>
