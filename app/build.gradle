@@ -6,11 +6,11 @@ plugins {
 }
 
 android {
-    namespace 'albayed.moamin.notesattach'
+    namespace 'albayed.moamin.composenotesattach'
     compileSdk 33
 
     defaultConfig {
-        applicationId "albayed.moamin.notesattach"
+        applicationId "albayed.moamin.composenotesattach"
         minSdk 33
         targetSdk 33
         versionCode 9
