@@ -76,6 +76,7 @@ fun formatTimer(timestamp: Long): String {
 
 fun Long.pad(desiredLength: Int) = this.toString().padStart(desiredLength, '0')
 
+//BackPressHandler used to change behavior of system back button
 @Composable
 fun BackPressHandler(
     backPressedDispatcher: OnBackPressedDispatcher? =
@@ -157,6 +158,7 @@ fun checkPermissions (permissions: Array<String>, context: Context): Boolean{
     }
 }
 
+//GetContentActivityResult class used to request permission on button press
 class GetContentActivityResult(
     private val launcher: ManagedActivityResultLauncher<Array<String>, Map<String, Boolean>>,
 ) {

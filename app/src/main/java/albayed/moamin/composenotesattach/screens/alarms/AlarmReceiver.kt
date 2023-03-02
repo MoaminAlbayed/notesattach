@@ -16,7 +16,7 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.core.net.toUri
 
 
-class AlarmReceiver: BroadcastReceiver() {
+class AlarmReceiver : BroadcastReceiver() {
     @SuppressLint("MissingPermission")
     override fun onReceive(context: Context, intent: Intent) {
 
@@ -24,18 +24,21 @@ class AlarmReceiver: BroadcastReceiver() {
         val content = intent.getStringExtra("content")
         val channelId = intent.getIntExtra("channelId", 0)
         val requestCode = intent.getIntExtra("requestCode", 0)
-        val noteId = intent. getStringExtra("noteId")
+        val noteId = intent.getStringExtra("noteId")
 
+        //intent for directing to note when tapping on reminder notification
         val taskDetailIntent = Intent(
             Intent.ACTION_VIEW,
             "myapp://notesattach/${false}/${true}/$noteId".toUri(),
         )
 
+        //pendingIntent needed to create the notification
         val pendingIntent: PendingIntent = TaskStackBuilder.create(context).run {
             addNextIntentWithParentStack(taskDetailIntent)
             getPendingIntent(requestCode, PendingIntent.FLAG_MUTABLE)
         }
 
+        //notification to be displayed when reminder rings
         val notificationBuilder = NotificationCompat.Builder(context, channelId.toString())
             .setSmallIcon(R.drawable.notesattach_notification)
             .setContentTitle("Note Reminder")
@@ -45,18 +48,20 @@ class AlarmReceiver: BroadcastReceiver() {
             .setAutoCancel(true)
             .setSound(ringtoneUri)
 
-            val name = "notes attach Alarm"
-            val importance = NotificationManager.IMPORTANCE_DEFAULT
-            val channel = NotificationChannel(channelId.toString(), name, importance).apply {
-                description = content
-                enableVibration(true)
-            }
-            // Register the channel with the system
-            val notificationManager =
-                context.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-            notificationManager.createNotificationChannel(channel)
+        val name = "notes attach Alarm"
+        val importance = NotificationManager.IMPORTANCE_DEFAULT
 
-        with (NotificationManagerCompat.from(context)){
+        //creating channel to send notification through
+        val channel = NotificationChannel(channelId.toString(), name, importance).apply {
+            description = content
+            enableVibration(true)
+        }
+
+        // Register the channel with the system
+        val notificationManager =
+            context.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.createNotificationChannel(channel)
+        with(NotificationManagerCompat.from(context)) {
             notify(channelId, notificationBuilder.build())
         }
 

@@ -37,7 +37,7 @@ fun TopBar(
     val contentColor = MaterialTheme.colors.onPrimary
 
     val focusRequester = remember { FocusRequester() }
-    val scope = rememberCoroutineScope()
+    val focusRequesterScope = rememberCoroutineScope()
 
     val animationTime = 500
 
@@ -134,7 +134,7 @@ fun TopBar(
                             IconButton(onClick = {
                                 firstAction.invoke()
                                 if (isMainScreenSearch.value) {
-                                    scope.launch {
+                                    focusRequesterScope.launch {
                                         delay(100)
                                         focusRequester.requestFocus()
                                     }

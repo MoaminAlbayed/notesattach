@@ -59,26 +59,30 @@ fun MapScreen(
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(currentLatLng, 15f)
     }
-    val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
-    fusedLocationClient.getCurrentLocation(LocationRequest.QUALITY_HIGH_ACCURACY, object : CancellationToken() {
-        override fun onCanceledRequested(p0: OnTokenCanceledListener) = CancellationTokenSource().token
 
-        override fun isCancellationRequested() = false
-    })
+    //fusedLocationClient used to get current location
+    val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
+    fusedLocationClient.getCurrentLocation(
+        LocationRequest.QUALITY_HIGH_ACCURACY,
+        object : CancellationToken() {
+            override fun onCanceledRequested(p0: OnTokenCanceledListener) =
+                CancellationTokenSource().token
+
+            override fun isCancellationRequested() = false
+        })
         .addOnSuccessListener {
             if (it == null)
                 Toast.makeText(context, "Cannot get location.", Toast.LENGTH_SHORT).show()
             else {
-
                 currentLatLng = LatLng(it.latitude, it.longitude)
                 cameraPositionState.move(CameraUpdateFactory.newLatLng(currentLatLng))
+                //markerState position needs to be changed manually otherwise it'll stay on 0,0
                 markerState.position = currentLatLng
             }
-
         }
 
     val geocoder = Geocoder(context, Locale.ENGLISH)
-    fun getLocationFromGeocoder(location: LatLng){
+    fun getLocationFromGeocoder(location: LatLng) {
         geocoder.getFromLocation(
             location.latitude,
             location.longitude,
@@ -94,6 +98,8 @@ fun MapScreen(
 
                     isOpenConfirmDialogue.value = true
                 }
+
+                //onError used in case geocoder fails to fetch location information, uses lat and long instead
                 override fun onError(errorMessage: String?) {
                     super.onError(errorMessage)
                     locationChosen.value = Location(
@@ -112,7 +118,7 @@ fun MapScreen(
             navController.popBackStack()
         }
     }) {
-        LaunchedEffect(key1 = Unit){
+        LaunchedEffect(key1 = Unit) {
             Toast.makeText(context, "Tap on any location to add", Toast.LENGTH_LONG).show()
         }
         GoogleMap(
@@ -120,7 +126,7 @@ fun MapScreen(
             cameraPositionState = cameraPositionState,
             properties = properties,
             onMapClick = {
-                         getLocationFromGeocoder(it)
+                getLocationFromGeocoder(it)
             },
             onPOIClick = {
                 locationChosen.value = Location(
@@ -142,7 +148,6 @@ fun MapScreen(
             )
             markerState.showInfoWindow()
         }
-
     }
 
 

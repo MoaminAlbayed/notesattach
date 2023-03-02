@@ -49,6 +49,7 @@ fun ImageElement(
             .pointerInput(Unit) {
                 detectTapGestures(
                     onTap = {
+                        //check if tapping image to delete then just check mark, else open the image
                         if (isDeleteMode.value) {
                             checkedDelete(isSelected, image)
                         } else {

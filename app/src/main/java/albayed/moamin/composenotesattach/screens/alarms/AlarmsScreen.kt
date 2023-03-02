@@ -111,6 +111,8 @@ fun AlarmsScreen(
                     alarmIntent,
                     PendingIntent.FLAG_IMMUTABLE
                 )
+                //alarm manager takes pending intent and notification time, pending intent takes alarm intent that takes the alarm receiver,
+                // alarm receiver class builds the notification and registers the channel with the system
                 alarmManager.setExact(AlarmManager.RTC_WAKEUP, setCalendar.timeInMillis, pendingIntent)
                 viewModel.createAlarm(
                     Alarm(

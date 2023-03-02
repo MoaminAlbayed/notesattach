@@ -48,9 +48,6 @@ fun VideosScreen(
     val videosList = viewModel.videos.collectAsState().value
     val videosCount = viewModel.videosCount.collectAsState().value
 
-    var hasVideo by remember {
-        mutableStateOf(false)
-    }
     val isViewVideo = remember {
         mutableStateOf(false)
     }
@@ -66,6 +63,8 @@ fun VideosScreen(
     val isOpenDeleteDialog = remember {
         mutableStateOf(false)
     }
+
+    //fileSaver used to save file info when rotation screen while recording video
     val fileSaver = run {
         val fileKey = "file"
         val uriKey = "uri"
@@ -82,8 +81,7 @@ fun VideosScreen(
     val cameraLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.CaptureVideo(),
         onResult = { success ->
-            hasVideo = success
-            if (hasVideo) {
+            if (success) {
                 viewModel.createVideo(
                     Video(
                         noteId = UUID.fromString(noteId),
@@ -94,7 +92,8 @@ fun VideosScreen(
                 )
                 viewModel.updateVideosCount(videosCount = videosCount + 1, noteId = noteId)
             }
-            if (!hasVideo) {
+            //deleting created file if no video was recorded
+            if (!success) {
                 if (newFile.value.file.exists()) {
                     newFile.value.file.delete()
                 }
@@ -169,6 +168,7 @@ fun VideosScreen(
                     }
                 }
             }
+            //playing video in video player
             if (isViewVideo.value) {
                 videoViewer.launch(
                     Intent(Intent.ACTION_VIEW).setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)

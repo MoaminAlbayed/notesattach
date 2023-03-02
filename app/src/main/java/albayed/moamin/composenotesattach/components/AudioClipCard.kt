@@ -41,7 +41,8 @@ fun AudioClipCard(
     val audioFile = audioClip.file
     val isPlaying = remember { mutableStateOf(false) }
     isPlaying.value = audioFile == audioClipCurrentlyPlaying.value
-    val firstButton = if (isPlaying.value && !isPaused) R.drawable.pause_button else R.drawable.play_button
+    val firstButton =
+        if (isPlaying.value && !isPaused) R.drawable.pause_button else R.drawable.play_button
     val secondButton = R.drawable.stop_button
     val buttonContentDescription = if (isPlaying.value) "Stop Playing Button" else "Play Button"
 
@@ -122,15 +123,17 @@ fun AudioClipCard(
                     )
                     Text(
                         modifier = Modifier.padding(start = 15.dp),
-                        text = "Duration: " + formatTimer( if(audioClip.duration <1000L) 1000L else audioClip.duration),
+                        text = "Duration: " + formatTimer(if (audioClip.duration < 1000L) 1000L else audioClip.duration),
                         fontSize = 14.sp
                     )
                     AnimatedVisibility(
                         visible = isPlaying.value,
 
-                    ) {
+                        ) {
                         Slider(
-                            modifier = Modifier.fillMaxWidth().padding(start = 5.dp, end = 5.dp),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(start = 5.dp, end = 5.dp),
                             value = currentPosition.value!!,
                             onValueChange = {
                                 seekTo(it)
@@ -147,8 +150,10 @@ fun AudioClipCard(
             }
         }
         if (isDeleteMode.value) {
-            CircleCheckbox(modifier = Modifier.align(Alignment.TopStart),
-        selected = isSelected.value) {
+            CircleCheckbox(
+                modifier = Modifier.align(Alignment.TopStart),
+                selected = isSelected.value
+            ) {
                 checkedDelete(isSelected)
             }
         }

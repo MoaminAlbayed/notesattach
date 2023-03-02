@@ -18,6 +18,7 @@ private val DarkColorPalette = darkColors(
 
 @Composable
 fun NotesAttachTheme(content: @Composable () -> Unit) {
+    //from accompanist, used to change system colors
     val systemUiController = rememberSystemUiController()
     systemUiController.setSystemBarsColor(
       color = Color (0xff3D0107)

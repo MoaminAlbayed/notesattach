@@ -54,7 +54,7 @@ fun AlarmCard(
 
     val textColor = if (calendar > nowCalendar) MaterialTheme.colors.onSurface else Color.DarkGray
 
-    ConstraintLayout(
+    ConstraintLayout(//Constrained Layout can be used to position en element on top of another element
         modifier = modifier
             .padding(5.dp)
             .wrapContentHeight()
@@ -76,7 +76,7 @@ fun AlarmCard(
                 )
             }
     ) {
-        val checkRef = createRef()
+        val checkRef = createRef()//reference used for positioning the check marker on the card
         Card(
             shape = RoundedCornerShape(5.dp),
             border = BorderStroke(2.dp, color = MaterialTheme.colors.primary),

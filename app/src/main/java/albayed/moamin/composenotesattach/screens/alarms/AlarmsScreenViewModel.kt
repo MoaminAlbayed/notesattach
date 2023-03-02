@@ -15,7 +15,7 @@ import javax.inject.Inject
 @HiltViewModel
 class AlarmsScreenViewModel @Inject constructor(
     private val noteRepository: NoteRepository,
-    private val state: SavedStateHandle
+    private val state: SavedStateHandle//used to read navigation arguments
 ) : ViewModel() {
     private val _alarms = MutableStateFlow<List<Alarm>>(emptyList())
     private val _alarmsCount = MutableStateFlow(0)

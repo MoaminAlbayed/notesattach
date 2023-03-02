@@ -28,7 +28,7 @@ fun AttachmentIcon(
     count: Int = 1,
     isDelete: Boolean = false,
 ) {
-    Box(
+    Box(//box inside a box can be used to position the inner box in a specific location in the outer box
         modifier = modifier.fillMaxSize().padding(padding),
     ) {
 
@@ -39,7 +39,7 @@ fun AttachmentIcon(
             tint = tint,
             contentDescription = contentDescription
         )
-        if (!isDelete && count != 0) {
+        if (!isDelete && count != 0) {//isDelete is used to know if the button is a note delete button
             Box(
                 modifier = Modifier.align(Alignment.BottomEnd)
             ) {

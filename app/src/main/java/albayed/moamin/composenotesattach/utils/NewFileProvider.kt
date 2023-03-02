@@ -34,6 +34,8 @@ class NewFileProvider: FileProvider(R.xml.paths){
                     folderName = "audioClips"
                 }
             }
+
+            //filesDir declared in paths.xml
             val directory = File(context.filesDir, folderName)
             directory.mkdirs()
             val file = File(directory, fileName)

@@ -67,6 +67,7 @@ fun ImagesScreen(
         mutableStateOf(false)
     }
 
+    //file saver used to save file info when changing screen orientation while taking a picture
     val fileSaver = run {
         val fileKey = "file"
         val uriKey = "uri"
@@ -80,6 +81,7 @@ fun ImagesScreen(
         mutableStateOf(FileInfo(File(""), Uri.EMPTY))
     }
 
+    //launch the camera activity to take a picture
     val cameraLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.TakePicture(),
         onResult = { success ->
@@ -93,6 +95,7 @@ fun ImagesScreen(
                 )
                 viewModel.updateImagesCount(imagesCount = imagesCount + 1, noteId = noteId)
             }
+            //deletes the file created for the image if no image was captured
             if (!success) {
                 if (newFile.value.file.exists()) {
                     newFile.value.file.delete()
@@ -168,10 +171,10 @@ fun ImagesScreen(
                     }
                 }
             }
+            //to open the image if tapped while not in delete mode
             if (isViewImage.value) {
                 imageViewer.launch(Intent(Intent.ACTION_VIEW).setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION).setData(viewImageUri.value))
                 isViewImage.value = false
-
             }
         }
     }

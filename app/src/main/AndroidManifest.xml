@@ -36,6 +36,8 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+<!--            this intent filter is needed for deeplinking to go to a note from a reminder notification -->
             <intent-filter>
                 <data android:host="notesattach"
                     android:scheme="myapp"/>
@@ -43,6 +45,8 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+
+<!--        file provider is needed to allow opening images and videos with media players and image viewers-->
         <provider
             android:name=".utils.NewFileProvider"
             android:authorities="albayed.moamin.fileprovider"
@@ -52,6 +56,8 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/paths" />
         </provider>
+
+<!--        a receiver is needed to create notifications for reminders-->
         <receiver
             android:name=".screens.alarms.AlarmReceiver"
             android:enabled="true"

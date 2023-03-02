@@ -27,6 +27,7 @@ fun Navigation() {
         }
 
         composable(route = Screens.NoteEditor.name + "/{isNewNote}/{isFromNotification}/{noteId}",
+            //deeplinks used for directing to note when tapping on a reminder notification
             deepLinks = listOf(
                 navDeepLink { uriPattern = "myapp://notesattach/{isNewNote}/{isFromNotification}/{noteId}"}
             ),

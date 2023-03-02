@@ -24,7 +24,7 @@ fun FloatingButton(
     val offsetY by remember { mutableStateOf(0f) }
 
     FloatingActionButton(modifier = modifier
-        .offset {
+        .offset {//offset is changed by dragging
             IntOffset(offsetX.roundToInt(), offsetY.roundToInt())
         }
         .draggable(

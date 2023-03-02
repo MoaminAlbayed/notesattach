@@ -38,7 +38,9 @@ fun NoteEditor(
 ) {
     val context = LocalContext.current
     val focusRequester = remember { FocusRequester() }
-    if (isNewNote){
+
+    //show keyboard and focus on title if creating a new note
+    if (isNewNote) {
         LaunchedEffect(key1 = Unit) {
             delay(100)
             focusRequester.requestFocus()
@@ -48,6 +50,7 @@ fun NoteEditor(
     val titleFontSize = 18.sp
     val contentFontSize = 16.sp
 
+    //if existing note populate title and content from note else keep them empty
     val note = if (isNewNote) {
         Note(title = "", content = "")
     } else {
@@ -64,7 +67,7 @@ fun NoteEditor(
     }
 
     val isAttachmentsDropDownVisible = remember { mutableStateOf(false) }
-    if (isAttachmentsDropDownVisible.value && !isNewNote){
+    if (isAttachmentsDropDownVisible.value && !isNewNote) {
         AttachmentsDropDown(
             isVisible = isAttachmentsDropDownVisible,
             note = note,
@@ -102,59 +105,59 @@ fun NoteEditor(
             TopBar(
                 screen = Screens.NoteEditor,
                 isNewNote = isNewNote,
-                firstAction = {isAttachmentsDropDownVisible.value = true}
+                firstAction = { isAttachmentsDropDownVisible.value = true }
             ) {
                 backToMainScreen()
             }
         }
     ) {
-            Column() {
-                TextField(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .focusRequester(focusRequester),
-                    value = title,
-                    onValueChange = {
-                        title = it
-                    },
-                    maxLines = 1,
-                    placeholder = {
-                        Text(text = "Title", fontSize = titleFontSize)
-                    },
-                    textStyle = TextStyle(fontSize = titleFontSize),
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
-                    colors = TextFieldDefaults.textFieldColors(
-                        textColor = MaterialTheme.colors.onSurface,
-                        cursorColor = MaterialTheme.colors.onSurface,
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent,
-                    )
+        Column() {
+            TextField(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .focusRequester(focusRequester),
+                value = title,
+                onValueChange = {
+                    title = it
+                },
+                maxLines = 1,
+                placeholder = {
+                    Text(text = "Title", fontSize = titleFontSize)
+                },
+                textStyle = TextStyle(fontSize = titleFontSize),
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                colors = TextFieldDefaults.textFieldColors(
+                    textColor = MaterialTheme.colors.onSurface,
+                    cursorColor = MaterialTheme.colors.onSurface,
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
                 )
-                Divider(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .align(Alignment.CenterHorizontally),
-                    thickness = 1.dp,
-                    color = Color.Black
-                )
+            )
+            Divider(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.CenterHorizontally),
+                thickness = 1.dp,
+                color = Color.Black
+            )
 
-                TextField(
-                    modifier = Modifier.fillMaxSize(),
-                    value = content,
-                    onValueChange = {
-                        content = it
-                    },
-                    placeholder = {
-                        Text(text = "Content", fontSize = contentFontSize)
-                    },
-                    textStyle = TextStyle(fontSize = contentFontSize),
-                    colors = TextFieldDefaults.textFieldColors(
-                        textColor = MaterialTheme.colors.onSurface,
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent,
-                    )
+            TextField(
+                modifier = Modifier.fillMaxSize(),
+                value = content,
+                onValueChange = {
+                    content = it
+                },
+                placeholder = {
+                    Text(text = "Content", fontSize = contentFontSize)
+                },
+                textStyle = TextStyle(fontSize = contentFontSize),
+                colors = TextFieldDefaults.textFieldColors(
+                    textColor = MaterialTheme.colors.onSurface,
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
                 )
-            }
+            )
+        }
     }
 }
 

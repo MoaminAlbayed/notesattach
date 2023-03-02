@@ -42,11 +42,11 @@ fun MainScreen(navController: NavController, viewModel: MainScreenViewModel = hi
     val notesList = viewModel.notesList.collectAsState().value
 
     val isSearch = remember { mutableStateOf(false) }
+    //notesToShow used to show either the full list of notes or the search results
     val notesToShow = remember { mutableStateOf(listOf<Note>()) }
     if (!isSearch.value) {
         notesToShow.value = notesList
     }
-
 
     Scaffold(
         topBar = {

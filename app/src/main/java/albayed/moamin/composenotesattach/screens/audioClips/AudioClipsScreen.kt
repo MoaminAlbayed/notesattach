@@ -102,15 +102,14 @@ fun AudioClipsScreen(
                     audioClipCurrentlyPlaying.value = null
                     duration = 0f
                     currentPositionScope.coroutineContext.cancelChildren()
-
                 }
                 prepare()
                 start()
                 duration = player.duration.toFloat()
                 currentPositionScope.launch {
+                    //periodically read current position from the player and stored in current position var that is used by the slider
                     while (isActive) {
                         currentPosition.value = player.currentPosition.toFloat()
-
                         delay(15)
                     }
                 }
@@ -174,12 +173,12 @@ fun AudioClipsScreen(
         },
         floatingActionButton = {
             FloatingButton(icon = R.drawable.mic, contentDescription = "Use Mic Button") {
-                    if (isDeleteMode.value) {
-                        isDeleteMode.value = false
-                    }
-                    if (isPlaying)
-                        stopPlaying()
-                    navController.navigate(Screens.RecordAudioScreen.name + "/${noteId}")
+                if (isDeleteMode.value) {
+                    isDeleteMode.value = false
+                }
+                if (isPlaying)
+                    stopPlaying()
+                navController.navigate(Screens.RecordAudioScreen.name + "/${noteId}")
             }
         }
     ) {

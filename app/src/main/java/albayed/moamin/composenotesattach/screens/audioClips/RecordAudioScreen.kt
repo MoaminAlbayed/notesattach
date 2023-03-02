@@ -45,11 +45,13 @@ fun RecordAudioScreen(
     val context = LocalContext.current
     LockScreenOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
     val audioClipsCount = viewModel.audioClipsCount.collectAsState().value
+    //file saver used for saving file info when the screen rotation is changed,
+    // currently not used because screen orientation is locked to portrait in record screen
     val fileSaver = run {
         val fileKey = "file"
         val uriKey = "uri"
         mapSaver(
-            save = { mapOf(fileKey to it.file!!.absolutePath, uriKey to it.uri.toString()) },
+            save = { mapOf(fileKey to it.file.absolutePath, uriKey to it.uri.toString()) },
             restore = { FileInfo(File(it[fileKey].toString()), Uri.parse(it[uriKey].toString())) }
         )
     }
@@ -66,7 +68,7 @@ fun RecordAudioScreen(
     var startingTime: Long = 0
     var duration: Long
 
-    val scope = rememberCoroutineScope()
+    val timerScope = rememberCoroutineScope()
 
     var timer: Long = 0
     var timerString by remember {
@@ -75,8 +77,9 @@ fun RecordAudioScreen(
 
     fun startRecording() {
         startingTime = System.currentTimeMillis()
-        scope.launch {
+        timerScope.launch {
             while (isActive) {
+                //periodically updates the timer
                 timerString = formatTimer(timer)
                 timer += 1000
                 delay(1000)
@@ -101,7 +104,7 @@ fun RecordAudioScreen(
 
     fun stopRecording() {
         duration = System.currentTimeMillis() - startingTime
-        scope.coroutineContext.cancelChildren()
+        timerScope.coroutineContext.cancelChildren()
         isRecording.value = false
         recorder?.apply {
             stop()
