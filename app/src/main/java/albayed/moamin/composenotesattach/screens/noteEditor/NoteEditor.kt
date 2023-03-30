@@ -68,6 +68,9 @@ fun NoteEditor(
 
     val isAttachmentsDropDownVisible = remember { mutableStateOf(false) }
     if (isAttachmentsDropDownVisible.value && !isNewNote) {
+        note.title = title
+        note.content = content
+        viewModel.updateNote(note)
         AttachmentsDropDown(
             isVisible = isAttachmentsDropDownVisible,
             note = note,
