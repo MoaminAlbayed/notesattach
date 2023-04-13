@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import kotlinx.coroutines.delay
 
+
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun NoteEditor(
