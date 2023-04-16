@@ -89,6 +89,7 @@ dependencies {
 //    def lifecycle_version = "2.5.1"
     // ViewModel
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1"
+    implementation "androidx.lifecycle:lifecycle-runtime-compose:2.6.1"
     // ViewModel utilities for Compose
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1"
 
@@ -101,11 +102,6 @@ dependencies {
 
     //Coil
     implementation("io.coil-kt:coil-compose:2.2.2")
-    implementation("io.coil-kt:coil-video:2.2.2")
-
-
-    //Glide
-    implementation "com.github.bumptech.glide:compose:1.0.0-alpha.1"
 
 //    //Accompanist for permissions
 //    implementation "com.google.accompanist:accompanist-permissions:0.29.1-alpha"
