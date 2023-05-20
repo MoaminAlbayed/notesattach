@@ -66,6 +66,10 @@ fun NoteEditor(
     var content by rememberSaveable(note) {
         mutableStateOf(note.content)
     }
+    
+    var isNoteCreated by rememberSaveable() {
+        mutableStateOf(!isNewNote)
+    }
 
     val isAttachmentsDropDownVisible = remember { mutableStateOf(false) }
     if (isAttachmentsDropDownVisible.value && !isNewNote) {
@@ -86,15 +90,15 @@ fun NoteEditor(
             if (title.isEmpty() && content.isEmpty()) {
                 navController.popBackStack()
             } else {
-                note.title = title
-                note.content = content
-                viewModel.createNote(note)
+//                note.title = title
+//                note.content = content
+//                viewModel.createNote(note)
                 navController.popBackStack()
             }
         } else {
-            note.title = title
-            note.content = content
-            viewModel.updateNote(note)
+//            note.title = title
+//            note.content = content
+//            viewModel.updateNote(note)
             if (isFromNotification)
                 navController.navigateUp()
             else
@@ -123,6 +127,20 @@ fun NoteEditor(
                 value = title,
                 onValueChange = {
                     title = it
+                    if (it.isEmpty() && note.content.isEmpty()){
+                        viewModel.deleteNote(note)
+                        isNoteCreated = false
+                    }
+                    else {
+                        note.title = it
+                        if (!isNoteCreated) {
+                            viewModel.createNote(note)
+                            isNoteCreated = true
+                        }
+                        else {
+                            viewModel.updateNote(note)
+                        }
+                    }
                 },
                 maxLines = 1,
                 placeholder = {
@@ -150,6 +168,21 @@ fun NoteEditor(
                 value = content,
                 onValueChange = {
                     content = it
+                    if (it.isEmpty() && note.title.isEmpty()){
+                        viewModel.deleteNote(note)
+                        isNoteCreated = false
+                    }
+                    else {
+                        note.content = it
+                        if (!isNoteCreated) {
+                            viewModel.createNote(note)
+                            isNoteCreated = true
+                        }
+                        else {
+                            viewModel.updateNote(note)
+
+                        }
+                    }
                 },
                 placeholder = {
                     Text(text = "Content", fontSize = contentFontSize)

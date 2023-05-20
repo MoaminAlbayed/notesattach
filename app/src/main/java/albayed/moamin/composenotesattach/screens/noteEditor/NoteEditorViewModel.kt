@@ -20,4 +20,8 @@ class NoteEditorViewModel  @Inject constructor(private val noteRepository: NoteR
     fun updateNote (note: Note){
         viewModelScope.launch((Dispatchers.IO)){ noteRepository.updateNote(note)}
     }
+
+    fun deleteNote (note: Note){
+        viewModelScope.launch((Dispatchers.IO)){ noteRepository.deleteNote(note)}
+    }
 }
