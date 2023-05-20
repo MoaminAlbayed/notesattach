@@ -51,18 +51,20 @@ fun TopBar(
                         initialOffsetX = {
                             if (isMainScreenSearch.value) it else -it
                         }
-                    ) togetherWith
-                            slideOutHorizontally(
-                                animationSpec = tween(durationMillis = animationTime),
-                                targetOffsetX = {
-                                    if (isMainScreenSearch.value) -it else it
-                                }
-                            )
+                    ).with(
+                        slideOutHorizontally(
+                            animationSpec = tween(durationMillis = animationTime),
+                            targetOffsetX = {
+                                if (isMainScreenSearch.value) -it else it
+                            }
+                        )
+                    )
                 }
             ) {
-                if (it){
-                    TopAppBar(title = {
-                        val searchState = remember { mutableStateOf("") }
+                if (it) {
+                    TopAppBar(
+                        title = {
+                            val searchState = remember { mutableStateOf("") }
                             TextField(
                                 value = searchState.value,
                                 onValueChange = { value ->
@@ -85,6 +87,7 @@ fun TopBar(
                                         IconButton(
                                             onClick = {
                                                 searchState.value = ""
+                                                onSearchValueChanged(searchState.value)
                                             }
                                         ) {
                                             Icon(
@@ -111,14 +114,14 @@ fun TopBar(
                                     disabledIndicatorColor = Color.Transparent
                                 )
                             )
-                    },
+                        },
                         navigationIcon = {
-                                IconButton(onClick = { firstAction.invoke() }) {
-                                    Icon(
-                                        imageVector = Icons.Default.ArrowBack,
-                                        contentDescription = "Back Button"
-                                    )
-                                }
+                            IconButton(onClick = { firstAction.invoke() }) {
+                                Icon(
+                                    imageVector = Icons.Default.ArrowBack,
+                                    contentDescription = "Back Button"
+                                )
+                            }
 
                         },
                         backgroundColor = topBarColor,
@@ -126,7 +129,7 @@ fun TopBar(
                     )
                 } else {
                     TopAppBar(title = {
-                            Text(text = "My Notes")
+                        Text(text = "My Notes")
                     },
                         backgroundColor = topBarColor,
                         contentColor = contentColor,
@@ -150,6 +153,7 @@ fun TopBar(
                 }
             }
         }
+
         Screens.NoteEditor -> {
             if (!isNewNote) {
                 TopAppBar(
@@ -191,6 +195,7 @@ fun TopBar(
                     backgroundColor = topBarColor,
                 )
         }
+
         Screens.ImagesScreen -> {
             TopAppBar(
                 title = {
@@ -216,6 +221,7 @@ fun TopBar(
                 contentColor = contentColor,
             )
         }
+
         Screens.VideosScreen -> {
             TopAppBar(
                 title = {
@@ -241,6 +247,7 @@ fun TopBar(
                 contentColor = contentColor,
             )
         }
+
         Screens.AudioClipsScreen -> {
             TopAppBar(
                 title = {
@@ -266,6 +273,7 @@ fun TopBar(
                 contentColor = contentColor,
             )
         }
+
         Screens.RecordAudioScreen -> {
             TopAppBar(
                 title = {
@@ -283,6 +291,7 @@ fun TopBar(
                 contentColor = contentColor,
             )
         }
+
         Screens.LocationsScreen -> {
             TopAppBar(
                 title = {
@@ -308,6 +317,7 @@ fun TopBar(
                 contentColor = contentColor,
             )
         }
+
         Screens.MapScreen -> {
             TopAppBar(
                 title = {
@@ -325,6 +335,7 @@ fun TopBar(
                 contentColor = contentColor,
             )
         }
+
         Screens.AlarmsScreen -> {
             TopAppBar(
                 title = {
