@@ -28,6 +28,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.google.android.gms.location.*
 import com.google.maps.android.compose.*
@@ -42,8 +43,8 @@ fun LocationsScreen(
 ) {
     val context = LocalContext.current
     val haptic = LocalHapticFeedback.current
-    val locationsList = viewModel.location.collectAsState().value
-    val locationsCount = viewModel.locationsCount.collectAsState().value
+    val locationsList = viewModel.location.collectAsStateWithLifecycle().value
+    val locationsCount = viewModel.locationsCount.collectAsStateWithLifecycle().value
     val isDeleteMode = remember {
         mutableStateOf(false)
     }

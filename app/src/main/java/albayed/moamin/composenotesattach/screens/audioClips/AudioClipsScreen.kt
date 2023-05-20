@@ -26,6 +26,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import kotlinx.coroutines.*
 import java.io.File
@@ -40,8 +41,8 @@ fun AudioClipsScreen(
 ) {
     val context = LocalContext.current
     val haptic = LocalHapticFeedback.current
-    val audioClips = viewModel.audioClips.collectAsState().value
-    val audioClipsCount = viewModel.audioClipsCount.collectAsState().value
+    val audioClips = viewModel.audioClips.collectAsStateWithLifecycle().value
+    val audioClipsCount = viewModel.audioClipsCount.collectAsStateWithLifecycle().value
 
     val isDeleteMode = rememberSaveable {
         mutableStateOf(false)

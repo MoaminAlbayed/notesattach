@@ -32,6 +32,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import java.util.*
 
@@ -39,7 +40,7 @@ import java.util.*
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun MainScreen(navController: NavController, viewModel: MainScreenViewModel = hiltViewModel()) {
-    val notesList = viewModel.notesList.collectAsState().value
+    val notesList = viewModel.notesList.collectAsStateWithLifecycle().value
 
     val isSearch = remember { mutableStateOf(false) }
     //notesToShow used to show either the full list of notes or the search results

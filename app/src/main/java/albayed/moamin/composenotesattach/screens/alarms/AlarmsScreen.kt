@@ -32,6 +32,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import java.util.*
 import kotlin.random.Random
@@ -46,8 +47,8 @@ fun AlarmsScreen(
 ) {
     val context = LocalContext.current
     val haptic = LocalHapticFeedback.current
-    val alarmsList = viewModel.alarms.collectAsState().value
-    val alarmsCount = viewModel.alarmsCount.collectAsState().value
+    val alarmsList = viewModel.alarms.collectAsStateWithLifecycle().value
+    val alarmsCount = viewModel.alarmsCount.collectAsStateWithLifecycle().value
 
     val isDeleteMode = remember {
         mutableStateOf(false)

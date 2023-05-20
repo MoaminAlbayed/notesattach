@@ -51,12 +51,12 @@ fun TopBar(
                         initialOffsetX = {
                             if (isMainScreenSearch.value) it else -it
                         }
-                    )  with
+                    ) togetherWith
                             slideOutHorizontally(
                                 animationSpec = tween(durationMillis = animationTime),
                                 targetOffsetX = {
-                                if (isMainScreenSearch.value) -it else it
-                            }
+                                    if (isMainScreenSearch.value) -it else it
+                                }
                             )
                 }
             ) {

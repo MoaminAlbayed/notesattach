@@ -32,6 +32,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import java.io.File
 import java.util.*
@@ -46,8 +47,8 @@ fun ImagesScreen(
 ) {
     val context = LocalContext.current
     val haptic = LocalHapticFeedback.current
-    val imagesList = viewModel.images.collectAsState().value
-    val imagesCount = viewModel.imagesCount.collectAsState().value
+    val imagesList = viewModel.images.collectAsStateWithLifecycle().value
+    val imagesCount = viewModel.imagesCount.collectAsStateWithLifecycle().value
 
     val isViewImage = remember {
         mutableStateOf(false)

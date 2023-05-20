@@ -32,6 +32,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import java.io.File
 import java.util.*
@@ -45,8 +46,8 @@ fun VideosScreen(
 ) {
     val context = LocalContext.current
     val haptic = LocalHapticFeedback.current
-    val videosList = viewModel.videos.collectAsState().value
-    val videosCount = viewModel.videosCount.collectAsState().value
+    val videosList = viewModel.videos.collectAsStateWithLifecycle().value
+    val videosCount = viewModel.videosCount.collectAsStateWithLifecycle().value
 
     val isViewVideo = remember {
         mutableStateOf(false)
