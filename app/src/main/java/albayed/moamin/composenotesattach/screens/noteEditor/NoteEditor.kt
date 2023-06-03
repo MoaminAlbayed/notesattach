@@ -86,24 +86,10 @@ fun NoteEditor(
 
 
     fun backToMainScreen() {
-        if (isNewNote) {
-            if (title.isEmpty() && content.isEmpty()) {
-                navController.popBackStack()
-            } else {
-//                note.title = title
-//                note.content = content
-//                viewModel.createNote(note)
-                navController.popBackStack()
-            }
-        } else {
-//            note.title = title
-//            note.content = content
-//            viewModel.updateNote(note)
-            if (isFromNotification)
-                navController.navigateUp()
-            else
-                navController.popBackStack()
-        }
+        if (isFromNotification)
+            navController.navigateUp()
+        else
+            navController.popBackStack()
     }
     BackPressHandler() {
         backToMainScreen()
