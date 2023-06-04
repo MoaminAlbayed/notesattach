@@ -14,6 +14,7 @@ import android.annotation.SuppressLint
 import android.content.pm.ActivityInfo
 import android.media.MediaRecorder
 import android.net.Uri
+import android.os.Build
 import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -88,7 +89,11 @@ fun RecordAudioScreen(
         }
         isRecording.value = true
         recorded = true
-        recorder = MediaRecorder(context).apply {
+        recorder = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            MediaRecorder(context)
+        } else {
+            MediaRecorder()
+        }.apply {
             setAudioSource(MediaRecorder.AudioSource.MIC)
             setOutputFile(newFile.value.file)
             setOutputFormat(MediaRecorder.OutputFormat.DEFAULT)
