@@ -59,7 +59,7 @@ fun TopBar(
                             }
                         )
                     )
-                }
+                }, //label = "Search Bar"
             ) {
                 if (it) {
                     TopAppBar(
